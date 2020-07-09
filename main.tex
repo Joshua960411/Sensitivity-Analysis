@@ -12,6 +12,8 @@
 \usepackage{float}
 \usepackage[font=normalsize]{caption}
 \usepackage{graphicx}
+\setkeys{Gin}{width=.8\textwidth}
+\graphicspath{ {./images/} }
 \usepackage{indentfirst}
 \addbibresource{ref.bib}
 
@@ -278,7 +280,20 @@ Similarly, if we consider a change of standard deviation on product $a$ or $b$, 
 \]
 providing the demand always positive and variance no less than zero.
 
-One can compare these results with simulation outputs in Figure for verification.
+One can compare these results with simulation outputs in Figure \ref{fig:mean} and Figure \ref{fig:var} for verification.
+\begin{figure}[ht]
+\centering
+\caption{Optimal cost vs. Change of mean}
+\includegraphics{Example-figure_files/figure-latex/mean-1.pdf}
+\label{fig:mean}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\caption{Optimal cost vs. Change of variance}
+\includegraphics{Example-figure_files/figure-latex/var-1.pdf}
+\label{fig:var}
+\end{figure}
 
 On the other hand, we could consider the manufacturing effort that works on constraint (\ref{eq:time}). We suppose machine $B$ is now going through maintenance, and can only be used for at most $T_B + \Delta T_B$ units of time. Given the fact time constraint on machine $B$ is binding, changes in will affect the cost. Thus:
 \[
@@ -305,7 +320,14 @@ Furthermore, we can consider the influence of altering variable coefficient. For
     \end{cases}\\
 \end{aligned}
 \]
-Simulation outputs see Figure.
+Simulation outputs see Figure \ref{fig:over}.
+
+\begin{figure}[ht]
+\centering
+\caption{Optimal cost vs. Change of over-stocking cost}
+\includegraphics{Example-figure_files/figure-latex/c_o-1.pdf}
+\label{fig:over}
+\end{figure}
 
 \section{Extensions}
 \label{se:extensions}
