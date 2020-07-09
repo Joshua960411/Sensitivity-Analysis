@@ -208,7 +208,7 @@ for (de in delta){
 }
 par(bty="l")
 plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
-points(c(-0.4,0.2),c(3385.6,3462.6),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
+points(c(-0.4,0.4),c(3385.6,3488.1),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
 
 
 op_set<-c()
