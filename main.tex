@@ -252,44 +252,58 @@ There are 50 variables in total, $\big\{ x_1,x_2 \big\} \cap \big\{ y_1^1,\dots,
 
 Now we consider the information described in \ref{sub:information}.
 
-Suppose the mean demand of product $a$ has been increased by $\bar{\epsilon}_a$. Regarding the 100\% rule \cite{BHM77}, we have:
+Suppose the mean demand of product $a$ or $b$ has been increased by $\bar{\epsilon}$. Regarding the 100\% rule \cite{BHM77}, we have:
 
 \[
+\begin{aligned}
     \Delta \, C_{\bar{\epsilon}_a} = 
     \begin{cases}
-        6 \, \bar{\epsilon}_a, & -0.58 \leq \bar{\epsilon}_a \leq 1.02,\\
+        6 \, \bar{\epsilon}_a, & \bar{\epsilon}_a \geq -2.88,\\
+        unpredictable, & \text{otherwise}.
+    \end{cases}\\
+    \Delta \, C_{\bar{\epsilon}_b} = 
+    \begin{cases}
+        4.29 \, \bar{\epsilon}_b, & \bar{\epsilon}_b \geq -4,\\
         unpredictable, & \text{otherwise}.
     \end{cases}
+\end{aligned}
 \]
 
-Similarly, if we consider a change of standard deviation on product $b$, say, decreasing by $k_b\%$, we should have:
+Similarly, if we consider a change of standard deviation on product $a$ or $b$, say, decreasing by $k\%$, we should have:
 \[
-    \Delta \, C_{k_b} = 
-    \begin{cases}
-        -22.1 \, k_b, & k_b \leq 10,\\
-        unpredictable, & \text{otherwise}.
-    \end{cases}
+\begin{aligned}
+    \Delta \, C_{k_a} = -12.1 \, k_a,\\
+    \Delta \, C_{k_b} = -22.1 \, k_b,
+\end{aligned}
 \]
+providing the demand always positive and variance no less than zero.
+
 One can compare these results with simulation outputs in Figure for verification.
 
 On the other hand, we could consider the manufacturing effort that works on constraint (\ref{eq:time}). We suppose machine $B$ is now going through maintenance, and can only be used for at most $T_B + \Delta T_B$ units of time. Given the fact time constraint on machine $B$ is binding, changes in will affect the cost. Thus:
 \[
     \Delta \, C_{T_B} = 
     \begin{cases}
-        -0.9 \, \Delta T_B, & -50 \leq \Delta T_B \leq 20,\\
+        -0.86 \, \Delta T_B, & -50 \leq \Delta T_B \leq 20,\\
         unpredictable, & \text{otherwise}.
     \end{cases}
 \]
 Yet, the time constraint on machine $A$ and machine $C$ is non-binding, changes in allowable interval will not affect the solution nor the cost.
 
-Furthermore, we can consider the influence of altering variable coefficient. For instance, we consider there exists a technology breakthrough that reduces the over-stocking cost of product $a$ by $\Delta c_a^o$. Therefore:
-
+Furthermore, we can consider the influence of altering variable coefficient. For instance, we consider there exists a technology breakthrough that reduces the over-stocking cost. Therefore:
 \[
+\begin{aligned}
     \Delta \, C_{c_a^o} = 
     \begin{cases}
         92.6 \, \Delta c_a^o, & -0.63 \leq \Delta c_a^o \leq 1,\\
         unpredictable, & \text{otherwise}.
-    \end{cases}
+    \end{cases}\\
+    \Delta \, C_{c_b^o} = 
+    \begin{cases}
+        170 \, \Delta c_b^o, & -0.71 \leq \Delta c_b^o \leq 0.54,\\
+        unpredictable, & \text{otherwise}.
+    \end{cases}\\
+\end{aligned}
 \]
 Simulation outputs see Figure.
 
