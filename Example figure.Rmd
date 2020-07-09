@@ -92,7 +92,7 @@ for (ep in epsilon_1){
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(epsilon_1,op_set,xlab="Epsilon",ylab="Optimal cost",type="b", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=3 , pch=19)
+plot(epsilon_1,op_set,xlab="Epsilon",ylab="Optimal cost",type="b", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=1 , pch=19)
 
 epsilon_2<-seq(-5,1,0.25)
 op_set<-c()
@@ -102,7 +102,7 @@ for (ep in epsilon_2){
   op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-lines(epsilon_2,op_set, col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=19 , type="b" )
+lines(epsilon_2,op_set, col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19 , type="b" )
 legend("topleft", 
   legend = c("Changes on product a mean", "Changes on product b mean"), 
   col = c(rgb(0.2,0.4,0.1,0.7), 
@@ -125,7 +125,7 @@ for (k in k_2){
   op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-plot(k_2,op_set,xlab="K",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7), lwd=3 , pch=19)
+plot(k_2,op_set,xlab="K",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7), lwd=1 , pch=19)
 
 k_1<-seq(-20,20,1.5)
 op_set<-c()
@@ -136,7 +136,7 @@ for (k in k_1){
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-lines(k_1,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=3 , pch=19, type="b" )
+lines(k_1,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=1 , pch=19, type="b" )
 
 legend("topright", 
   legend = c("Changes on product a variance", "Changes on product b variance"), 
@@ -162,7 +162,7 @@ for (de in delta){
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7) , lwd=2 , pch=19)
+plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
 points(c(-0.71,0.54),c(3316.4,3528.9),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
 
 op_set<-c()
@@ -172,7 +172,7 @@ for (de in delta){
   op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-lines(delta,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=2 , pch=19, type="b" )
+lines(delta,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=1 , pch=19, type="b" )
 points(c(-0.63,1),c(3378.8,3529.7),col=rgb(0.2,0.4,0.1,0.7),pch=4,lwd=5)
 
 legend("topleft", 
@@ -185,7 +185,7 @@ legend("topleft",
   pch = c(19,19,4,4),
   bty = "n", 
   pt.cex = 0.8, 
-  pt.lwd =c(2,2,5,5),
+  pt.lwd =c(1,1,5,5),
   cex = 1, 
   text.col = "black", 
   horiz = F , 
