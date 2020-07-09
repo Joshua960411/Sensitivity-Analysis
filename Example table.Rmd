@@ -1,0 +1,70 @@
+---
+title: "R Notebook"
+output: 
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup}
+library('knitr')
+library('kableExtra')
+library('readxl')
+knitr::opts_chunk$set(echo = FALSE)
+output<-read_excel('Example solver.xlsx')
+answer<-read_excel('Example solver.xlsx', sheet = 2)
+```
+
+```{r table}
+product_a<-c('product a',200,220,180,190,190,210,240,250,200,190,210,240)
+product_b<-c('product b',250,230,200,180,210,210,170,150,180,220,260,260)
+mac<-matrix(c(product_a,product_b),nrow = 13,ncol = 2)
+mac<-t(mac)
+df<-data.frame(mac)
+colnames(df)<-c('','1','2','3','4'
+                ,'5','6','7','8'
+                ,'9','10','11','12')
+kable(df,format='latex', booktabs = T,align = 'c') %>% 
+        add_header_above(c("Products", "Demand Realisations" = 12),bold = T) %>%
+        kable_styling(latex_options = "scale_down")
+```
+
+```{r statistics}
+a<-c(200,220,180,190,190,210,240,250,200,190,210,240)
+b<-c(250,230,200,180,210,210,170,150,180,220,260,260)
+sta<-matrix(c(a,b),nrow = 12,ncol = 2)
+names<-c('mean','standard deviation','median','1st quantile','3rd quantile')
+st_a<-c(mean(a),round(sd(a),2),median(a),quantile(a,0.25),quantile(a,0.75))
+st_b<-c(mean(b),round(sd(b),2),median(b),quantile(b,0.25),quantile(b,0.75))
+staa<-matrix(c(names,st_a,st_b),nrow = 5,ncol = 3)
+summ<-data.frame(staa)
+colnames(summ)<-c('','product a','product b')
+kable(summ,format='latex', booktabs = T,align = 'c')
+```
+
+```{r solution}
+sol<-answer[15,5]
+```
+
+```{r variableCells}
+vable<-output[9:58,3:8]
+vable[vable=='1E+30']<-10000
+for (i in 2:6){
+  vable[,i]<-as.numeric(unlist(vable[,i], use.names=FALSE))
+}
+vable[,-1]<-round(vable[,-1],1)
+colnames(vable)<-c('variable','final value','reduced cost','coefficient','allowable increase','allowable decrease')
+kable(vable,format='latex', longtable = T, booktabs = T,align = 'c') %>%
+        kable_styling(latex_options = c("repeat_header"),font_size = 7) 
+```
+
+```{r constraints}
+vable<-output[64:114,3:8]
+vable[vable=='1E+30']<-10000
+for (i in 2:6){
+  vable[,i]<-as.numeric(unlist(vable[,i], use.names=FALSE))
+}
+vable[,-1]<-round(vable[,-1],1)
+colnames(vable)<-c('row','final value','shadow price','constraint RHS','allowable increase','allowable decrease')
+kable(vable,format='latex', longtable = T, booktabs = T,align = 'c') %>%
+        kable_styling(latex_options = c("repeat_header"),font_size = 7)
+```

@@ -1,0 +1,195 @@
+---
+title: "R Notebook"
+output: 
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup}
+library(lpSolve)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r original}
+c_1o<-5
+c_2o<-7
+c_1u<-6
+c_2u<-6
+time_a<-2200
+time_b<-2500
+time_c<-3500
+demand_1<-c(200,220,180,190,190,210,240,250,200,190,210,240)
+demand_2<-c(250,230,200,180,210,210,170,150,180,220,260,260)
+objective.in<-c(rep(c_1o,12),rep(c_2o,12),rep(c_1u,12),rep(c_2u,12),0,0)
+con_t1<-c(rep(0,48),4,6)
+con_t2<-c(rep(0,48),7,5)
+con_t3<-c(rep(0,48),8,8)
+con_o1<-c(1,rep(0,47),-1,0)
+con_o2<-c(0,1,rep(0,46),-1,0)
+con_o3<-c(rep(0,2),1,rep(0,45),-1,0)
+con_o4<-c(rep(0,3),1,rep(0,44),-1,0)
+con_o5<-c(rep(0,4),1,rep(0,43),-1,0)
+con_o6<-c(rep(0,5),1,rep(0,42),-1,0)
+con_o7<-c(rep(0,6),1,rep(0,41),-1,0)
+con_o8<-c(rep(0,7),1,rep(0,40),-1,0)
+con_o9<-c(rep(0,8),1,rep(0,39),-1,0)
+con_o10<-c(rep(0,9),1,rep(0,38),-1,0)
+con_o11<-c(rep(0,10),1,rep(0,37),-1,0)
+con_o12<-c(rep(0,11),1,rep(0,36),-1,0)
+con_o13<-c(rep(0,12),1,rep(0,35),0,-1)
+con_o14<-c(rep(0,13),1,rep(0,34),0,-1)
+con_o15<-c(rep(0,14),1,rep(0,33),0,-1)
+con_o16<-c(rep(0,15),1,rep(0,32),0,-1)
+con_o17<-c(rep(0,16),1,rep(0,31),0,-1)
+con_o18<-c(rep(0,17),1,rep(0,30),0,-1)
+con_o19<-c(rep(0,18),1,rep(0,29),0,-1)
+con_o20<-c(rep(0,19),1,rep(0,28),0,-1)
+con_o21<-c(rep(0,20),1,rep(0,27),0,-1)
+con_o22<-c(rep(0,21),1,rep(0,26),0,-1)
+con_o23<-c(rep(0,22),1,rep(0,25),0,-1)
+con_o24<-c(rep(0,23),1,rep(0,24),0,-1)
+con_u1<-c(rep(0,24),1,rep(0,23),1,0)
+con_u2<-c(rep(0,25),1,rep(0,22),1,0)
+con_u3<-c(rep(0,26),1,rep(0,21),1,0)
+con_u4<-c(rep(0,27),1,rep(0,20),1,0)
+con_u5<-c(rep(0,28),1,rep(0,19),1,0)
+con_u6<-c(rep(0,29),1,rep(0,18),1,0)
+con_u7<-c(rep(0,30),1,rep(0,17),1,0)
+con_u8<-c(rep(0,31),1,rep(0,16),1,0)
+con_u9<-c(rep(0,32),1,rep(0,15),1,0)
+con_u10<-c(rep(0,33),1,rep(0,14),1,0)
+con_u11<-c(rep(0,34),1,rep(0,13),1,0)
+con_u12<-c(rep(0,35),1,rep(0,12),1,0)
+con_u13<-c(rep(0,36),1,rep(0,11),0,1)
+con_u14<-c(rep(0,37),1,rep(0,10),0,1)
+con_u15<-c(rep(0,38),1,rep(0,9),0,1)
+con_u16<-c(rep(0,39),1,rep(0,8),0,1)
+con_u17<-c(rep(0,40),1,rep(0,7),0,1)
+con_u18<-c(rep(0,41),1,rep(0,6),0,1)
+con_u19<-c(rep(0,42),1,rep(0,5),0,1)
+con_u20<-c(rep(0,43),1,rep(0,4),0,1)
+con_u21<-c(rep(0,44),1,rep(0,3),0,1)
+con_u22<-c(rep(0,45),1,rep(0,2),0,1)
+con_u23<-c(rep(0,46),1,0,0,1)
+con_u24<-c(rep(0,47),1,0,1)
+const.mat<-rbind(con_t1,con_t2,con_t3
+                 ,con_o1,con_o2,con_o3,con_o4,con_o5,con_o6,con_o7,con_o8,con_o9,con_o10,con_o11,con_o12
+                 ,con_o13,con_o14,con_o15,con_o16,con_o17,con_o18,con_o19,con_o20,con_o21,con_o22,con_o23,con_o24
+                 ,con_u1,con_u2,con_u3,con_u4,con_u5,con_u6,con_u7,con_u8,con_u9,con_u10,con_u11,con_u12
+                 ,con_u13,con_u14,con_u15,con_u16,con_u17,con_u18,con_u19,con_u20,con_u21,con_u22,con_u23,con_u24)
+const.rhs<-c(time_a,time_b,time_c,-demand_1,-demand_2,demand_1,demand_2)
+const.dir<-c(rep("<=",3),rep(">=",48))
+optimum_original<-lp(direction="min", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
+```
+
+```{r mean}
+epsilon_1<-seq(-5,1,0.25)
+op_set<-c()
+for (ep in epsilon_1){
+  new_demand_1<-demand_1+ep
+  new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
+  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+par(bty="l")
+plot(epsilon_1,op_set,xlab="Epsilon",ylab="Optimal cost",type="b", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=3 , pch=19)
+
+epsilon_2<-seq(-5,1,0.25)
+op_set<-c()
+for (ep in epsilon_2){
+  new_demand_2<-demand_2+ep
+  new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
+  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+lines(epsilon_2,op_set, col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=19 , type="b" )
+legend("topleft", 
+  legend = c("Changes on product a mean", "Changes on product b mean"), 
+  col = c(rgb(0.2,0.4,0.1,0.7), 
+  rgb(0.8,0.4,0.1,0.7)), 
+  pch = c(19,19), 
+  bty = "n", 
+  pt.cex = 1, 
+  cex = 1, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.05, 0.05))
+```
+
+```{r var}
+k_2<-seq(-20,20,1.5)
+op_set<-c()
+for (k in k_2){
+  new_demand_2<-mean(demand_2)+(demand_2-mean(demand_2))*(100-k)/100
+  new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
+  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+plot(k_2,op_set,xlab="K",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7), lwd=3 , pch=19)
+
+k_1<-seq(-20,20,1.5)
+op_set<-c()
+for (k in k_1){
+  new_demand_1<-mean(demand_1)+(demand_1-mean(demand_1))*(100-k)/100
+  new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
+  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+par(bty="l")
+lines(k_1,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=3 , pch=19, type="b" )
+
+legend("topright", 
+  legend = c("Changes on product a variance", "Changes on product b variance"), 
+  col = c(rgb(0.2,0.4,0.1,0.7), 
+  rgb(0.8,0.4,0.1,0.7)), 
+  pch = c(19,19), 
+  bty = "n", 
+  pt.cex = 1, 
+  cex = 1, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.05, 0.05))
+```
+
+```{r c_o}
+delta<-seq(-1.2,1.2,0.1)
+
+op_set<-c()
+for (de in delta){
+  new_c_2o<-c_2o+de
+  new_objective.in<-c(rep(c_1o,12),rep(new_c_2o,12),rep(c_1u,12),rep(c_2u,12),0,0)
+  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+par(bty="l")
+plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7) , lwd=2 , pch=19)
+points(c(-0.71,0.54),c(3316.4,3528.9),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
+
+op_set<-c()
+for (de in delta){
+  new_c_1o<-c_1o+de
+  new_objective.in<-c(rep(new_c_1o,12),rep(c_2o,12),rep(c_1u,12),rep(c_2u,12),0,0)
+  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+lines(delta,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=2 , pch=19, type="b" )
+points(c(-0.63,1),c(3378.8,3529.7),col=rgb(0.2,0.4,0.1,0.7),pch=4,lwd=5)
+
+legend("topleft", 
+  legend = c("Changes of over-stocking cost on product a", "Changes of over-stocking cost on product b"
+             ,"Critical point of product a", "Critical point of product b"), 
+  col = c(rgb(0.2,0.4,0.1,0.7)
+          ,rgb(0.8,0.4,0.1,0.7)
+          ,rgb(0.2,0.4,0.1,0.7)
+          ,rgb(0.8,0.4,0.1,0.7)), 
+  pch = c(19,19,4,4),
+  bty = "n", 
+  pt.cex = 0.8, 
+  pt.lwd =c(2,2,5,5),
+  cex = 1, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.02,0.02))
+
+```
+
