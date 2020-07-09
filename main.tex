@@ -278,7 +278,7 @@ Similarly, if we consider a change of standard deviation on product $a$ or $b$, 
     \Delta \, C_{k_b} = -22.1 \, k_b,
 \end{aligned}
 \]
-providing the demand always positive and variance no less than zero.
+providing the demand remain positive and variance is no less than zero.
 
 One can compare these results with simulation outputs in Figure \ref{fig:mean} and Figure \ref{fig:var} for verification.
 \begin{figure}[ht]
@@ -305,7 +305,7 @@ On the other hand, we could consider the manufacturing effort that works on cons
 \]
 Yet, the time constraint on machine $A$ and machine $C$ is non-binding, changes in allowable interval will not affect the solution nor the cost.
 
-Furthermore, we can consider the influence of altering variable coefficient. For instance, we consider there exists a technology breakthrough that reduces the over-stocking cost. Therefore:
+Furthermore, we can consider the influence of altering variable coefficient. For instance, we consider there exists a technology breakthrough that reduces the over-stocking cost by recycling. Therefore:
 \[
 \begin{aligned}
     \Delta \, C_{c_a^o} = 
@@ -355,7 +355,7 @@ where $\alpha > 0, \beta < 0$ are parameters. Change of under-stocking cost on p
 	& x \in \RR_+^n				& \\
 	& y^s, z^s \in \RR_+^n			& (s \in S).
 \end{eqnarray*}
-It has been shown very difficult to deal with joint perturbations on objective function coefficient and constraint RHS mathematically. Thus, here we only consider the case when current optimal solution $\big( x^*,y^*,z^* \big)$ remains optimal. We first define:
+It has been shown very difficult to deal with joint perturbations on both objective function coefficient and constraint RHS mathematically. Thus, here we only consider the case when current optimal solution $\big( x^*,y^*,z^* \big)$ remains optimal. We first define:
 \[
     \Delta y_j^s =
     \begin{cases}
@@ -388,8 +388,14 @@ Given $\big( x^*,y^*,z^* \big)$ remains optimal, we derive the margin on $\Delta
 Now, we consider the condition of which $\big( x^*,y^*,z^* \big)$ remaining optimal.
 
 
-Based on example in Section \ref{se:sensitivity}, we define $\alpha = 270, \beta = -10$. The sensitivity analysis for this example is shown in Figure.
+Based on example in Section \ref{se:sensitivity}, we define $\alpha = 270, \beta = -10$. The sensitivity analysis for this example is shown in Figure \ref{fig:demandunder}.
 
+\begin{figure}[ht]
+\centering
+\caption{Change of optimal cost given price-demand correlation}
+\includegraphics{Example-figure_files/figure-latex/demandunder-1.pdf}
+\label{fig:demandunder}
+\end{figure}
 
 \section{Conclusion}
 %\label{se:conclusion}
