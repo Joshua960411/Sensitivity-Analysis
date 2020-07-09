@@ -193,3 +193,54 @@ legend("topleft",
 
 ```
 
+```{r demandunder}
+beta<--10
+delta<-seq(-1,0.6,0.075)
+
+op_set<-c()
+for (de in delta){
+  new_c_2u<-c_2u+de
+  new_demand_2<-demand_2+beta*de
+  new_objective.in<-c(rep(c_1o,12),rep(c_2o,12),rep(c_1u,12),rep(new_c_2u,12),0,0)
+  new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
+  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+par(bty="l")
+plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
+points(c(-0.4,0.2),c(3385.6,3462.6),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
+
+
+op_set<-c()
+for (de in delta){
+  new_c_1u<-c_1u+de
+  new_demand_1<-demand_1+beta*de
+  new_objective.in<-c(rep(c_1o,12),rep(c_2o,12),rep(new_c_1u,12),rep(c_2u,12),0,0)
+  new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
+  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+lines(delta,op_set, col=rgb(0.2,0.4,0.1,0.7) , lwd=1 , pch=19 , type="b" )
+points(c(-0.7,0.275),c(3360.743,3451.07),col=rgb(0.2,0.4,0.1,0.7),pch=4,lwd=5)
+
+legend("topleft", 
+  legend = c("Changes of under-stocking cost on product a", "Changes of under-stocking cost on product b"
+             ,"Critical point of product a", "Critical point of product b"), 
+  col = c(rgb(0.2,0.4,0.1,0.7)
+          ,rgb(0.8,0.4,0.1,0.7)
+          ,rgb(0.2,0.4,0.1,0.7)
+          ,rgb(0.8,0.4,0.1,0.7)), 
+  pch = c(19,19,4,4),
+  bty = "n", 
+  pt.cex = 0.8, 
+  pt.lwd =c(1,1,5,5),
+  cex = 1, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.02,0.01))
+```
+
+
+
+
+
