@@ -2,6 +2,7 @@
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{dirtytalk}
 \usepackage{physics}
 \usepackage{biblatex}
 \usepackage{hyperref}
@@ -29,6 +30,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{remark}{Remark}
 \newtheorem{theorem}{Theorem}
+
 
 \newenvironment{proof}
 {\begin{trivlist} \item[] {\bf Proof.\ }}{\hfill$\Box$ \end{trivlist}}
@@ -58,11 +60,11 @@ costs that one could expect from new information.
 Inventory control has always been treated as an important part of Operations Research and Operations Management \cite{Po02,SPP98,Zi00}. In this paper, we consider a production planning problem, which can be viewed as a kind of single-period multi-product
 Newsvendor problem (MPNP)\cite{D98,TTV12}.
 
-In general, MPNP considers the manufacturing and/or retailing procedure in a company with multiple products \cite{SPP98}. Regarding to the natures of applier, the constraints in MPNP could be manufacturing abilities, storage capacities or funding powers, etc. Here, we refer as resources for convenience. In this paper, we assume the applier is a factory, and we use manufacturing terms in formulation. In the case, the goal of MPNP is to decide the optimal quantities of each product to be manufactured regarding to a given cost function, while satisfies a bunch of constraints at the same time \cite{BDR12}. The cost function is similar to the classical Newsvendor problem \cite{Ch12}, where the expected cost is formed by \emph{over-stocking cost}, \emph{under-stocking cost} and stochastic demand.
+In general, MPNP considers the manufacturing and/or retailing procedure in a company with multiple products \cite{SPP98}. Regarding to the natures of applier, the constraints in MPNP could be manufacturing abilities, storage capacities or funding powers, etc. Here, we refer as resources for convenience. In this paper, we assume the applier is a factory, and we use manufacturing terms in formulation. In this case, the goal of MPNP is to decide the optimal quantities of each product to be manufactured regarding to a given cost function, while satisfies all dimensions of resource at the same time \cite{BDR12}. The cost function is similar to the classical Newsvendor problem \cite{Ch12}, where the expected cost is formed by \emph{over-stocking cost}, \emph{under-stocking cost} and stochastic demand.
 
 In practice, demand of products are estimated by experts in field of forecasting. The quantities deciding process, however, is an optimisation problem, which can be handled by computational experts. This two stage method is usually called disjoint method, in contrast with integrated method, which usually derive decision directly from data \cite{Sc58}. 
 
-In this paper, we concentrate on the second stage of the disjoint method. Specifically, we focus on the impact of \emph{new information} to our decision, which is referred as 'sensitivity analysis' in field of optimisation \cite{D98,Ga03,Va20}. We use linear program (LP) with generated scenario set to approximates the stochastic feature of MPNP, and use the reduced cost/shadow price to inform marketing decision. This method is stable and very efficient. We don't need to resolve the optimisation problem, but apply our sensitivity analysis results as long as the changes in allowable interval.
+In this paper, we concentrate on the second stage of the disjoint method. Specifically, we focus on post-optimisation phase where \emph{new information} alters our decision, which is referred as 'sensitivity analysis' in field of optimisation \cite{D98,Ga03,Va20}. We use linear program (LP) with generated scenario set to approximates the stochastic feature of MPNP, and use the reduced cost/shadow price to inform marketing decision. This method is stable and very efficient. We don't need to resolve the optimisation problem, but apply our sensitivity analysis results as long as the changes in allowable interval.
 
 The rest of this paper is organized as follows. Section \ref{se:lit} presents works in previous literature. Section \ref{se:model} specificates the model. Section \ref{se:sensitivity} contains the sensitivity analysis with an example. Section \ref{se:extensions} presents extensions to the analysis.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,7 +73,7 @@ The rest of this paper is organized as follows. Section \ref{se:lit} presents wo
 MPNP is one extension of classical Newsvendor problem (NVP). Here we assume readers are familiar with the basic of NVP. The reader looking for more background knowledge is directed to the books \cite{Ch12,Po02,SPP98}.
 
 \subsection{Multi-product Newsvendor problem}
-%\label{sub:lit_mpnp}
+\label{sub:lit_mpnp}
 In the traditional MPNP, found in \cite{HW63,NS84}, a manufacturing company is interested in determining quantity $x_j$ for product $j (j=1,\dots,n)$ to satisfy the demand. For each product, the demand is assumed to be stochastic, defining as ${\tilde d}_j$ with known distribution (could also be partial distribution). Yet, products left over are punished with $c_j^o$ per unit, while shortfall are punished with $c_j^u$ per unit. For a risk neutral manufacturer, the goal is then:
 
 \begin{equation}
@@ -109,7 +111,7 @@ Given the nature of underlying uncertainty, one approach to approximate MPNP is 
 \label{eq:sto_posi}
 	& u, v^k \geq 0.
 \end{eqnarray}
-where $f$ and $g^k$ are linear cost functions. The vectors $u$ contains the first-stage variables, whose values must be chosen immediately, while the vector $v^k$ contains all of the variables for subsequent periods. The constraint (\ref{eq:sto_cons1}) involves only first-stage variables and are the same in every scenario, and constraints in (\ref{eq:sto_cons2}) involve variables of second-stage and differ in some respects from scenario to scenario, reflecting uncertainty about the future.
+where $f$ and $g$ are linear cost functions, $V$, $W$, $p$ and $q$ are parameters. The vectors $u$ contains the first-stage variables, whose values must be chosen immediately, while the vector $v$ contains all of the variables for subsequent periods. The constraint (\ref{eq:sto_cons1}) involves only first-stage variables and are the same in every scenario, and constraints in (\ref{eq:sto_cons2}) involve variables of second-stage and differ in some respects from scenario to scenario, reflecting uncertainty about the future.
 
 With a finite number of scenarios, this stochastic LP can be viewed as large linear programming model \cite{KW12}. Thus, one can perform sensitivity analysis on the model \cite{AW93,Du95}.
 
@@ -121,7 +123,7 @@ The term sensitivity analysis has been used widely. Readers can find application
 	\text{s.t.}    & A \, x = p\\
 	& x \geq 0,
 \end{eqnarray*}
-where $x \in \RR_+^n$ denotes the solution vector including slack variables, $\pi \in \RR_+^m$ denotes the dual vector, and $A: m \times n$ is the coefficient matrix. We also have its dual:
+where $x \in \RR_+^n$ denotes the variable vector including slack variables, $\pi \in \RR_+^m$ denotes the dual vector, and $A: m \times n$ is the coefficient matrix. We also have its dual:
 \begin{eqnarray*}
     \max	& p^T \pi = r \\
 	\text{s.t.}    & A^T \pi \leq b.
@@ -131,7 +133,7 @@ solution, and let $\pi^*$ be the corresponding dual solution. It is shown by str
 \[
     h^* = b^T x^* = p^T \pi^* = r^*
 \]
-Thus, we have $\pi_i^* = \pdv{h^*}{p_i}$ that is referred to as the \emph{shadow price} of $p_i$, and $\bar{b} = b - A^T \pi^*$ that is referred to as the \emph{reduced cost} vector. Given changes lying in allowable interval, one can use those values to inform decisions. Derivation can be found in \cite{D98,DT06}.
+Thus, we have $\pi_i^* = \pdv{h^*}{p_i}$ that is referred to as the \emph{shadow price} of $p_i$, and $\bar{b} = b - A^T \pi^*$ that is referred to as the \emph{reduced cost} vector. Given changes lying in allowable range, one can use those values to inform decisions. Derivation can be found in \cite{D98,DT06}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Model Specification}
 \label{se:model}
@@ -149,7 +151,7 @@ We formulate the problem as follows. For $j = 1, \ldots, n$, let $x_j$ represent
 \begin{eqnarray*}
     \min & \sum_{j=1}^n \mathop{\mathbb{E}} \big( c^o_j \big[  x_j - {\tilde d}_j \big]^+ \, + \, c^u_j \big[ {\tilde d}_j - x_j \big]^+ \big) \\
 	\text{s.t.}    & \sum_{j=1}^n t_{ij} x_j \le T_i	& (i = 1, \ldots, m) \\
-	& x, y, z \in \RR_+^n.
+	& x \in \RR_+^n.
 \end{eqnarray*}
 
 Following the standard approach \cite{BL11}, we can construct a stochastic LP that approximates the SP. Consider a set $S$ of
@@ -175,7 +177,7 @@ Denote the solution of SP to be $x^*$ and the solution of LP to be $x_L^*$. It h
 \label{sub:information}
 Two sources of new information are concentrated: 1). \emph{Retailing effort} that alter the mean/variance of demand deliberately. 2). \emph{Manufacturing effort} that loosen/tighten manufacturing constraints or increase/decrease costs. Readers can apply same technique on other sources of new information intuitively.
 
-We formulate the information mathematically.
+We formulate margin of the information mathematically.
 
 Consider there exists particular retailing effort that could manually alter the mean demand of a single product $j'$. If the mean demand increased by some quantity $\bar{\epsilon}$, then the right-hand sides of the corresponding constraints (\ref{eq:over}) and (\ref{eq:under}) would increase by $\bar{\epsilon}$. If we denotes $S_{\bar{\epsilon}}$ to be the set of all scenarios whose constraint is influenced by $\bar{\epsilon}$, the margin can be expressed as:
 \[
@@ -206,12 +208,12 @@ Besides the updating of machine capacity, It is also possible that a breakthroug
 \begin{eqnarray*}
     \min \quad \sum_{s \in S} \big[ \sum_{j = 1}^n \big( c^o_j y_j^s + c^u_j z_j^s \big) + \Delta c_{j'}^o y_{j'}^s \big].
 \end{eqnarray*}
-Providing the changes in allowable interval, the margin is $\sum_{s \in S} \Delta c_{j'}^o y_{j'}^s$.
+Providing the changes in allowable range, the margin is $\sum_{s \in S} \Delta c_{j'}^o y_{j'}^s$.
 
 \section{Sensitivity Analysis: An Example}
 \label{se:sensitivity}
 
-We now compute the shadow price, reduced cost, as well as the allowable interval with an example. Then we consider the marginal increase/decrease in costs from new information.
+We now compute the shadow price, reduced cost, as well as the allowable range with an example. Then we consider the marginal increase/decrease in costs from new information.
 
 \begin{table}[h]
 \caption{Demand Realisations: Example}
@@ -355,7 +357,28 @@ where $\alpha > 0, \beta < 0$ are parameters. Change of under-stocking cost on p
 	& x \in \RR_+^n				& \\
 	& y^s, z^s \in \RR_+^n			& (s \in S).
 \end{eqnarray*}
-It has been shown very difficult to deal with joint perturbations on both objective function coefficient and constraint RHS mathematically. Thus, here we only consider the case when current optimal solution $\big( x^*,y^*,z^* \big)$ remains optimal. We first define:
+Furthermore, we can denotes $N^o$ as the number of scenarios that incur over-stocking and $N^u$ as the number of scenarios that incur under-stocking.
+
+It has been shown very difficult to deal with joint perturbations on both objective function coefficient and constraint RHS mathematically. Thus, here we only consider the margin of changes while assuming any small changes we proposed are in the allowable range. 
+
+To visualise our procedure, we consider the problem where only two product are manufactured. Higher dimension problem can be solve with same procedure, accordingly. Recalling the results from \ref{sub:lit_mpnp}, we can visualise the objective function as an oblique circular cone opening to the top with no boundary, while the feasible region is a convex polygon. See Figure.
+
+Regarding different regions the apex may lies, we divide the margin of changes into cases.
+
+\subsubsection*{Margin of changes: Case 1}
+We first consider the case where $x_j^*(j \neq j')$ and $y^*,z^*$ remain still, any changes on $\tilde{d}_{j'}$ are immediately absorbed by the changes on $x_{j'}$. We can derive easily:
+\[
+    \Delta \, C_{y^*z^*} = \Delta c_{j'}^u z_{j'}^s,
+\]
+and the new solution:
+\[
+\big( x_1^*,\dots,x_{j'}^*+\beta \Delta c_{j'}^u,\dots,x_n^*  \big)
+\]
+
+\subsubsection*{Margin of changes: Case 2}
+For the case $x^*$, $N^o$ and $N^u$ remain still, changes on demand will directly lead to over-stocking/under-stocking.
+
+We first define:
 \[
     \Delta y_j^s =
     \begin{cases}
@@ -371,23 +394,31 @@ and,
         0, & z_j^s = 0.
     \end{cases}
 \]
-
-Furthermore, we can denotes $N^o$ as the number of scenarios that incur over-stocking and $N^u$ as the number of scenarios that incur under-stocking.
-
-Given $\big( x^*,y^*,z^* \big)$ remains optimal, we derive the margin on $\Delta c_{j'}^u$:
+We derive the margin on $\Delta c_{j'}^u$:
 \[
 \begin{aligned}
-    \Delta \, C
+    \Delta \, C_{x^*}
     & = c_{j'}^o \Delta y_{j'} + \sum_{s \in S} \big[ \big( c_{j'}^u + \Delta c_{j'}^u \big) \big( z_{j'}^s + \Delta z_{j'}^s \big) - c_{j'}^u z_{j'}^s \big]\\
-    & = -c_{j'}^o N^o \Delta \mu_{j'} + c_{j'}^u N^u \Delta \mu_{j'} + \Delta c_{j'}^u \sum_{s \in S} z_{j'}^s + N^u \Delta c_{j'}^u \Delta \mu_{j'}\\
+    & = -c_{j'}^o N^o \Delta \mu_{j'} + c_{j'}^u 
+    N^u \Delta \mu_{j'} + \Delta c_{j'}^u \sum_{s \in S} z_{j'}^s + N^u \Delta c_{j'}^u \Delta \mu_{j'}\\
     & = -c_{j'}^o N^o \beta \Delta c_{j'}^u + c_{j'}^u N^u \beta \Delta c_{j'}^u + \Delta c_{j'}^u \sum_{s \in S} z_{j'}^s + N^u \Delta c_{j'}^u \beta \Delta c_{j'}^u\\
     & = N^u \beta \big( \Delta c_{j'}^u \big)^2 + \big[ c_{j'}^u N^u \beta - c_{j'}^o N^o \beta + \sum_{s \in S} z_{j'}^s \big] \Delta c_{j'}^u
 \end{aligned}
 \]
+One can see there exists a parabolic relationship between $\Delta \, C_{x^*}$ and $\Delta c_{j'}^u$. Thus, we may apply features of parabolic function:
+\begin{itemize}
+    \item Point $(0,0)$ is on the parabola,
+    \item Given $\beta < 0$, the parabola is opening to the bottom,
+    \item The axis of parabola is positive when $\sum_{s \in S} z_{j'}^s > \beta \big( c_{j'}^o N^o - c_{j'}^u N^u \big)$.
+\end{itemize}
+Using these features, we could derive:
+\begin{eqnarray}
+\label{eq:condition}
+    \frac{1}{|S|} \sum_{s \in S} z_{j'}^s > \frac{\beta \big( c_{j'}^o N^o - c_{j'}^u N^u \big)}{N^o + N^u} \implies \lim_{\Delta c_{j'}^u \to 0^-} \frac{\Delta \, C_{x^*}}{\Delta c_{j'}^u} > 0
+\end{eqnarray}
+Recalling $\beta$ is the multiplier between mean demand and under-stocking cost, we may interpret (\ref{eq:condition}) as \say{One can reduce total cost by decreasing under-stocking cost of particular product when current under-stocking of that product is greater than expected over-stocking/under-stocking cost difference times the given multiplier.}
 
-Now, we consider the condition of which $\big( x^*,y^*,z^* \big)$ remaining optimal.
-
-
+\subsubsection{Margin of changes: Summary}
 Based on example in Section \ref{se:sensitivity}, we define $\alpha = 270, \beta = -10$. The sensitivity analysis for this example is shown in Figure \ref{fig:demandunder}.
 
 \begin{figure}[ht]
