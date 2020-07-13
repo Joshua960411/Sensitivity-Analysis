@@ -3,10 +3,12 @@ title: "R Notebook"
 output: 
   pdf_document:
     keep_tex: true
+always_allow_html: true
 ---
 
 ```{r setup}
 library(lpSolve)
+library(plotly)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -80,6 +82,7 @@ const.mat<-rbind(con_t1,con_t2,con_t3
 const.rhs<-c(time_a,time_b,time_c,-demand_1,-demand_2,demand_1,demand_2)
 const.dir<-c(rep("<=",3),rep(">=",48))
 optimum_original<-lp(direction="min", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
+
 ```
 
 ```{r mean}
@@ -193,6 +196,7 @@ legend("topleft",
 
 ```
 
+
 ```{r demandunder}
 beta<--10
 delta<-seq(-1,0.6,0.075)
@@ -241,6 +245,119 @@ legend("topleft",
 ```
 
 
+```{r 3d}
+x_1<-150:250
+x_2<-150:250
+obj_function<-function(x1,x2){
+  o1<-sum((rep(x1,12)-demand_1)*((rep(x1,12)-demand_1)>0)*c_1o)
+  o2<-sum((rep(x2,12)-demand_2)*((rep(x2,12)-demand_2)>0)*c_2o)
+  u1<-sum((demand_1-rep(x1,12))*((demand_1-rep(x1,12))>0)*c_1u)
+  u2<-sum((demand_2-rep(x2,12))*((demand_2-rep(x2,12))>0)*c_2u)
+  total<-o1+o2+u1+u2
+  return(total)
+}
+cost<-matrix(nrow = 101,ncol=101)
+for (i in 1:101){
+  for (j in 1:101){
+    cost[j,i]=obj_function(x_1[i],x_2[j])
+  }
+}
+fig_main <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "surface")
+fig_main <- fig_main %>% layout(
+    title = "Layout costs in a 3D plot",
+    scene = list(
+      xaxis = list(title = "x_1"),
+      yaxis = list(title = "x_2"),
+      zaxis = list(title = "cost"),
+      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
+    )) %>% 
+  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50]
+            ,z = optimum_original$objval,type = 'scatter3d'
+            ,name = 'optimum')
 
 
+fig_main
+```
 
+
+```{r contour}
+fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
+               ,contours = list(
+                 start = 3500,
+                 end = 8000,
+                 size = 250,
+                 coloring = 'heatmap'
+                 ), 
+               line = list(smoothing = 1)) %>%
+  add_segments(x = 174, xend = 200, y = 249.9, yend = 244,color = I("black"),name = 'Boundary 1',size = I(1)) %>%
+  add_segments(x = 200, xend = 218, y = 244, yend = 229,color = I("black"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 218, xend = 229, y = 229, yend = 205,color = I("black"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 229, xend = 235, y = 205, yend = 176,color = I("black"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 235, xend = 236, y = 176, yend = 150,color = I("black"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 150, xend = 180, y = 236, yend = 228,color = I("blue"),name = 'Boundary 2',size = I(1)) %>%
+  add_segments(x = 180, xend = 197, y = 228, yend = 216,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 197, xend = 206, y = 216, yend = 204,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 206, xend = 214, y = 204, yend = 185,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 214, xend = 220, y = 185, yend = 150,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
+  layout(title = "Contour of costs with boundary") %>% 
+  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimum')
+
+fig_con
+```
+
+```{r parabola1}
+x1<-seq(174,200,0.5)
+y1<-seq(250,244,length.out=length(x1))
+x2<-seq(200,218,0.5)
+y2<-seq(244,229,length.out=length(x2))
+x3<-seq(218,229,0.5)
+y3<-seq(229,205,length.out=length(x3))
+x4<-seq(229,235,0.5)
+y4<-seq(205,176,length.out=length(x4))
+x5<-seq(235,236,0.5)
+y5<-seq(176,150,length.out=length(x5))
+xp<-c(x1,x2,x3,x4,x5)
+yp<-c(y1,y2,y3,y4,y5)
+zp<-mapply(obj_function,xp,yp)
+
+fig_bou1 <- plot_ly(x = ~xp, y = ~yp, z = ~zp, type = 'scatter3d', mode = 'lines',
+        line = list(width = 6, color = I("black"), colorscale = 'Viridis')) %>% layout(
+    title = "Costs on boundary 1",
+    scene = list(
+      xaxis = list(title = "x_1"),
+      yaxis = list(title = "x_2"),
+      zaxis = list(title = "cost"),
+      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
+
+    ))
+fig_bou1
+```
+
+```{r parabola2}
+x1<-seq(150,180,0.5)
+y1<-seq(236,228,length.out=length(x1))
+x2<-seq(180,197,0.5)
+y2<-seq(228,216,length.out=length(x2))
+x3<-seq(197,206,0.5)
+y3<-seq(216,204,length.out=length(x3))
+x4<-seq(206,214,0.5)
+y4<-seq(204,185,length.out=length(x4))
+x5<-seq(214,220,0.5)
+y5<-seq(185,150,length.out=length(x5))
+xq<-c(x1,x2,x3,x4,x5)
+yq<-c(y1,y2,y3,y4,y5)
+zq<-mapply(obj_function,xq,yq)
+
+fig_bou2 <- plot_ly(x = ~xq, y = ~yq, z = ~zq, type = 'scatter3d', mode = 'lines',
+        line = list(width = 6, colorscale = 'Viridis')) %>% layout(
+    title = "Costs on boundary 2",
+    scene = list(
+      xaxis = list(title = "x_1"),
+      yaxis = list(title = "x_2"),
+      zaxis = list(title = "cost"),
+      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
+    ))
+
+fig_bou2
+
+```
