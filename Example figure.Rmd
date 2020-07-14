@@ -264,7 +264,6 @@ for (i in 1:101){
 }
 fig_main <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "surface")
 fig_main <- fig_main %>% layout(
-    title = "Layout costs in a 3D plot",
     scene = list(
       xaxis = list(title = "x_1"),
       yaxis = list(title = "x_2"),
@@ -273,14 +272,23 @@ fig_main <- fig_main %>% layout(
     )) %>% 
   add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50]
             ,z = optimum_original$objval,type = 'scatter3d'
-            ,name = 'optimum')
+            ,name = 'optimum') %>% 
+  colorbar(x = 0.8, y = 0.8) %>%
+  config(
+    toImageButtonOptions = list(
+      format = "svg",
+      filename = "3d cost",
+      width = 1200,
+      height = 800
+    )
+  )
 
 
 fig_main
 ```
 
 
-```{r contour}
+%```{r contour}
 fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
                ,contours = list(
                  start = 3500,
@@ -305,7 +313,7 @@ fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
 fig_con
 ```
 
-```{r parabola1}
+%```{r parabola1}
 x1<-seq(174,200,0.5)
 y1<-seq(250,244,length.out=length(x1))
 x2<-seq(200,218,0.5)
@@ -333,7 +341,7 @@ fig_bou1 <- plot_ly(x = ~xp, y = ~yp, z = ~zp, type = 'scatter3d', mode = 'lines
 fig_bou1
 ```
 
-```{r parabola2}
+%```{r parabola2}
 x1<-seq(150,180,0.5)
 y1<-seq(236,228,length.out=length(x1))
 x2<-seq(180,197,0.5)
