@@ -268,7 +268,8 @@ fig_main <- fig_main %>% layout(
       xaxis = list(title = "x_1"),
       yaxis = list(title = "x_2"),
       zaxis = list(title = "cost"),
-      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
+      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.4), center = list(x=0,y=0,z=0)),
+      autosize = F, width = 800, height = 600,margin = list(t = -1)
     )) %>% 
   add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50]
             ,z = optimum_original$objval,type = 'scatter3d'
@@ -276,10 +277,10 @@ fig_main <- fig_main %>% layout(
   colorbar(x = 0.8, y = 0.8) %>%
   config(
     toImageButtonOptions = list(
-      format = "svg",
+      format = "png",
       filename = "3d cost",
-      width = 1200,
-      height = 800
+      width = 800,
+      height = 600
     )
   )
 
@@ -288,7 +289,7 @@ fig_main
 ```
 
 
-%```{r contour}
+```{r contour}
 fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
                ,contours = list(
                  start = 3500,
@@ -307,13 +308,20 @@ fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
   add_segments(x = 197, xend = 206, y = 216, yend = 204,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
   add_segments(x = 206, xend = 214, y = 204, yend = 185,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
   add_segments(x = 214, xend = 220, y = 185, yend = 150,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
-  layout(title = "Contour of costs with boundary") %>% 
-  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimum')
+  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimum') %>%
+  config(
+    toImageButtonOptions = list(
+      format = "png",
+      filename = "contour",
+      width = 800,
+      height = 600
+    )
+  )
 
 fig_con
 ```
 
-%```{r parabola1}
+```{r parabola1}
 x1<-seq(174,200,0.5)
 y1<-seq(250,244,length.out=length(x1))
 x2<-seq(200,218,0.5)
@@ -330,18 +338,24 @@ zp<-mapply(obj_function,xp,yp)
 
 fig_bou1 <- plot_ly(x = ~xp, y = ~yp, z = ~zp, type = 'scatter3d', mode = 'lines',
         line = list(width = 6, color = I("black"), colorscale = 'Viridis')) %>% layout(
-    title = "Costs on boundary 1",
     scene = list(
       xaxis = list(title = "x_1"),
       yaxis = list(title = "x_2"),
       zaxis = list(title = "cost"),
       camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
-
-    ))
+    ))%>%
+  config(
+    toImageButtonOptions = list(
+      format = "png",
+      filename = "boundary1",
+      width = 800,
+      height = 600
+    )
+  )
 fig_bou1
 ```
 
-%```{r parabola2}
+```{r parabola2}
 x1<-seq(150,180,0.5)
 y1<-seq(236,228,length.out=length(x1))
 x2<-seq(180,197,0.5)
@@ -358,13 +372,20 @@ zq<-mapply(obj_function,xq,yq)
 
 fig_bou2 <- plot_ly(x = ~xq, y = ~yq, z = ~zq, type = 'scatter3d', mode = 'lines',
         line = list(width = 6, colorscale = 'Viridis')) %>% layout(
-    title = "Costs on boundary 2",
     scene = list(
       xaxis = list(title = "x_1"),
       yaxis = list(title = "x_2"),
       zaxis = list(title = "cost"),
       camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
-    ))
+    ))%>%
+  config(
+    toImageButtonOptions = list(
+      format = "png",
+      filename = "boundary2",
+      width = 800,
+      height = 600
+    )
+  )
 
 fig_bou2
 
