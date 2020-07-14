@@ -361,24 +361,26 @@ Furthermore, we can denotes $N^o$ as the number of scenarios that incur over-sto
 
 It has been shown very difficult to deal with joint perturbations on both objective function coefficient and constraint RHS mathematically. Thus, here we only consider the margin of changes while assuming any small changes we proposed are in the allowable range. 
 
-To visualise our procedure, we consider the problem where only two product are manufactured. Higher dimension problem can be solve with same procedure, accordingly. Recalling the results from \ref{sub:lit_mpnp}, we can visualise the objective function as an oblique circular cone opening to the top with no boundary, while the feasible region is a convex polygon. See Figure \ref{fig:3d} and \ref{fig:con}.
+To visualise our procedure, we consider again the two products example in Section \ref{se:sensitivity}, with $\alpha = 270, \beta = -10$. Higher dimension problem can be solve with same procedure, accordingly. Recalling the results from \ref{sub:lit_mpnp}, we can visualise the objective function as an oblique circular cone opening to the top with no boundary, while the feasible region is a convex polygon. See 3D plot in Figure \ref{fig:3d} and contour plot in Figure \ref{fig:con}.
 
 \begin{figure}[ht]
 \centering
 \caption{3D plot of costs on two products}
-\includegraphics[width=\textwidth]{Example-figure_files/figure-latex/3d cost.png}
+\includegraphics[width=0.9\textwidth]{Example-figure_files/figure-latex/3d cost.png}
 \label{fig:3d}
 \end{figure}
 
 \begin{figure}[ht]
-\caption{Contour of costs with boundary}
-\hspace{1cm}
+\centering
+\caption{Contour of costs with boundaries}
+\hspace{0.7cm}
 \includegraphics[width=0.9\textwidth]{Example-figure_files/figure-latex/contour.png}
 \label{fig:con}
 \end{figure}
 
+In Figure \ref{fig:con}, two example boundaries are used to demonstrate different kinds of feasible region (on the left side of boundary). Moreover, we define a \emph{optimum point} to denote the optimal solution when all constraints are relaxed. One can see that boundary 1 forms a feasible region contains the optimum point, while the feasible region formed by boundary 2 doesn't. There is no doubt that the optimal solution for MPNP with boundary 1 is lying exactly at the optimum point, and the solution will remains optimal as long as the optimum point is not 'pushed out' of the feasible region. On the other hand, one can easily show the optimal solution for MPNP with boundary 2 lies on the boundary \cite{DT06}, and the solution on this case is more sensitive. Cost function on boundaries see Figure \ref{fig:bd1} and Figure \ref{fig:bd2} in Appendix \ref{se:costfun}.
 
-Regarding different regions the apex may lies, we divide the margin of changes into cases.
+Now, we consider the boundary for example in Section \ref{se:sensitivity}
 
 \subsubsection*{Margin of changes: Case 1}
 We first consider the case where $x_j^*(j \neq j')$ and $y^*,z^*$ remain still, any changes on $\tilde{d}_{j'}$ are immediately absorbed by the changes on $x_{j'}$. We can derive easily:
@@ -434,7 +436,7 @@ Using these features, we could derive:
 Recalling $\beta$ is the multiplier between mean demand and under-stocking cost, we may interpret (\ref{eq:condition}) as \say{One can reduce total cost by decreasing under-stocking cost of particular product when current under-stocking of that product is greater than expected over-stocking/under-stocking cost difference times the given multiplier.}
 
 \subsubsection{Margin of changes: Summary}
-Based on example in Section \ref{se:sensitivity}, we define $\alpha = 270, \beta = -10$. The sensitivity analysis for this example is shown in Figure \ref{fig:demandunder}.
+
 
 \begin{figure}[ht]
 \centering
@@ -617,5 +619,23 @@ under\_2\textasciicircum{}11 & 260.0 & 6.0 & 260 & 10000.0 & 50.0\\
 under\_2\textasciicircum{}12 & 260.0 & 6.0 & 260 & 10000.0 & 50.0\\*
 \end{longtable}
 \endgroup{}
+
+\section{Cost function on boundaries}
+\label{se:costfun}
+
+\begin{figure}[ht]
+\centering
+\caption{Cost function on boundary 1}
+\includegraphics[width=\textwidth]{Example-figure_files/figure-latex/boundary1.png}
+\label{fig:bd1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\caption{Cost function on boundary 2}
+\includegraphics[width=\textwidth]{Example-figure_files/figure-latex/boundary2.png}
+\label{fig:bd2}
+\end{figure}
+
 
 \end{document}
