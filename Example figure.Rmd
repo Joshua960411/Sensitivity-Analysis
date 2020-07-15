@@ -244,7 +244,6 @@ legend("topleft",
   inset = c(0.02,0.01))
 ```
 
-
 ```{r 3d}
 x_1<-150:250
 x_2<-150:250
@@ -262,6 +261,10 @@ for (i in 1:101){
     cost[j,i]=obj_function(x_1[i],x_2[j])
   }
 }
+min_ind<-which(cost == min(cost), arr.ind = TRUE)
+min_ind<-min_ind+149
+min_relax<-min(cost)
+
 fig_main <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "surface")
 fig_main <- fig_main %>% layout(
     scene = list(
@@ -271,9 +274,9 @@ fig_main <- fig_main %>% layout(
       camera = list(eye = list(x = -0.84, y = -2.1, z = 0.4), center = list(x=0,y=0,z=0)),
       autosize = F, width = 800, height = 600,margin = list(t = -1)
     )) %>% 
-  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50]
-            ,z = optimum_original$objval,type = 'scatter3d'
-            ,name = 'optimum') %>% 
+  add_trace(x = min_ind[1,1], y = min_ind[1,2]
+            ,z = min_relax,type = 'scatter3d'
+            ,name = 'optimum',color=I("Orange")) %>% 
   colorbar(x = 0.8, y = 0.8) %>%
   config(
     toImageButtonOptions = list(
@@ -308,7 +311,7 @@ fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
   add_segments(x = 197, xend = 206, y = 216, yend = 204,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
   add_segments(x = 206, xend = 214, y = 204, yend = 185,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
   add_segments(x = 214, xend = 220, y = 185, yend = 150,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
-  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimum') %>%
+  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'optimum',color=I("Orange")) %>%
   config(
     toImageButtonOptions = list(
       format = "png",
@@ -389,4 +392,30 @@ fig_bou2 <- plot_ly(x = ~xq, y = ~yq, z = ~zq, type = 'scatter3d', mode = 'lines
 
 fig_bou2
 
+```
+
+
+```{r conexam}
+fig_conexam <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
+               ,contours = list(
+                 start = 3500,
+                 end = 8000,
+                 size = 250,
+                 coloring = 'heatmap'
+                 ), 
+               line = list(smoothing = 1))%>%
+  add_segments(x = 175, xend = 181.8, y = 250, yend = 245.5,color = I("red"),name = 'Boundary',size = I(1)) %>%
+  add_segments(x = 181.8, xend = 250, y = 245.5, yend = 150,color = I("red"),showlegend = FALSE,size = I(1))%>%
+  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'optimum',color=I("Orange"))%>%
+  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimum(with boundary)',color=I("red"))%>%
+  config(
+    toImageButtonOptions = list(
+      format = "png",
+      filename = "conexam",
+      width = 800,
+      height = 600
+    )
+  )
+
+fig_conexam
 ```
