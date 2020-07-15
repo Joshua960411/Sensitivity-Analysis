@@ -378,7 +378,7 @@ To visualise our procedure, we consider again the two products example in Sectio
 \label{fig:con}
 \end{figure}
 
-In Figure \ref{fig:con}, we also include two example boundaries to demonstrate different kinds of feasible region (on the left side of boundary). Moreover, we define a \emph{optimum point} to denote the optimal solution when all constraints are relaxed. One can see that boundary 1 forms a feasible region contains the optimum point, while the feasible region formed by boundary 2 doesn't. There is no doubt that the optimal solution for MPNP with boundary 1 is lying exactly at the optimum point, and the solution will remains optimal as long as the optimum point is not 'pushed out' of the feasible region. On the other hand, one can easily show the optimal solution for MPNP with boundary 2 lies on the boundary since the cost function is convex \cite{DT06}, and the solution on this case is more sensitive. Costs on boundaries see Figure \ref{fig:bd1} and Figure \ref{fig:bd2} in Appendix \ref{se:costfun}.
+In Figure \ref{fig:con}, we also include two example boundaries to demonstrate different kinds of feasible region (on the left side of boundary). Moreover, we define a \emph{prime point} to denote the optimal solution when all constraints are relaxed. One can see that boundary 1 forms a feasible region contains the prime point, while the feasible region formed by boundary 2 doesn't. There is no doubt that the optimal solution for MPNP with boundary 1 is lying exactly at the prime point, and the solution will remains optimal as long as the prime point is not 'pushed out' of the feasible region. On the other hand, one can easily show the optimal solution for MPNP with boundary 2 lies on the boundary since the cost function is convex \cite{DT06}, and the solution on this case is more sensitive. Costs on boundaries see Figure \ref{fig:bd1} and Figure \ref{fig:bd2} in Appendix \ref{se:costfun}.
 
 Now, we consider the boundary for the example in Section \ref{se:sensitivity}. We have equation set:
 \[
@@ -388,7 +388,7 @@ Now, we consider the boundary for the example in Section \ref{se:sensitivity}. W
     8 x_1 + 8 x_2 \leq 3500,
 \end{cases}
 \]
-that forms the boundary in Figure \ref{fig:conexam}. One can compare the relaxed optimal solution, the optimum point $\big( 210,210 \big)$, with the true optimal solution with boundary $\big( 207.1,210 \big)$.
+that forms the boundary in Figure \ref{fig:conexam}. It is clear this feasible region doesn't include the prime point. Therefore, the optimal solution should lies on boundary, as we computed in Section \ref{se:sensitivity}. One can compare the relaxed solution, the prime point $\big( 210,210 \big)$, with the true optimal solution on boundary $\big( 207.1,210 \big)$.
 
 \begin{figure}[ht]
 \caption{Contour of cost with example boundary}
@@ -396,6 +396,8 @@ that forms the boundary in Figure \ref{fig:conexam}. One can compare the relaxed
 \includegraphics[width=0.9\textwidth]{Example-figure_files/figure-latex/conexam.png}
 \label{fig:conexam}
 \end{figure}
+
+Moreover, we can visualise the effect on changes using contour plot. Any changes on demand will lead to the move of prime point, and any changes on costs will lead to the change on the density of contour lines. For instance, if we apply the price-demand correlation, and decrease the under-stocking cost of product $a$ by 0.6, the prime point will moves to the right by $|0.6\,\beta|$, along with all contour lines, and the contour lines at the left side of prime point will become looser. See new contour plot in Figure.
 
 
 \subsubsection*{Margin of changes: Case 1}
@@ -636,19 +638,19 @@ under\_2\textasciicircum{}12 & 260.0 & 6.0 & 260 & 10000.0 & 50.0\\*
 \end{longtable}
 \endgroup{}
 
-\section{Cost function on boundaries}
+\section{Costs on boundaries}
 \label{se:costfun}
 
 \begin{figure}[ht]
 \centering
-\caption{Cost function on boundary 1}
+\caption{Costs on boundary 1}
 \includegraphics[width=\textwidth]{Example-figure_files/figure-latex/boundary1.png}
 \label{fig:bd1}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\caption{Cost function on boundary 2}
+\caption{Costs on boundary 2}
 \includegraphics[width=\textwidth]{Example-figure_files/figure-latex/boundary2.png}
 \label{fig:bd2}
 \end{figure}
