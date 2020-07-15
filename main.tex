@@ -42,7 +42,7 @@ Lancaster University, Lancaster LA1 4YX, UK.
 Email: {\tt \{c.liu19,a.n.letchford,i.svetunkov\}@lancaster.ac.uk}}
 \and Adam N.\ Letchford$^*$ \and Ivan Svetunkov$^*$} % end author list
 
-\date{8th July 2020}
+\date{15th July 2020}
 
 \begin{document}
 
@@ -334,10 +334,8 @@ Simulation outputs see Figure \ref{fig:over}.
 \section{Extensions}
 \label{se:extensions}
 
-We consider more complicated information intakes now, where two or more correlated parameters are changed simultaneously.
+We consider one complicated information intakes now, where two or more correlated parameters are changed simultaneously.
 
-\subsection{Price-Demand Correlation}
-%\label{sub:p-d}
 Regarding the retailing effort we presented in \ref{sub:information}. The mean of demand can be deliberately increased by some amount $\bar{\epsilon}$, while all other parameters are fix. Yet, in practice, increase of demand is usually a trade-off by scarifying unit profit. From the formulation used in this paper, we consider the trade-off between mean demand and under-stocking cost. Readers can find reference in \cite{Ch12,Po02,SPP98} that provides explanation of viewing profit as opportunity cost.
 
 Suppose we have linear price-demand correlation:
@@ -357,16 +355,15 @@ where $\alpha > 0, \beta < 0$ are parameters. Change of under-stocking cost on p
 	& x \in \RR_+^n				& \\
 	& y^s, z^s \in \RR_+^n			& (s \in S).
 \end{eqnarray*}
-Furthermore, we can denotes $N^o$ as the number of scenarios that incur over-stocking and $N^u$ as the number of scenarios that incur under-stocking.
+Furthermore, we can denotes $N_j^o$ as the number of scenarios that incur over-stocking on product $j$ and $N_j^u$ as the number of scenarios that incur under-stocking on product $j$.
 
 It has been shown very difficult to deal with joint perturbations on both objective function coefficient and constraint RHS mathematically. Thus, here we only consider the margin of changes while assuming any small changes we proposed are in the allowable range. 
 
 To visualise our procedure, we consider again the two products example in Section \ref{se:sensitivity}, with $\alpha = 270, \beta = -10$. Higher dimension problem can be solve with same procedure, accordingly. Recalling the results from \ref{sub:lit_mpnp}, we can visualise the objective function as an oblique circular cone opening to the top with no boundary, while the feasible region is a convex polygon. See 3D plot in Figure \ref{fig:3d} and contour plot in Figure \ref{fig:con}.
-
 \begin{figure}[ht]
 \centering
 \caption{3D plot of costs on two products}
-\includegraphics[width=0.9\textwidth]{Example-figure_files/figure-latex/3d cost.png}
+\includegraphics[width=0.8\textwidth]{Example-figure_files/figure-latex/3d cost.png}
 \label{fig:3d}
 \end{figure}
 
@@ -397,21 +394,25 @@ that forms the boundary in Figure \ref{fig:conexam}. It is clear this feasible r
 \label{fig:conexam}
 \end{figure}
 
-Moreover, we can visualise the effect on changes using contour plot. Any changes on demand will lead to the move of prime point, and any changes on costs will lead to the change on the density of contour lines. For instance, if we apply the price-demand correlation, and decrease the under-stocking cost of product $a$ by 0.6, the prime point will moves to the right by $|0.6\,\beta|$, along with all contour lines, and the contour lines at the left side of prime point will become looser. See new contour plot in Figure.
+Moreover, we can visualise the effect on changes using contour plot. Any changes on demand will lead to the move of prime point, and any changes on costs will lead to the change on the density of contour lines. For instance, if we apply the price-demand correlation, and decrease the under-stocking cost of product $a$ by 0.6, the prime point will moves to the right by $|0.6\,\beta|$, along with all contour lines, and the contour lines at the left side of prime point will become looser. See the contour plot after changes in Figure \ref{fig:newcon}.
 
+\begin{figure}[ht]
+\caption{Contour of cost after decreasing under-stocking cost}
+\hspace{1cm}
+\includegraphics[width=0.9\textwidth]{Example-figure_files/figure-latex/newcon.png}
+\label{fig:newcon}
+\end{figure}
 
-\subsubsection*{Margin of changes: Case 1}
-We first consider the case where $x_j^*(j \neq j')$ and $y^*,z^*$ remain still, any changes on $\tilde{d}_{j'}$ are immediately absorbed by the changes on $x_{j'}$. We can derive easily:
-\[
-    \Delta \, C_{y^*z^*} = \Delta c_{j'}^u z_{j'}^s,
-\]
-and the new solution:
-\[
-\big( x_1^*,\dots,x_{j'}^*+\beta \Delta c_{j'}^u,\dots,x_n^*  \big)
-\]
+One can see the optimal solution doesn't move. Actually, the optimal solution will remain optimal as long as $\Delta c_a^u \in \big[ -0.7,0.29 \big]$. Any changes below -0.7 will cause the optimal point moves along boundary, and any changes above 0.29 will 'push out' the prime point. Similar results apply to product $b$. Simulation results see Figure \ref{fig:demandunder}.
 
-\subsubsection*{Margin of changes: Case 2}
-For the case $x^*$, $N^o$ and $N^u$ remain still, changes on demand will directly lead to over-stocking/under-stocking.
+\begin{figure}[ht]
+\centering
+\caption{Change of optimal cost given price-demand correlation}
+\includegraphics{Example-figure_files/figure-latex/demandunder-1.pdf}
+\label{fig:demandunder}
+\end{figure}
+
+Now, we derive the margin of $\Delta c_a^u$ providing the changes in allowable range.
 
 We first define:
 \[
@@ -429,39 +430,33 @@ and,
         0, & z_j^s = 0.
     \end{cases}
 \]
-We derive the margin on $\Delta c_{j'}^u$:
+Thus:
 \[
 \begin{aligned}
-    \Delta \, C_{x^*}
-    & = c_{j'}^o \Delta y_{j'} + \sum_{s \in S} \big[ \big( c_{j'}^u + \Delta c_{j'}^u \big) \big( z_{j'}^s + \Delta z_{j'}^s \big) - c_{j'}^u z_{j'}^s \big]\\
-    & = -c_{j'}^o N^o \Delta \mu_{j'} + c_{j'}^u 
-    N^u \Delta \mu_{j'} + \Delta c_{j'}^u \sum_{s \in S} z_{j'}^s + N^u \Delta c_{j'}^u \Delta \mu_{j'}\\
-    & = -c_{j'}^o N^o \beta \Delta c_{j'}^u + c_{j'}^u N^u \beta \Delta c_{j'}^u + \Delta c_{j'}^u \sum_{s \in S} z_{j'}^s + N^u \Delta c_{j'}^u \beta \Delta c_{j'}^u\\
-    & = N^u \beta \big( \Delta c_{j'}^u \big)^2 + \big[ c_{j'}^u N^u \beta - c_{j'}^o N^o \beta + \sum_{s \in S} z_{j'}^s \big] \Delta c_{j'}^u
+    \Delta \, C_{c_a^u}
+    & = c_a^o \Delta y_a + \sum_{s \in S} \big[ \big( c_a^u + \Delta c_a^u \big) \big( z_a^s + \Delta z_a^s \big) - c_a^u z_a^s \big]\\
+    & = -c_a^o N_a^o \Delta \mu_a + c_a^u 
+    N_a^u \Delta \mu_a + \Delta c_a^u \sum_{s \in S} z_a^s + N_a^u \Delta c_a^u \Delta \mu_a\\
+    & = -c_a^o N_a^o \beta \Delta c_a^u + c_a^u N_a^u \beta \Delta c_a^u + \Delta c_a^u \sum_{s \in S} z_a^s + N_a^u \Delta c_a^u \beta \Delta c_a^u\\
+    & = N_a^u \beta \big( \Delta c_a^u \big)^2 + \big[ c_a^u N_a^u \beta - c_a^o N_a^o \beta + \sum_{s \in S} z_a^s \big] \Delta c_a^u
 \end{aligned}
 \]
-One can see there exists a parabolic relationship between $\Delta \, C_{x^*}$ and $\Delta c_{j'}^u$. Thus, we may apply features of parabolic function:
+One can see there exists a parabolic relationship between $\Delta \, C_{c_a^u}$ and $\Delta c_a^u$. Thus, we may apply features of parabolic function:
 \begin{itemize}
     \item Point $(0,0)$ is on the parabola,
     \item Given $\beta < 0$, the parabola is opening to the bottom,
-    \item The axis of parabola is positive when $\sum_{s \in S} z_{j'}^s > \beta \big( c_{j'}^o N^o - c_{j'}^u N^u \big)$.
+    \item The axis of parabola is positive when $\sum_{s \in S} z_a^s > \beta \big( c_a^o N_a^o - c_a^u N_a^u \big)$.
 \end{itemize}
 Using these features, we could derive:
 \begin{eqnarray}
 \label{eq:condition}
-    \frac{1}{|S|} \sum_{s \in S} z_{j'}^s > \frac{\beta \big( c_{j'}^o N^o - c_{j'}^u N^u \big)}{N^o + N^u} \implies \lim_{\Delta c_{j'}^u \to 0^-} \frac{\Delta \, C_{x^*}}{\Delta c_{j'}^u} > 0
+    \frac{1}{|S|} \sum_{s \in S} z_{j'}^s > \frac{\beta \big( c_{j'}^o N_{j'}^o - c_{j'}^u N_{j'}^u \big)}{N_{j'}^o + N_{j'}^u} \implies \lim_{\Delta c_{j'}^u \to 0^-} \frac{\Delta \, C_{x^*}}{\Delta c_{j'}^u} > 0
 \end{eqnarray}
 Recalling $\beta$ is the multiplier between mean demand and under-stocking cost, we may interpret (\ref{eq:condition}) as \say{One can reduce total cost by decreasing under-stocking cost of particular product when current under-stocking of that product is greater than expected over-stocking/under-stocking cost difference times the given multiplier.}
 
-\subsubsection{Margin of changes: Summary}
 
 
-\begin{figure}[ht]
-\centering
-\caption{Change of optimal cost given price-demand correlation}
-\includegraphics{Example-figure_files/figure-latex/demandunder-1.pdf}
-\label{fig:demandunder}
-\end{figure}
+
 
 \section{Conclusion}
 %\label{se:conclusion}
