@@ -276,7 +276,7 @@ fig_main <- fig_main %>% layout(
     )) %>% 
   add_trace(x = min_ind[1,1], y = min_ind[1,2]
             ,z = min_relax,type = 'scatter3d'
-            ,name = 'optimum',color=I("Orange")) %>% 
+            ,name = 'optimum',color=I(rgb(1,0.2,0.5,1))) %>% 
   colorbar(x = 0.8, y = 0.8) %>%
   config(
     toImageButtonOptions = list(
@@ -306,12 +306,12 @@ fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
   add_segments(x = 218, xend = 229, y = 229, yend = 205,color = I("black"),showlegend = FALSE,size = I(1)) %>%
   add_segments(x = 229, xend = 235, y = 205, yend = 176,color = I("black"),showlegend = FALSE,size = I(1)) %>%
   add_segments(x = 235, xend = 236, y = 176, yend = 150,color = I("black"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 150, xend = 180, y = 236, yend = 228,color = I("blue"),name = 'Boundary 2',size = I(1)) %>%
-  add_segments(x = 180, xend = 197, y = 228, yend = 216,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 197, xend = 206, y = 216, yend = 204,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 206, xend = 214, y = 204, yend = 185,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 214, xend = 220, y = 185, yend = 150,color = I("blue"),showlegend = FALSE,size = I(1)) %>%
-  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'optimum',color=I("Orange")) %>%
+  add_segments(x = 150, xend = 180, y = 236, yend = 228,color = I(rgb(1,1,0.5,0.6)),name = 'Boundary 2',size = I(1)) %>%
+  add_segments(x = 180, xend = 197, y = 228, yend = 216,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 197, xend = 206, y = 216, yend = 204,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 206, xend = 214, y = 204, yend = 185,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
+  add_segments(x = 214, xend = 220, y = 185, yend = 150,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
+  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'prime',color=I(rgb(1,0.2,0.5,1))) %>%
   config(
     toImageButtonOptions = list(
       format = "png",
@@ -374,7 +374,7 @@ yq<-c(y1,y2,y3,y4,y5)
 zq<-mapply(obj_function,xq,yq)
 
 fig_bou2 <- plot_ly(x = ~xq, y = ~yq, z = ~zq, type = 'scatter3d', mode = 'lines',
-        line = list(width = 6, colorscale = 'Viridis')) %>% layout(
+        line = list(width = 6),color=I(rgb(0.4,0.5,0.4,0.7))) %>% layout(
     scene = list(
       xaxis = list(title = "x_1"),
       yaxis = list(title = "x_2"),
@@ -404,10 +404,10 @@ fig_conexam <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
                  coloring = 'heatmap'
                  ), 
                line = list(smoothing = 1))%>%
-  add_segments(x = 175, xend = 181.8, y = 250, yend = 245.5,color = I("red"),name = 'Boundary',size = I(1)) %>%
-  add_segments(x = 181.8, xend = 250, y = 245.5, yend = 150,color = I("red"),showlegend = FALSE,size = I(1))%>%
-  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'optimum',color=I("Orange"))%>%
-  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimum(with boundary)',color=I("red"))%>%
+  add_segments(x = 175, xend = 181.8, y = 250, yend = 245.5,color = I(rgb(1,0.6,0.4,0.9)),name = 'Boundary',size = I(1)) %>%
+  add_segments(x = 181.8, xend = 250, y = 245.5, yend = 150,color = I(rgb(1,0.6,0.4,0.9)),showlegend = FALSE,size = I(1))%>%
+  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'prime',color=I(rgb(1,0.2,0.5,1)))%>%
+  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimal',color=I("red"))%>%
   config(
     toImageButtonOptions = list(
       format = "png",
