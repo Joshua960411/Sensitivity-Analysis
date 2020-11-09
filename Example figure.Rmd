@@ -13,16 +13,21 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r original}
-c_1o<-5
-c_2o<-7
-c_1u<-6
-c_2u<-6
+p_1<-8
+c1_1<-3
+c2_1<-2
+c3_1<-1
+p_2<-6
+c1_2<-3
+c2_2<-4
+c3_2<-3
+
 time_a<-2200
 time_b<-2500
 time_c<-3500
 demand_1<-c(200,220,180,190,190,210,240,250,200,190,210,240)
 demand_2<-c(250,230,200,180,210,210,170,150,180,220,260,260)
-objective.in<-c(rep(c_1o,12),rep(c_2o,12),rep(c_1u,12),rep(c_2u,12),0,0)
+objective.in<-c(rep(-(p_1+c2_1)/12,12),rep(-(p_2+c2_2)/12,12),rep(-c3_1/12,12),rep(-c3_2/12,12),p_1-c1_1,p_2-c1_2)
 con_t1<-c(rep(0,48),4,6)
 con_t2<-c(rep(0,48),7,5)
 con_t3<-c(rep(0,48),8,8)
@@ -81,28 +86,28 @@ const.mat<-rbind(con_t1,con_t2,con_t3
                  ,con_u13,con_u14,con_u15,con_u16,con_u17,con_u18,con_u19,con_u20,con_u21,con_u22,con_u23,con_u24)
 const.rhs<-c(time_a,time_b,time_c,-demand_1,-demand_2,demand_1,demand_2)
 const.dir<-c(rep("<=",3),rep(">=",48))
-optimum_original<-lp(direction="min", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
+optimum_original<-lp(direction="max", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
 
 ```
 
 ```{r mean}
-epsilon_1<-seq(-5,1,0.25)
+epsilon_1<-seq(-10,10,1)
 op_set<-c()
 for (ep in epsilon_1){
   new_demand_1<-demand_1+ep
   new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
-  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(epsilon_1,op_set,xlab="Epsilon",ylab="Optimal cost",type="b", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=1 , pch=19)
+plot(epsilon_1,op_set,xlab="Delta",ylab="Optimal profit",type="b", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=1 , pch=19)
 
-epsilon_2<-seq(-5,1,0.25)
+epsilon_2<-seq(-10,10,1)
 op_set<-c()
 for (ep in epsilon_2){
   new_demand_2<-demand_2+ep
   new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
-  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
 lines(epsilon_2,op_set, col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19 , type="b" )
@@ -120,29 +125,29 @@ legend("topleft",
 ```
 
 ```{r var}
-k_2<-seq(-20,20,1.5)
+k_2<-seq(-10,10,1)
 op_set<-c()
 for (k in k_2){
   new_demand_2<-mean(demand_2)+(demand_2-mean(demand_2))*(100-k)/100
   new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
-  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-plot(k_2,op_set,xlab="K",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7), lwd=1 , pch=19)
+plot(k_2,op_set,xlab="delta",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7), lwd=1 , pch=19)
 
-k_1<-seq(-20,20,1.5)
+k_1<-seq(-10,10,1)
 op_set<-c()
 for (k in k_1){
   new_demand_1<-mean(demand_1)+(demand_1-mean(demand_1))*(100-k)/100
   new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
-  op_cost<-lp(direction="min", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
 lines(k_1,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=1 , pch=19, type="b" )
 
-legend("topright", 
-  legend = c("Changes on product a variance", "Changes on product b variance"), 
+legend("topleft", 
+  legend = c("Changes on product a  standard deviation", "Changes on product b  standard deviation"), 
   col = c(rgb(0.2,0.4,0.1,0.7), 
   rgb(0.8,0.4,0.1,0.7)), 
   pch = c(19,19), 
@@ -154,268 +159,55 @@ legend("topright",
   inset = c(0.05, 0.05))
 ```
 
-```{r c_o}
-delta<-seq(-1.2,1.2,0.1)
-
-op_set<-c()
-for (de in delta){
-  new_c_2o<-c_2o+de
-  new_objective.in<-c(rep(c_1o,12),rep(new_c_2o,12),rep(c_1u,12),rep(c_2u,12),0,0)
-  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,const.rhs)$objval
-  op_set<-c(op_set,op_cost)
-}
-par(bty="l")
-plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
-points(c(-0.71,0.54),c(3316.4,3528.9),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
-
-op_set<-c()
-for (de in delta){
-  new_c_1o<-c_1o+de
-  new_objective.in<-c(rep(new_c_1o,12),rep(c_2o,12),rep(c_1u,12),rep(c_2u,12),0,0)
-  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,const.rhs)$objval
-  op_set<-c(op_set,op_cost)
-}
-lines(delta,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=1 , pch=19, type="b" )
-points(c(-0.63,1),c(3378.8,3529.7),col=rgb(0.2,0.4,0.1,0.7),pch=4,lwd=5)
-
-legend("topleft", 
-  legend = c("Changes of over-stocking cost on product a", "Changes of over-stocking cost on product b"
-             ,"Critical point of product a", "Critical point of product b"), 
-  col = c(rgb(0.2,0.4,0.1,0.7)
-          ,rgb(0.8,0.4,0.1,0.7)
-          ,rgb(0.2,0.4,0.1,0.7)
-          ,rgb(0.8,0.4,0.1,0.7)), 
-  pch = c(19,19,4,4),
-  bty = "n", 
-  pt.cex = 0.8, 
-  pt.lwd =c(1,1,5,5),
-  cex = 1, 
-  text.col = "black", 
-  horiz = F , 
-  inset = c(0.02,0.02))
-
-```
 
 
 ```{r demandunder}
-beta<--10
-delta<-seq(-1,0.6,0.075)
+beta_11<--15.75
+beta_12<-7
+beta_21<-10.5
+beta_22<--10.5
+delta<-seq(-0.2,0.3,0.025)
 
 op_set<-c()
 for (de in delta){
-  new_c_2u<-c_2u+de
-  new_demand_2<-demand_2+beta*de
-  new_objective.in<-c(rep(c_1o,12),rep(c_2o,12),rep(c_1u,12),rep(new_c_2u,12),0,0)
-  new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
-  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
+  new_p_2<-p_2+de
+  new_demand_1<-demand_1+beta_12*de
+  new_demand_2<-demand_2+beta_22*de
+  new_objective.in<-c(rep(-(p_1+c2_1)/12,12),rep(-(new_p_2+c2_2)/12,12),rep(-c3_1/12,12),rep(-c3_2/12,12),p_1-c1_1,new_p_2-c1_2)
+  new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-new_demand_2,new_demand_1,new_demand_2)
+  op_cost<-lp(direction="max", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
 plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
-points(c(-0.4,0.4),c(3385.6,3488.1),col=rgb(0.8,0.4,0.1,0.7),pch=4,lwd=5)
+
 
 
 op_set<-c()
 for (de in delta){
-  new_c_1u<-c_1u+de
-  new_demand_1<-demand_1+beta*de
-  new_objective.in<-c(rep(c_1o,12),rep(c_2o,12),rep(new_c_1u,12),rep(c_2u,12),0,0)
-  new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
-  op_cost<-lp(direction="min", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
+  new_p_1<-p_1+de
+  new_demand_1<-demand_1+beta_11*de
+  new_demand_2<-demand_2+beta_21*de
+  new_objective.in<-c(rep(-(new_p_1+c2_1)/12,12),rep(-(p_2+c2_2)/12,12),rep(-c3_1/12,12),rep(-c3_2/12,12),new_p_1-c1_1,p_2-c1_2)
+  new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-new_demand_2,new_demand_1,new_demand_2)
+  op_cost<-lp(direction="max", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
 lines(delta,op_set, col=rgb(0.2,0.4,0.1,0.7) , lwd=1 , pch=19 , type="b" )
-points(c(-0.7,0.275),c(3360.743,3451.07),col=rgb(0.2,0.4,0.1,0.7),pch=4,lwd=5)
+
 
 legend("topleft", 
-  legend = c("Changes of under-stocking cost on product a", "Changes of under-stocking cost on product b"
-             ,"Critical point of product a", "Critical point of product b"), 
+  legend = c("Changes of selling price on product a", "Changes of selling price on product b"), 
   col = c(rgb(0.2,0.4,0.1,0.7)
-          ,rgb(0.8,0.4,0.1,0.7)
-          ,rgb(0.2,0.4,0.1,0.7)
           ,rgb(0.8,0.4,0.1,0.7)), 
-  pch = c(19,19,4,4),
+  pch = c(19,19),
   bty = "n", 
   pt.cex = 0.8, 
-  pt.lwd =c(1,1,5,5),
+  pt.lwd =c(1,1),
   cex = 1, 
   text.col = "black", 
   horiz = F , 
   inset = c(0.02,0.01))
 ```
 
-```{r 3d}
-x_1<-150:250
-x_2<-150:250
-obj_function<-function(x1,x2){
-  o1<-sum((rep(x1,12)-demand_1)*((rep(x1,12)-demand_1)>0)*c_1o)
-  o2<-sum((rep(x2,12)-demand_2)*((rep(x2,12)-demand_2)>0)*c_2o)
-  u1<-sum((demand_1-rep(x1,12))*((demand_1-rep(x1,12))>0)*c_1u)
-  u2<-sum((demand_2-rep(x2,12))*((demand_2-rep(x2,12))>0)*c_2u)
-  total<-o1+o2+u1+u2
-  return(total)
-}
-cost<-matrix(nrow = 101,ncol=101)
-for (i in 1:101){
-  for (j in 1:101){
-    cost[j,i]=obj_function(x_1[i],x_2[j])
-  }
-}
-min_ind<-which(cost == min(cost), arr.ind = TRUE)
-min_ind<-min_ind+149
-min_relax<-min(cost)
 
-fig_main <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "surface")
-fig_main <- fig_main %>% layout(
-    scene = list(
-      xaxis = list(title = "x_1"),
-      yaxis = list(title = "x_2"),
-      zaxis = list(title = "cost"),
-      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.4), center = list(x=0,y=0,z=0)),
-      autosize = F, width = 800, height = 600,margin = list(t = -1)
-    )) %>% 
-  add_trace(x = min_ind[1,1], y = min_ind[1,2]
-            ,z = min_relax,type = 'scatter3d'
-            ,name = 'optimum',color=I(rgb(1,0.2,0.5,1))) %>% 
-  colorbar(x = 0.8, y = 0.8) %>%
-  config(
-    toImageButtonOptions = list(
-      format = "png",
-      filename = "3d cost",
-      width = 800,
-      height = 600
-    )
-  )
-
-
-fig_main
-```
-
-
-```{r contour}
-fig_con <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
-               ,contours = list(
-                 start = 3500,
-                 end = 8000,
-                 size = 250,
-                 coloring = 'heatmap'
-                 ), 
-               line = list(smoothing = 1)) %>%
-  add_segments(x = 174, xend = 200, y = 249.9, yend = 244,color = I("black"),name = 'Boundary 1',size = I(1)) %>%
-  add_segments(x = 200, xend = 218, y = 244, yend = 229,color = I("black"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 218, xend = 229, y = 229, yend = 205,color = I("black"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 229, xend = 235, y = 205, yend = 176,color = I("black"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 235, xend = 236, y = 176, yend = 150,color = I("black"),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 150, xend = 180, y = 236, yend = 228,color = I(rgb(1,1,0.5,0.6)),name = 'Boundary 2',size = I(1)) %>%
-  add_segments(x = 180, xend = 197, y = 228, yend = 216,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 197, xend = 206, y = 216, yend = 204,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 206, xend = 214, y = 204, yend = 185,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
-  add_segments(x = 214, xend = 220, y = 185, yend = 150,color = I(rgb(1,1,0.5,0.6)),showlegend = FALSE,size = I(1)) %>%
-  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'prime',color=I(rgb(1,0.2,0.5,1))) %>%
-  config(
-    toImageButtonOptions = list(
-      format = "png",
-      filename = "contour",
-      width = 800,
-      height = 600
-    )
-  )
-
-fig_con
-```
-
-```{r parabola1}
-x1<-seq(174,200,0.5)
-y1<-seq(250,244,length.out=length(x1))
-x2<-seq(200,218,0.5)
-y2<-seq(244,229,length.out=length(x2))
-x3<-seq(218,229,0.5)
-y3<-seq(229,205,length.out=length(x3))
-x4<-seq(229,235,0.5)
-y4<-seq(205,176,length.out=length(x4))
-x5<-seq(235,236,0.5)
-y5<-seq(176,150,length.out=length(x5))
-xp<-c(x1,x2,x3,x4,x5)
-yp<-c(y1,y2,y3,y4,y5)
-zp<-mapply(obj_function,xp,yp)
-
-fig_bou1 <- plot_ly(x = ~xp, y = ~yp, z = ~zp, type = 'scatter3d', mode = 'lines',
-        line = list(width = 6, color = I("black"), colorscale = 'Viridis')) %>% layout(
-    scene = list(
-      xaxis = list(title = "x_1"),
-      yaxis = list(title = "x_2"),
-      zaxis = list(title = "cost"),
-      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
-    ))%>%
-  config(
-    toImageButtonOptions = list(
-      format = "png",
-      filename = "boundary1",
-      width = 800,
-      height = 600
-    )
-  )
-fig_bou1
-```
-
-```{r parabola2}
-x1<-seq(150,180,0.5)
-y1<-seq(236,228,length.out=length(x1))
-x2<-seq(180,197,0.5)
-y2<-seq(228,216,length.out=length(x2))
-x3<-seq(197,206,0.5)
-y3<-seq(216,204,length.out=length(x3))
-x4<-seq(206,214,0.5)
-y4<-seq(204,185,length.out=length(x4))
-x5<-seq(214,220,0.5)
-y5<-seq(185,150,length.out=length(x5))
-xq<-c(x1,x2,x3,x4,x5)
-yq<-c(y1,y2,y3,y4,y5)
-zq<-mapply(obj_function,xq,yq)
-
-fig_bou2 <- plot_ly(x = ~xq, y = ~yq, z = ~zq, type = 'scatter3d', mode = 'lines',
-        line = list(width = 6),color=I(rgb(0.4,0.5,0.4,0.7))) %>% layout(
-    scene = list(
-      xaxis = list(title = "x_1"),
-      yaxis = list(title = "x_2"),
-      zaxis = list(title = "cost"),
-      camera = list(eye = list(x = -0.84, y = -2.1, z = 0.5), center = list(x=0,y=0,z=0))
-    ))%>%
-  config(
-    toImageButtonOptions = list(
-      format = "png",
-      filename = "boundary2",
-      width = 800,
-      height = 600
-    )
-  )
-
-fig_bou2
-
-```
-
-
-```{r conexam}
-fig_conexam <- plot_ly(x= ~x_1,y= ~x_2,z= ~cost, type = "contour"
-               ,contours = list(
-                 start = 3500,
-                 end = 8000,
-                 size = 250,
-                 coloring = 'heatmap'
-                 ), 
-               line = list(smoothing = 1))%>%
-  add_segments(x = 175, xend = 181.8, y = 250, yend = 245.5,color = I(rgb(1,0.6,0.4,0.9)),name = 'Boundary',size = I(1)) %>%
-  add_segments(x = 181.8, xend = 250, y = 245.5, yend = 150,color = I(rgb(1,0.6,0.4,0.9)),showlegend = FALSE,size = I(1))%>%
-  add_trace(x = min_ind[1,1], y = min_ind[1,2], type = "scatter",name = 'prime',color=I(rgb(1,0.2,0.5,1)))%>%
-  add_trace(x = optimum_original$solution[49], y = optimum_original$solution[50], type = "scatter",name = 'optimal',color=I("red"))%>%
-  config(
-    toImageButtonOptions = list(
-      format = "png",
-      filename = "conexam",
-      width = 800,
-      height = 600
-    )
-  )
-
-fig_conexam
-```
