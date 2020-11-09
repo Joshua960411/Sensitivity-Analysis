@@ -461,18 +461,11 @@ First, we suppose the demand of products are independent. Therefore, the marketi
 
 \[
 \begin{aligned}
-    \Delta \, P_a = 
-    \begin{cases}
-        4.5 \, \Delta \hat{\mu}_a, & \Delta \hat{\mu}_a \geq -2.88,\\
-        unpredictable, & \text{otherwise}.
-    \end{cases}\\
-    \Delta \, P_b = 
-    \begin{cases}
-        2.64 \, \Delta \hat{\mu}_b, & \Delta \hat{\mu}_b \geq -4,\\
-        unpredictable, & \text{otherwise}.
-    \end{cases}
+    \Delta \, P_a = 4.5 \, \Delta \hat{\mu}_a,\\
+    \Delta \, P_b = 2.64 \, \Delta \hat{\mu}_b,
 \end{aligned}
 \]
+for relative small $\Delta \hat{\mu}_a$ and $\Delta \hat{\mu}_b$. One can compare these results with simulation outputs in Figure \ref{fig:mean} for verification.
 
 \begin{figure}[htb]
 \centering
@@ -481,20 +474,18 @@ First, we suppose the demand of products are independent. Therefore, the marketi
 \label{fig:mean}
 \end{figure}
 
-Surprisingly, one may find that increasing mean demand will actually increases optimal cost. That is because the ``cost" referred here is ``opportunity cost" \cite{Ch12,Po02}, which is incurred by \emph{not} gaining the benefit associated with the best alternative choice, e.g., the profit could have been earned. As one could notice in sensitivity reports, the time constraint on resource dimension $B$ is binding. Therefore, only promoting mean demand won't bring any gain to the retailer, but increases the demand-supply gap, and therefore, increases opportunity cost even more.
+Surprisingly, one may find that the margins of increasing mean demand $(4.5,2.64)$ are actually smaller than the unit profit $(5,3)$. That is due to the limitation on supply power. As one could notice in sensitivity reports, the time constraint on resource dimension $B$ is binding. Therefore, only promoting mean demand is not the ideal solution to the retailer, but increases the demand-supply gap, and therefore, weakens the profitability.
 
 Instead, the retailer should concentrate on easing the binding constraint, in order to gain more supply power, and therefore meet the demand. Reversely, the retailer could also look into anti-promotion methods (if exist), that convert excess demand into cash flow, e.g., ``selling" customer to other retailers to get stable cash back.
-
-One can compare these results with simulation outputs in Figure \ref{fig:mean} for verification.
 
 On the other hand, we consider a decrease of standard deviation on estimated demand on product $a$ or $b$. Applying the formulation from Subsection \ref{sub:th-uncor}, we should have margin gain on decreasing standard deviation by $k\%$ as:
 \[
 \begin{aligned}
-    \Delta \, P_a = -12.1 \, k_a,\\
-    \Delta \, P_b = -22.1 \, k_b,
+    \Delta \, P_a = 1.01 \, k_a,\\
+    \Delta \, P_b = 1.84 \, k_b,
 \end{aligned}
 \]
-providing the demand remain positive and variance is no less than zero. In this case, we can see that conducting market research may reduce cost. The simulated results are presented in Figure \ref{fig:var}. The retailer, therefore, could decide whether or not to use market research and to what extent should the research be used by comparing research cost and the margin gain.
+providing the demand remain positive and standard deviation is no less than zero. In this case, we can see that conducting market research may increase profit. The simulated results are presented in Figure \ref{fig:var}. The retailer, therefore, could decide whether or not to use market research and to what extent should the research be used by comparing research cost and the margin gain.
 \begin{figure}[htb]
 \centering
 \caption{Optimal cost vs. Change of variance}
@@ -560,7 +551,13 @@ represent the reducible error due to inaccurate forecasts. We let $\hat{\sigma}_
 We first consider the effect of marketing intervention on price setting. Suppose that by marketing intervention, the selling price of product $a$ or $b$ could be altered by $\Delta p_a$ and/or $\Delta p_b$. This change will now affect both the parameters of objective function and corresponding constraints (\ref{eq:over}) and (\ref{eq:under}). Recalling the margin can be computed by $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$,
 as long as the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$
 are ``sufficiently small”, we have: 
-
+\[
+\begin{aligned}
+    \Delta \, P_a = 156.25 \, \Delta p_a,\\
+    \Delta \, P_b = 199.61 \, \Delta p_b.
+\end{aligned}
+\]
+In this case, we can see that increasing unit selling price is profitable for the retailer, as long as the change is small. Moreover, we find the optimal profit is more sensitive to the selling price on product $b$ than to the selling price on product $a$. That is due to the uneven sensitivities of each product. Recalling the results from \ref{sub:app1}, the margin of increasing mean demand of product $a$ is much bigger than that of product $b$. Therefore, on given settings, increasing the selling price on product $b$ (which increases $\hat{\mu}_a$ but decreases $\hat{\mu}_b$) is more profitable than increasing the selling price on product $a$ (which increases $\hat{\mu}_b$ but decreases $\hat{\mu}_a$).
 
 %%%%%%%%%%%%%%%%%%%%
 \section{Summary}
@@ -601,65 +598,65 @@ variable & final value & reduced cost & coefficient & allowable increase & allow
 \endfoot
 \bottomrule
 \endlastfoot
-$y_a^{1}$ & 7.1 & 0.0 & -0.833 & 0.317 & 0.5\\
-$y_a^{2}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_a^{3}$ & 27.1 & 0.0 & -0.833 & 0.317 & 0.5\\
-$y_a^{4}$ & 17.1 & 0.0 & -0.833 & 0.317 & 0.5\\
-$y_a^{5}$ & 17.1 & 0.0 & -0.833 & 0.317 & 0.5\\
+$y_a^{1}$ & 7.14 & 0.000 & -0.833 & 0.317 & 0.5\\
+$y_a^{2}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_a^{3}$ & 27.14 & 0.000 & -0.833 & 0.317 & 0.5\\
+$y_a^{4}$ & 17.14 & 0.000 & -0.833 & 0.317 & 0.5\\
+$y_a^{5}$ & 17.14 & 0.000 & -0.833 & 0.317 & 0.5\\
 \addlinespace
-$y_a^{6}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_a^{7}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_a^{8}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_a^{9}$ & 7.1 & 0.0 & -0.833 & 0.317 & 0.5\\
-$y_a^{10}$ & 17.1 & 0.0 & -0.833 & 0.317 & 0.5\\
+$y_a^{6}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_a^{7}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_a^{8}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_a^{9}$ & 7.14 & 0.000 & -0.833 & 0.317 & 0.5\\
+$y_a^{10}$ & 17.14 & 0.000 & -0.833 & 0.317 & 0.5\\
 \addlinespace
-$y_a^{11}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_a^{12}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_b^{1}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_b^{2}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_b^{3}$ & 10.0 & 0.0 & -0.833 & 0.607 & 0.226\\
+$y_a^{11}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_a^{12}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_b^{1}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_b^{2}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_b^{3}$ & 10.00 & 0.000 & -0.833 & 0.607 & 0.226\\
 \addlinespace
-$y_b^{4}$ & 30.0 & 0.0 & -0.833 & 0.607 & 0.226\\
-$y_b^{5}$ & 0.0 & -0.607 & -0.833 & 0.607 & 10000.0\\
-$y_b^{6}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_b^{7}$ & 40.0 & 0.0 & -0.833 & 0.607 & 0.226\\
-$y_b^{8}$ & 60.0 & 0.0 & -0.833 & 0.607 & 0.226\\
+$y_b^{4}$ & 30.00 & 0.000 & -0.833 & 0.607 & 0.226\\
+$y_b^{5}$ & 0.00 & -0.607 & -0.833 & 0.607 & 10000.0\\
+$y_b^{6}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_b^{7}$ & 40.00 & 0.000 & -0.833 & 0.607 & 0.226\\
+$y_b^{8}$ & 60.00 & 0.000 & -0.833 & 0.607 & 0.226\\
 \addlinespace
-$y_b^{9}$ & 30.0 & 0.0 & -0.833 & 0.607 & 0.226\\
-$y_b^{10}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_b^{11}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$y_b^{12}$ & 0.0 & -0.833 & -0.833 & 0.833 & 10000.0\\
-$z_a^{1}$ & 0.0 & -0.083 & -0.083 & 0.083 & 10000.0\\
+$y_b^{9}$ & 30.00 & 0.000 & -0.833 & 0.607 & 0.226\\
+$y_b^{10}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_b^{11}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$y_b^{12}$ & 0.00 & -0.833 & -0.833 & 0.833 & 10000.0\\
+$z_a^{1}$ & 0.00 & -0.083 & -0.083 & 0.083 & 10000.0\\
 \addlinespace
-$z_a^{2}$ & 12.9 & 0.0 & -0.083 & 0.083 & 0.317\\
-$z_a^{3}$ & 0.0 & -0.083 & -0.083 & 0.083 & 10000.0\\
-$z_a^{4}$ & 0.0 & -0.083 & -0.083 & 0.083 & 10000.0\\
-$z_a^{5}$ & 0.0 & -0.083 & -0.083 & 0.083 & 10000.0\\
-$z_a^{6}$ & 2.9 & 0.0 & -0.083 & 0.083 & 0.317\\
+$z_a^{2}$ & 12.86 & 0.000 & -0.083 & 0.083 & 0.317\\
+$z_a^{3}$ & 0.00 & -0.083 & -0.083 & 0.083 & 10000.0\\
+$z_a^{4}$ & 0.00 & -0.083 & -0.083 & 0.083 & 10000.0\\
+$z_a^{5}$ & 0.00 & -0.083 & -0.083 & 0.083 & 10000.0\\
+$z_a^{6}$ & 2.86 & 0.000 & -0.083 & 0.083 & 0.317\\
 \addlinespace
-$z_a^{7}$ & 32.9 & 0.0 & -0.083 & 0.083 & 0.317\\
-$z_a^{8}$ & 42.9 & 0.0 & -0.083 & 0.083 & 0.317\\
-$z_a^{9}$ & 0.0 & -0.083 & -0.083 & 0.083 & 10000.0\\
-$z_a^{10}$ & 0.0 & -0.083 & -0.083 & 0.083 & 10000.0\\
-$z_a^{11}$ & 2.9 & 0.0 & -0.083 & 0.083 & 0.317\\
+$z_a^{7}$ & 32.86 & 0.000 & -0.083 & 0.083 & 0.317\\
+$z_a^{8}$ & 42.86 & 0.000 & -0.083 & 0.083 & 0.317\\
+$z_a^{9}$ & 0.00 & -0.083 & -0.083 & 0.083 & 10000.0\\
+$z_a^{10}$ & 0.00 & -0.083 & -0.083 & 0.083 & 10000.0\\
+$z_a^{11}$ & 2.86 & 0.000 & -0.083 & 0.083 & 0.317\\
 \addlinespace
-$z_a^{12}$ & 32.9 & 0.0 & -0.083 & 0.083 & 0.317\\
-$z_b^{1}$ & 40.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$z_b^{2}$ & 20.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$z_b^{3}$ & 0.0 & -0.25 & -0.25 & 0.25 & 10000.0\\
-$z_b^{4}$ & 0.0 & -0.25 & -0.25 & 0.25 & 10000.0\\
+$z_a^{12}$ & 32.86 & 0.000 & -0.083 & 0.083 & 0.317\\
+$z_b^{1}$ & 40.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$z_b^{2}$ & 20.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$z_b^{3}$ & 0.00 & -0.250 & -0.250 & 0.250 & 10000.0\\
+$z_b^{4}$ & 0.00 & -0.250 & -0.250 & 0.250 & 10000.0\\
 \addlinespace
-$z_b^{5}$ & 0.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$z_b^{6}$ & 0.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$z_b^{7}$ & 0.0 & -0.25 & -0.25 & 0.25 & 10000.0\\
-$z_b^{8}$ & 0.0 & -0.25 & -0.25 & 0.25 & 10000.0\\
-$z_b^{9}$ & 0.0 & -0.25 & -0.25 & 0.25 & 10000.0\\
+$z_b^{5}$ & 0.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$z_b^{6}$ & 0.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$z_b^{7}$ & 0.00 & -0.250 & -0.250 & 0.250 & 10000.0\\
+$z_b^{8}$ & 0.00 & -0.250 & -0.250 & 0.250 & 10000.0\\
+$z_b^{9}$ & 0.00 & -0.250 & -0.250 & 0.250 & 10000.0\\
 \addlinespace
-$z_b^{10}$ & 10.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$z_b^{11}$ & 50.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$z_b^{12}$ & 50.0 & 0.0 & -0.25 & 0.226 & 0.607\\
-$x_a$ & 207.1 & 0.0 & 5.0 & 0.317 & 0.5\\
-$x_b$ & 210.0 & 0.0 & 3.0 & 0.607 & 0.226\\*
+$z_b^{10}$ & 10.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$z_b^{11}$ & 50.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$z_b^{12}$ & 50.00 & 0.000 & -0.250 & 0.226 & 0.607\\
+$x_a$ & 207.14 & 0.000 & 5.000 & 0.317 & 0.500\\
+$x_b$ & 210.00 & 0.000 & 3.000 & 0.607 & 0.226\\*
 \end{longtable}
 \endgroup{}
 
@@ -680,67 +677,67 @@ row & final value & shadow price & constraint RHS & allowable increase & allowab
 \endfoot
 \bottomrule
 \endlastfoot
-time\_A & 2088.6 & 0.0 & 2200 & 10000.0 & 111.4\\
+time\_A & 2088.6 & 0.0 & 2200 & 10000.0 & 10000.0\\
 time\_B & 2500.0 & 0.071 & 2500 & 20.0 & 50.0\\
-time\_C & 3337.1 & 0.0 & 3500 & 10000.0 & 162.9\\
-over\_1\textasciicircum{}1 & 200.0 & 0.833 & 200 & 7.1 & 10000.0\\
-over\_1\textasciicircum{}2 & 207.1 & 0.0 & 220 & 10000.0 & 12.9\\
+time\_C & 3337.1 & 0.0 & 3500 & 10000.0 & 10000.0\\
+over\_a\textasciicircum{}1 & 200.0 & 0.833 & 200 & 7.1 & 10000.0\\
+over\_a\textasciicircum{}2 & 207.1 & 0.0 & 220 & 10000.0 & 12.9\\
 \addlinespace
-over\_1\textasciicircum{}3 & 180.0 & 0.833 & 180 & 27.1 & 10000.0\\
-over\_1\textasciicircum{}4 & 190.0 & 0.833 & 190 & 17.1 & 10000.0\\
-over\_1\textasciicircum{}5 & 190.0 & 0.833 & 190 & 17.1 & 10000.0\\
-over\_1\textasciicircum{}6 & 207.1 & 0.0 & 210 & 10000.0 & 2.9\\
-over\_1\textasciicircum{}7 & 207.1 & 0.0 & 240 & 10000.0 & 32.9\\
+over\_a\textasciicircum{}3 & 180.0 & 0.833 & 180 & 27.1 & 10000.0\\
+over\_a\textasciicircum{}4 & 190.0 & 0.833 & 190 & 17.1 & 10000.0\\
+over\_a\textasciicircum{}5 & 190.0 & 0.833 & 190 & 17.1 & 10000.0\\
+over\_a\textasciicircum{}6 & 207.1 & 0.0 & 210 & 10000.0 & 2.9\\
+over\_a\textasciicircum{}7 & 207.1 & 0.0 & 240 & 10000.0 & 32.9\\
 \addlinespace
-over\_1\textasciicircum{}8 & 207.1 & 0.0 & 250 & 10000.0 & 42.9\\
-over\_1\textasciicircum{}9 & 200.0 & 0.833 & 200 & 7.1 & 10000.0\\
-over\_1\textasciicircum{}10 & 190.0 & 0.833 & 190 & 17.1 & 10000.0\\
-over\_1\textasciicircum{}11 & 207.1 & 0.0 & 210 & 10000.0 & 2.9\\
-over\_1\textasciicircum{}12 & 207.1 & 0.0 & 240 & 10000.0 & 32.9\\
+over\_a\textasciicircum{}8 & 207.1 & 0.0 & 250 & 10000.0 & 42.9\\
+over\_a\textasciicircum{}9 & 200.0 & 0.833 & 200 & 7.1 & 10000.0\\
+over\_a\textasciicircum{}10 & 190.0 & 0.833 & 190 & 17.1 & 10000.0\\
+over\_a\textasciicircum{}11 & 207.1 & 0.0 & 210 & 10000.0 & 2.9\\
+over\_a\textasciicircum{}12 & 207.1 & 0.0 & 240 & 10000.0 & 32.9\\
 \addlinespace
-under\_1\textasciicircum{}1 & 207.1 & 0.0 & 200 & 7.1 & 10000.0\\
-under\_1\textasciicircum{}2 & 220.0 & -0.083 & 220 & 10000.0 & 12.9\\
-under\_1\textasciicircum{}3 & 207.1 & 0.0 & 180 & 27.1 & 10000.0\\
-under\_1\textasciicircum{}4 & 207.1 & 0.0 & 190 & 17.1 & 10000.0\\
-under\_1\textasciicircum{}5 & 207.1 & 0.0 & 190 & 17.1 & 10000.0\\
+under\_a\textasciicircum{}1 & 207.1 & 0.0 & 200 & 7.1 & 10000.0\\
+under\_a\textasciicircum{}2 & 220.0 & 0.083 & 220 & 10000.0 & 12.9\\
+under\_a\textasciicircum{}3 & 207.1 & 0.0 & 180 & 27.1 & 10000.0\\
+under\_a\textasciicircum{}4 & 207.1 & 0.0 & 190 & 17.1 & 10000.0\\
+under\_a\textasciicircum{}5 & 207.1 & 0.0 & 190 & 17.1 & 10000.0\\
 \addlinespace
-under\_1\textasciicircum{}6 & 210.0 & -0.083 & 210 & 10000.0 & 2.9\\
-under\_1\textasciicircum{}7 & 240.0 & -0.083 & 240 & 10000.0 & 32.9\\
-under\_1\textasciicircum{}8 & 250.0 & -0.083 & 250 & 10000.0 & 42.9\\
-under\_1\textasciicircum{}9 & 207.1 & 0.0 & 200 & 7.1 & 10000.0\\
-under\_1\textasciicircum{}10 & 207.1 & 0.0 & 190 & 17.1 & 10000.0\\
+under\_a\textasciicircum{}6 & 210.0 & 0.083 & 210 & 10000.0 & 2.9\\
+under\_a\textasciicircum{}7 & 240.0 & 0.083 & 240 & 10000.0 & 32.9\\
+under\_a\textasciicircum{}8 & 250.0 & 0.083 & 250 & 10000.0 & 42.9\\
+under\_a\textasciicircum{}9 & 207.1 & 0.0 & 200 & 7.1 & 10000.0\\
+under\_a\textasciicircum{}10 & 207.1 & 0.0 & 190 & 17.1 & 10000.0\\
 \addlinespace
-under\_1\textasciicircum{}11 & 210.0 & -0.083 & 210 & 10000.0 & 2.9\\
-under\_1\textasciicircum{}12 & 240.0 & -0.083 & 240 & 10000.0 & 32.9\\
-over\_2\textasciicircum{}1 & 210.0 & 0.0 & 250 & 10000.0 & 40.0\\
-over\_2\textasciicircum{}2 & 210.0 & 0.0 & 230 & 10000.0 & 20.0\\
-over\_2\textasciicircum{}3 & 200.0 & 0.833 & 200 & 10.0 & 10000.0\\
+under\_a\textasciicircum{}11 & 210.0 & 0.083 & 210 & 10000.0 & 2.9\\
+under\_a\textasciicircum{}12 & 240.0 & 0.083 & 240 & 10000.0 & 32.9\\
+over\_b\textasciicircum{}1 & 210.0 & 0.0 & 250 & 10000.0 & 40.0\\
+over\_b\textasciicircum{}2 & 210.0 & 0.0 & 230 & 10000.0 & 20.0\\
+over\_b\textasciicircum{}3 & 200.0 & 0.833 & 200 & 10.0 & 10000.0\\
 \addlinespace
-over\_2\textasciicircum{}4 & 180.0 & 0.833 & 180 & 30.0 & 10000.0\\
-over\_2\textasciicircum{}5 & 210.0 & 0.226 & 210 & 0.0 & 4.0\\
-over\_2\textasciicircum{}6 & 210.0 & 0.0 & 210 & 10000.0 & 0.0\\
-over\_2\textasciicircum{}7 & 170.0 & 0.833 & 170 & 40.0 & 10000.0\\
-over\_2\textasciicircum{}8 & 150.0 & 0.833 & 150 & 60.0 & 10000.0\\
+over\_b\textasciicircum{}4 & 180.0 & 0.833 & 180 & 30.0 & 10000.0\\
+over\_b\textasciicircum{}5 & 210.0 & 0.226 & 210 & 0.0 & 4.0\\
+over\_b\textasciicircum{}6 & 210.0 & 0.0 & 210 & 10000.0 & 0.0\\
+over\_b\textasciicircum{}7 & 170.0 & 0.833 & 170 & 40.0 & 10000.0\\
+over\_b\textasciicircum{}8 & 150.0 & 0.833 & 150 & 60.0 & 10000.0\\
 \addlinespace
-over\_2\textasciicircum{}9 & 180.0 & 0.833 & 180 & 30.0 & 10000.0\\
-over\_2\textasciicircum{}10 & 210.0 & 0.0 & 220 & 10000.0 & 10.0\\
-over\_2\textasciicircum{}11 & 210.0 & 0.0 & 260 & 10000.0 & 50.0\\
-over\_2\textasciicircum{}12 & 210.0 & 0.0 & 260 & 10000.0 & 50.0\\
-under\_2\textasciicircum{}1 & 250.0 & -0.25 & 250 & 10000.0 & 40.0\\
+over\_b\textasciicircum{}9 & 180.0 & 0.833 & 180 & 30.0 & 10000.0\\
+over\_b\textasciicircum{}10 & 210.0 & 0.0 & 220 & 10000.0 & 10.0\\
+over\_b\textasciicircum{}11 & 210.0 & 0.0 & 260 & 10000.0 & 50.0\\
+over\_b\textasciicircum{}12 & 210.0 & 0.0 & 260 & 10000.0 & 50.0\\
+under\_b\textasciicircum{}1 & 250.0 & 0.25 & 250 & 10000.0 & 40.0\\
 \addlinespace
-under\_2\textasciicircum{}2 & 230.0 & -0.25 & 230 & 10000.0 & 20.0\\
-under\_2\textasciicircum{}3 & 210.0 & 0.0 & 200 & 10.0 & 10000.0\\
-under\_2\textasciicircum{}4 & 210.0 & 0.0 & 180 & 30.0 & 10000.0\\
-under\_2\textasciicircum{}5 & 210.0 & -0.25 & 210 & 10000.0 & 0.0\\
-under\_2\textasciicircum{}6 & 210.0 & -0.25 & 210 & 10000.0 & 0.0\\
+under\_b\textasciicircum{}2 & 230.0 & 0.25 & 230 & 10000.0 & 20.0\\
+under\_b\textasciicircum{}3 & 210.0 & 0.0 & 200 & 10.0 & 10000.0\\
+under\_b\textasciicircum{}4 & 210.0 & 0.0 & 180 & 30.0 & 10000.0\\
+under\_b\textasciicircum{}5 & 210.0 & 0.25 & 210 & 10000.0 & 0.0\\
+under\_b\textasciicircum{}6 & 210.0 & 0.25 & 210 & 10000.0 & 0.0\\
 \addlinespace
-under\_2\textasciicircum{}7 & 210.0 & 0.0 & 170 & 40.0 & 10000.0\\
-under\_2\textasciicircum{}8 & 210.0 & 0.0 & 150 & 60.0 & 10000.0\\
-under\_2\textasciicircum{}9 & 210.0 & 0.0 & 180 & 30.0 & 10000.0\\
-under\_2\textasciicircum{}10 & 220.0 & -0.25 & 220 & 10000.0 & 10.0\\
-under\_2\textasciicircum{}11 & 260.0 & -0.25 & 260 & 10000.0 & 50.0\\
+under\_b\textasciicircum{}7 & 210.0 & 0.0 & 170 & 40.0 & 10000.0\\
+under\_b\textasciicircum{}8 & 210.0 & 0.0 & 150 & 60.0 & 10000.0\\
+under\_b\textasciicircum{}9 & 210.0 & 0.0 & 180 & 30.0 & 10000.0\\
+under\_b\textasciicircum{}10 & 220.0 & 0.25 & 220 & 10000.0 & 10.0\\
+under\_b\textasciicircum{}11 & 260.0 & 0.25 & 260 & 10000.0 & 50.0\\
 \addlinespace
-under\_2\textasciicircum{}12 & 260.0 & -0.25 & 260 & 10000.0 & 50.0\\*
+under\_b\textasciicircum{}12 & 260.0 & 0.25 & 260 & 10000.0 & 50.0\\*
 \end{longtable}
 \endgroup{}
 
