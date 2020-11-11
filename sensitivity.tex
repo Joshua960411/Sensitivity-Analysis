@@ -39,7 +39,7 @@ Lancaster University, Lancaster LA1 4YX, UK.
 Email: {\tt \{c.liu19,a.n.letchford,i.svetunkov\}@lancaster.ac.uk}}
 \and Adam N.\ Letchford$^*$ \and Ivan Svetunkov$^*$} % end author list
 
-\date{6th November 2020}
+\date{11th November 2020}
 
 \begin{document}
 
@@ -231,10 +231,8 @@ respectively. Suppose we ``perturb” the LP, by changing $\mathbf{c}$ to
 $\mathbf{c} + \mbox{\boldmath$\delta$}$ and changing $\mathbf{b}$ to
 $\mathbf{b} + \mbox{\boldmath$\gamma$}$. (Here, $\mbox{\boldmath$\delta$} \in \QQ^n$ and
 $\mbox{\boldmath$\gamma$} \in \QQ^m$.)  The increase in the optimal profit will
-be $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$,
-as long as the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$
-are ``sufficiently small” (or, in other words, as long as the optimal
-``basis" does not change). The deduction of allowable interval can be find in \cite{B77,We85}.
+be $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$, provided that the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$
+are sufficiently small. (A precise definition of ``sufficiently small" can be found in \cite{We85}.)
 
 Some specialised methods have also been developed for applying SA to MNVPs
 (e.g., \cite{AA07,BR93}). We omit details, for brevity.
@@ -411,14 +409,27 @@ right-hand sides of the corresponding constraints (\ref{eq:over}) and
 \section{Application to Multi-Product NVPs}
 \label{se:application}
 
-In this section, we consider the application of the proposed method. In Subsection \ref{sub:app1}, we apply the method to a simple MNVP with
-uncorrelated demands.In Subsection \ref{sub:app2}, we apply it to an MNVP
-in which the demands exhibit significant cross-price elasticities. 
+In this section, we describe two applications of the proposed method in
+detail. Subsection \ref{sub:app1} concerns a simple MNVP with uncorrelated
+demands. Subsection \ref{sub:app2} deals with a more complex and more
+realistic MNVP, in which the demands exhibit significant cross-price
+elasticities.
 
 \subsection{A simple example}
 \label{sub:app1}
 
-We now consider an example with artificial parameters. Suppose the retailer sales 2 products. Stocking one unit of product $a$ requires 4, 7 ,8 units of resource on dimension $A$, $B$ and $C$, respectively; Stocking one unit of product $b$ requires 6, 5, 8 units of resource on dimension $A$, $B$ and $C$. The capacities of the 3 resource dimensions are 2200, 2500 and 3500. The selling price, order cost, shortage cost and holding cost are $(8,3,1,2)$ and $(6,3,3,4)$ for product $a$ and $b$, respectively. For the simplicity of demonstration, we only simulate 12 scenarios for demand. Data and statistics are presented in Table \ref{tab:demand} and \ref{tab:summary}.
+We begin with a simple artificial example, with only two products, three
+resources, uncorrelated demands and limited scenarios. We will see that, even in this case, our approach can yield insights that are not immediately obvious.
+
+Suppose that the products are called $a$ and $b$, and the resources are
+called $A$, $B$ and $C$. Stocking one unit of product $a$ requires 4, 7 and
+8 units of resource $A$, $B$ and $C$, respectively. Stocking one unit of
+product $b$ requires 6, 5 and 8 units of resource $A$, $B$ and $C$. The
+amount of the available resources are 2200, 2500 and 3500, respectively.
+The selling price, order cost, shortage cost and holding cost are
+$(8,3,1,2)$ and $(6,3,3,4)$ for product $a$ and $b$, respectively. We also assume that both demands follow a normal distribution, with $\mu_a = \mu_b =210$, $\sigma_a = 25$ and $\sigma_b = 35$. There
+are twelve demand scenarios, as shown in Table \ref{tab:demand}. Some
+summary statistics are given in Table \ref{tab:summary}.
 
 \begin{table}[ht]
 \caption{Demand Realisations: Example}
@@ -446,27 +457,60 @@ product $b$ & 250 & 230 & 200 & 180 & 210 & 210 & 170 & 150 & 180 & 220 & 260 & 
 \toprule
  & product $a$ & product $b$\\
 \midrule
-mean & 210 & 210\\
-standard deviation & 22.96 & 35.93\\
-median & 205 & 210\\
-1st quantile & 190 & 180\\
-3rd quantile & 225 & 235\\
+mean $(\hat{\mu})$ & 210 & 210\\
+standard deviation $(\hat{\sigma})$ & 22.96 & 35.93\\
+median $(\hat{Q}_2)$ & 205 & 210\\
+1st quartile $(\hat{Q}_1)$ & 190 & 180\\
+3rd quartile $(\hat{Q}_3)$ & 225 & 235\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-There are 50 variables in total, $\big\{ x_a,x_b \big\} \cap \big\{ y_a^1,\dots,y_a^{12},y_b^1,\dots,y_b^{12} \big\} \cap \big\{ z_a^1,\dots,z_a^{12},z_b^1,\dots,z_b^{12} \big\}$, and for each constraint, we assign a slack variable and/or an artificial variable. The problem can be solve easily with linear solver, with optimal $P=1393.57$, $x_a^*=207.1$, $x_b^*=210$. Sensitivity reports see Table \ref{tab:sen_var} and Table \ref{tab:sen_con} in Appendix \ref{se:report}.
+In the LP, there are two first-stage decision variables, which we call $x_a$
+and $x_b$, and there are 48 second-stage decision variables, which we call
+$y_a^s$, $y_b^s$, $z_a^s$ and $z_b^s$ (for $s = 1, \ldots, 12$). The LP can
+be solved in under a second with a modern LP solver. The optimal first-stage
+solution is $x_a^*=207.1$, $x_b^*=210$, which yields a profit $P=1393.57$.
+The second-stage solution, along with detailed sensitivity information,
+can be found in Appendix \ref{se:report}.
 
-First, we suppose the demand of products are independent. Therefore, the marketing intervention could interfere the demand of products selectively. Consider that by marketing intervention, the mean demand of product $a$ or $b$ could be increased by $\Delta \hat{\mu}_a$ and/or $\Delta \hat{\mu}_b$. Regarding the results from sensitivity reports, we have:
-
+Now suppose that a marketing intervention would cause the mean demand of
+product $a$ or $b$ to increase by $\Delta \hat{\mu}_a$ or $\Delta \hat{\mu}_b$, respectively. From the sensitivity reports, we estimate
+the marginal gains to be:
 \[
 \begin{aligned}
-    \Delta \, P_a = 4.5 \, \Delta \hat{\mu}_a,\\
-    \Delta \, P_b = 2.64 \, \Delta \hat{\mu}_b,
+    &\Delta \, P_a = \Delta \hat{\mu}_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big) = 4.5 \, \Delta \hat{\mu}_a,\\
+    &\Delta \, P_b = \Delta \hat{\mu}_b \, \sum_{s \in S} \big( \pi_{sb}^u - \pi_{sb}^o \big) = 2.64 \, \Delta \hat{\mu}_b,
 \end{aligned}
 \]
-for relative small $\Delta \hat{\mu}_a$ and $\Delta \hat{\mu}_b$. One can compare these results with simulation outputs in Figure \ref{fig:mean} for verification.
+for small values of $\Delta \hat{\mu}_a$ and $\Delta \hat{\mu}_b$.
 
+Note that the computed margins, $(4.5,2.64)$, are smaller than the given
+unit profits, $(5,3)$. The explanation for this is that the constraint for
+resource $B$ is binding, and both products consume a positive amount of
+resource $B$. Intuitively, increasing one or more mean demands leads to pressure on the supply side, which weakens the profitability a little.
+
+Now suppose instead that we could reduce the standard deviation of demand
+for product $a$ or $b$ by $\delta \%$. Applying the formula in Subsection
+\ref{sub:th-uncor}, we estimate that the marginal gain will be:
+\[
+\begin{aligned}
+    &\Delta \, P_a = \delta_a \% \, \hat{\sigma}_a
+    \sum_{s \in S} \epsilon_a^s \big(\pi_{sa}^o - \pi_{sa}^u \big) = 1.01 \, \delta_a,\\
+    &\Delta \, P_b = \delta_b \% \, \hat{\sigma}_b
+    \sum_{s \in S} \epsilon_b^s \big(\pi_{sb}^o - \pi_{sb}^u \big) = 1.84 \, \delta_b,
+\end{aligned}
+\]
+for small values of $\delta \%$. The retailer can then compare these
+values with the cost of conducting market research and/or investing in
+improved forecasting software.
+
+To verify the result of our method, refer as ``SA result", we perform two other methods on the given problem:
+\begin{itemize}
+    \item We apply different values of change of mean/standard deviation on previous generated scenarios, and solve a sequence of SLPs. We then use the mean of those margins as ``SLP result".
+    \item We apply the change of mean/standard deviation on parameters directly, and generate new scenarios. We then solve a sequence of SLPs and use the mean of the margins as ``RS result".
+\end{itemize}
+Besides the simulation size we used above, we also select size of 48, 120 and 480 to compare the results on. We expect that our ``SA result" become closer to ``RS result" as simulation size increases. However, we don't select unreasonable big size since solving big SLP will be incredibly slow, and make this comparison irrelevant. The results from simulation size of 12 can be found in Figure \ref{fig:mean} and Figure \ref{fig:var}, while the rest results are presented in Table.
 \begin{figure}[htb]
 \centering
 \caption{Optimal cost vs. Change of mean}
@@ -474,18 +518,6 @@ for relative small $\Delta \hat{\mu}_a$ and $\Delta \hat{\mu}_b$. One can compar
 \label{fig:mean}
 \end{figure}
 
-Surprisingly, one may find that the margins of increasing mean demand $(4.5,2.64)$ are actually smaller than the unit profit $(5,3)$. That is due to the limitation on supply power. As one could notice in sensitivity reports, the time constraint on resource dimension $B$ is binding. Therefore, only promoting mean demand is not the ideal solution to the retailer, but increases the demand-supply gap, and therefore, weakens the profitability.
-
-Instead, the retailer should concentrate on easing the binding constraint, in order to gain more supply power, and therefore meet the demand. Reversely, the retailer could also look into anti-promotion methods (if exist), that convert excess demand into cash flow, e.g., ``selling" customer to other retailers to get stable cash back.
-
-On the other hand, we consider a decrease of standard deviation on estimated demand on product $a$ or $b$. Applying the formulation from Subsection \ref{sub:th-uncor}, we should have margin gain on decreasing standard deviation by $k\%$ as:
-\[
-\begin{aligned}
-    \Delta \, P_a = 1.01 \, k_a,\\
-    \Delta \, P_b = 1.84 \, k_b,
-\end{aligned}
-\]
-providing the demand remain positive and standard deviation is no less than zero. In this case, we can see that conducting market research may increase profit. The simulated results are presented in Figure \ref{fig:var}. The retailer, therefore, could decide whether or not to use market research and to what extent should the research be used by comparing research cost and the margin gain.
 \begin{figure}[htb]
 \centering
 \caption{Optimal cost vs. Change of variance}
@@ -495,12 +527,12 @@ providing the demand remain positive and standard deviation is no less than zero
 
 \subsection{Cross-price elasticities} \label{sub:app2}
 
-We now suppose the demand of products are correlated, and the cross-price elasticity is known. According to traditional economics textbook \cite{Fr08}. The cross-price elasticity measures the responsiveness in the quantity demanded of one product when the price for another product changes. An elasticity $E_{ij} = -\omega$ means that each percent of selling price increase in product $j$ will causes $\omega$ percents of demand decrease in product $i$. Recall the demand formulation:
+We now suppose the demand of products are correlated, and the cross-price elasticity is known. According to traditional economics textbook \cite{FC13}, the cross-price elasticity measures the responsiveness in the quantity demanded of one product when the price for another product changes. An elasticity $E_{ij} = -\omega$ means that each percent of selling price increase in product $j$ will causes $\omega$ percents of demand decrease in product $i$. Recall the demand formulation:
 \[
 \mathbf{\tilde{d}} =  \mathbf{\hat{M}} \mathbf{w}
 + \mathbf{\hat{N}} \mbox{\boldmath$\tilde{\epsilon}$}.
 \]
-We could allow the explanatory variable $\mathbf{w}$ to contain prices of all relevant products, and metrics $\mathbf{\hat{M}}$ to contain elasticities estimation. With the context of previous example, we let:
+We could allow the explanatory variable $\mathbf{w}$ to contain prices of all relevant products, and metrics $\mathbf{\hat{M}}$ to contain adjusted elasticities estimation. With the context of previous example, we let:
 \[
 \begin{aligned}
 &\mathbf{\hat{M}} = 
@@ -525,14 +557,14 @@ p_b
 \end{pmatrix}
 \end{aligned}
 \]
-where set $E_{aa} = -0.6$, $E_{ab} = 0.2$, $E_{ba} = 0.4$ and $E_{bb} = -0.3$, while $\alpha_a$, $\alpha_b$ can be calculated by $\mbox{\boldmath$\mu$} = \mathbf{\hat{M}}\mathbf{w}$.
+where we set $E_{aa} = -0.6$, $E_{ab} = 0.2$, $E_{ba} = 0.4$ and $E_{bb} = -0.3$, while $\alpha_a$, $\alpha_b$ can be calculated by $\mbox{\boldmath$\hat{\mu}$} = \mathbf{\hat{M}}\mathbf{w}$.
 
 Moreover, we recall that the elements in \mbox{\boldmath$\tilde{\epsilon}$} are independent, and set
 \[
 \mathbf{\hat{N}} = 
 \begin{pmatrix}
-\hat{\sigma}_a^m&\hat{\sigma}_a&0\\
-\hat{\sigma}_b^m&0&\hat{\sigma}_b\\
+\hat{\sigma}_a^m&\hat{\sigma}_a^e&0\\
+\hat{\sigma}_b^m&0&\hat{\sigma}_b^e\\
 \end{pmatrix} =
 \begin{pmatrix}
 16.94&15.5&0\\
@@ -545,19 +577,37 @@ Moreover, we recall that the elements in \mbox{\boldmath$\tilde{\epsilon}$} are 
 \tilde{\epsilon}_b
 \end{pmatrix},
 \]
-where $\hat{\sigma}_a^m \tilde{\epsilon}_m$ and $\hat{\sigma}_b^m \tilde{\epsilon}_m$ represent the uncontrollable error of product $a$ and $b$, while $\hat{\sigma}_a \tilde{\epsilon}_a$ and $\hat{\sigma}_b \tilde{\epsilon}_b$
-represent the reducible error due to inaccurate forecasts. We let $\hat{\sigma}_a = \hat{\sigma}_b$ in the setting since we assume there is no significant difference in the forecasting method used on each product.
+where $\hat{\sigma}_a^m \tilde{\epsilon}_m$ and $\hat{\sigma}_b^m \tilde{\epsilon}_m$ represent the uncontrollable error of product $a$ and $b$, while $\hat{\sigma}_a^e \tilde{\epsilon}_a$ and $\hat{\sigma}_b^e \tilde{\epsilon}_b$
+represent the reducible error due to inaccurate forecasts. We let $\hat{\sigma}_a^e = \hat{\sigma}_b^e$ in the setting since we assume there is no significant difference in the forecasting method used on each product. One can check the value with Table \ref{tab:summary} that $\hat{\sigma}_a^2 = \hat{\sigma}_a^{m2} + \hat{\sigma}_a^{e2}$ and $\hat{\sigma}_b^2 = \hat{\sigma}_b^{m2} + \hat{\sigma}_b^{e2}$.
 
 We first consider the effect of marketing intervention on price setting. Suppose that by marketing intervention, the selling price of product $a$ or $b$ could be altered by $\Delta p_a$ and/or $\Delta p_b$. This change will now affect both the parameters of objective function and corresponding constraints (\ref{eq:over}) and (\ref{eq:under}). Recalling the margin can be computed by $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$,
 as long as the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$
 are ``sufficiently small”, we have: 
 \[
 \begin{aligned}
-    \Delta \, P_a = 156.25 \, \Delta p_a,\\
-    \Delta \, P_b = 199.61 \, \Delta p_b.
+    \Delta \, P_a &= \big( x_a^* - |S|^{-1} \sum_{s \in S} y_a^s \big) \Delta p_a + \Delta \hat{\mu}_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big)\\
+    &= \big( x_a^* - |S|^{-1} \sum_{s \in S} y_a^s \big) \Delta p_a + \frac{E_{aa}}{p_a}\mu_a \Delta p_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big)\\
+    &= 156.25 \, \Delta p_a,
 \end{aligned}
 \]
-In this case, we can see that increasing unit selling price is profitable for the retailer, as long as the change is small. Moreover, we find the optimal profit is more sensitive to the selling price on product $b$ than to the selling price on product $a$. That is due to the uneven sensitivities of each product. Recalling the results from \ref{sub:app1}, the margin of increasing mean demand of product $a$ is much bigger than that of product $b$. Therefore, on given settings, increasing the selling price on product $b$ (which increases $\hat{\mu}_a$ but decreases $\hat{\mu}_b$) is more profitable than increasing the selling price on product $a$ (which increases $\hat{\mu}_b$ but decreases $\hat{\mu}_a$).
+and
+\[
+\Delta \, P_b = 199.61 \, \Delta p_b.
+\]
+One can compare these results with simulation outputs in Figure \ref{fig:price} for verification. In this case, we can see that increasing unit selling price is profitable for the retailer, and the margin is linear when change is small. Moreover, we find the optimal profit is more sensitive to the selling price on product $b$ than to the selling price on product $a$. That is due to the uneven sensitivities of each product. Recalling the results from \ref{sub:app1}, the margin of increasing mean demand of product $a$ is much bigger than that of product $b$. Therefore, on given settings, increasing the selling price on product $b$ (which increases $\hat{\mu}_a$ but decreases $\hat{\mu}_b$) is more profitable than increasing the selling price on product $a$ (which increases $\hat{\mu}_b$ but decreases $\hat{\mu}_a$).
+
+\begin{figure}[htb]
+\centering
+\caption{Optimal cost vs. Change of selling price}
+\includegraphics{Example-figure_files/figure-latex/demandunder-1.pdf}
+\label{fig:price}
+\end{figure}
+
+On the other hand, we consider a improvement of forecasting accuracy. Suppose that applying better forecasting technique could reduce $\hat{\sigma}_a^e$ and $\hat{\sigma}_b^e$ by $\delta \%$ at the same time, we have equivalent:
+\[
+\delta_j \% = \frac{\hat{\sigma}_j - \sqrt{\hat{\sigma}_j^2 - \big( \delta \% \hat{\sigma}_j^e \big)^2}}{\hat{\sigma}_j}.
+\]
+We can then compute the margin as in Subsection \ref{sub:app1}.
 
 %%%%%%%%%%%%%%%%%%%%
 \section{Summary}
@@ -578,12 +628,11 @@ We also perform an example to demonstrate the approach. The result from our appr
 
 \appendix
 
-\section{Sensitivity Report: An Example}
-\label{se:report}
+\section{Detailed Output for First Example} \label{se:report}
 
 \begingroup\fontsize{7}{9}\selectfont
 \begin{longtable}{cccccc}
-\caption{Sensitivity Report: Variable Cells}
+\caption{Variable values, reduced costs and objective function ranges}
 \label{tab:sen_var}\\
 \toprule
 variable & final value & reduced cost & coefficient & allowable increase & allowable decrease\\
@@ -662,7 +711,7 @@ $x_b$ & 210.00 & 0.000 & 3.000 & 0.607 & 0.226\\*
 
 \begingroup\fontsize{6}{9}\selectfont
 \begin{longtable}{cccccc}
-\caption{Sensitivity Report: Constraints}
+\caption{Shadow prices and right-hand side ranges}
 \label{tab:sen_con}\\
 \toprule
 row & final value & shadow price & constraint RHS & allowable increase & allowable decrease\\
@@ -677,9 +726,9 @@ row & final value & shadow price & constraint RHS & allowable increase & allowab
 \endfoot
 \bottomrule
 \endlastfoot
-time\_A & 2088.6 & 0.0 & 2200 & 10000.0 & 10000.0\\
+time\_A & 2088.6 & 0.0 & 2200 & 10000.0 & 111.4\\
 time\_B & 2500.0 & 0.071 & 2500 & 20.0 & 50.0\\
-time\_C & 3337.1 & 0.0 & 3500 & 10000.0 & 10000.0\\
+time\_C & 3337.1 & 0.0 & 3500 & 10000.0 & 162.9\\
 over\_a\textasciicircum{}1 & 200.0 & 0.833 & 200 & 7.1 & 10000.0\\
 over\_a\textasciicircum{}2 & 207.1 & 0.0 & 220 & 10000.0 & 12.9\\
 \addlinespace
