@@ -505,12 +505,17 @@ for small values of $\delta \%$. The retailer can then compare these
 values with the cost of conducting market research and/or investing in
 improved forecasting software.
 
-To verify the result of our method, refer as ``SA result", we perform two other methods on the given problem:
+In Figure \ref{fig:mean} and Figure \ref{fig:var}, we
+apply different values of changes on the twelve  generated scenarios above, and solve a sequence of SLPs to construct the line of changes, so as we can see the valid range of our method graphically. Since these ranges don't change much as simulation size increases, we don't present duplicated figures here. 
+
+Furthermore, to verify the accuracy of our method, refer as ``SA margin",  we perform two other approaches on the given problem. We first select a reasonable length of value changes (increases from 0 to 30 for mean demand and decreases from 0\% to 10\% for standard deviation) and cut it by unit length, then:
 \begin{itemize}
-    \item We apply different values of change of mean/standard deviation on previous generated scenarios, and solve a sequence of SLPs. We then use the mean of those margins as ``SLP result".
-    \item We apply the change of mean/standard deviation on parameters directly, and generate new scenarios. We then solve a sequence of SLPs and use the mean of the margins as ``RS result".
+    \item We
+    apply different values of changes on previous generated scenarios, and solve a sequence of SLPs. We use the mean of those margins as ``SLP margin".
+    \item We apply the changes on parameters directly, and generate new scenarios. We solve a sequence of SLPs and use the mean of the margins as ``RS margin".
 \end{itemize}
-Besides the simulation size we used above, we also select size of 48, 120 and 480 to compare the results on. We expect that our ``SA result" become closer to ``RS result" as simulation size increases. However, we don't select unreasonable big size since solving big SLP will be incredibly slow, and make this comparison irrelevant. The results from simulation size of 12 can be found in Figure \ref{fig:mean} and Figure \ref{fig:var}, while the rest results are presented in Table.
+Besides the simulation size we used above, we also select size of 48, 120 and 480 to compare the results on.
+The comparison results can be seen in Table.
 \begin{figure}[htb]
 \centering
 \caption{Optimal cost vs. Change of mean}
