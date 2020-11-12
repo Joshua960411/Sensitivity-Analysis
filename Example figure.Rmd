@@ -12,7 +12,14 @@ library(plotly)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r original}
+```{r solver}
+simulation_size<-c(12,48,120,480)
+
+mean_1<-210
+mean_2<-210
+sd_1<-25
+sd_2<-35
+
 p_1<-8
 c1_1<-3
 c2_1<-2
@@ -22,138 +29,111 @@ c1_2<-3
 c2_2<-4
 c3_2<-3
 
+unit_1a<-4
+unit_1b<-7
+unit_1c<-8
+unit_2a<-6
+unit_2b<-5
+unit_2c<-8
+
 time_a<-2200
 time_b<-2500
 time_c<-3500
+
 demand_1<-c(200,220,180,190,190,210,240,250,200,190,210,240)
 demand_2<-c(250,230,200,180,210,210,170,150,180,220,260,260)
-objective.in<-c(rep(-(p_1+c2_1)/12,12),rep(-(p_2+c2_2)/12,12),rep(-c3_1/12,12),rep(-c3_2/12,12),p_1-c1_1,p_2-c1_2)
-con_t1<-c(rep(0,48),4,6)
-con_t2<-c(rep(0,48),7,5)
-con_t3<-c(rep(0,48),8,8)
-con_o1<-c(1,rep(0,47),-1,0)
-con_o2<-c(0,1,rep(0,46),-1,0)
-con_o3<-c(rep(0,2),1,rep(0,45),-1,0)
-con_o4<-c(rep(0,3),1,rep(0,44),-1,0)
-con_o5<-c(rep(0,4),1,rep(0,43),-1,0)
-con_o6<-c(rep(0,5),1,rep(0,42),-1,0)
-con_o7<-c(rep(0,6),1,rep(0,41),-1,0)
-con_o8<-c(rep(0,7),1,rep(0,40),-1,0)
-con_o9<-c(rep(0,8),1,rep(0,39),-1,0)
-con_o10<-c(rep(0,9),1,rep(0,38),-1,0)
-con_o11<-c(rep(0,10),1,rep(0,37),-1,0)
-con_o12<-c(rep(0,11),1,rep(0,36),-1,0)
-con_o13<-c(rep(0,12),1,rep(0,35),0,-1)
-con_o14<-c(rep(0,13),1,rep(0,34),0,-1)
-con_o15<-c(rep(0,14),1,rep(0,33),0,-1)
-con_o16<-c(rep(0,15),1,rep(0,32),0,-1)
-con_o17<-c(rep(0,16),1,rep(0,31),0,-1)
-con_o18<-c(rep(0,17),1,rep(0,30),0,-1)
-con_o19<-c(rep(0,18),1,rep(0,29),0,-1)
-con_o20<-c(rep(0,19),1,rep(0,28),0,-1)
-con_o21<-c(rep(0,20),1,rep(0,27),0,-1)
-con_o22<-c(rep(0,21),1,rep(0,26),0,-1)
-con_o23<-c(rep(0,22),1,rep(0,25),0,-1)
-con_o24<-c(rep(0,23),1,rep(0,24),0,-1)
-con_u1<-c(rep(0,24),1,rep(0,23),1,0)
-con_u2<-c(rep(0,25),1,rep(0,22),1,0)
-con_u3<-c(rep(0,26),1,rep(0,21),1,0)
-con_u4<-c(rep(0,27),1,rep(0,20),1,0)
-con_u5<-c(rep(0,28),1,rep(0,19),1,0)
-con_u6<-c(rep(0,29),1,rep(0,18),1,0)
-con_u7<-c(rep(0,30),1,rep(0,17),1,0)
-con_u8<-c(rep(0,31),1,rep(0,16),1,0)
-con_u9<-c(rep(0,32),1,rep(0,15),1,0)
-con_u10<-c(rep(0,33),1,rep(0,14),1,0)
-con_u11<-c(rep(0,34),1,rep(0,13),1,0)
-con_u12<-c(rep(0,35),1,rep(0,12),1,0)
-con_u13<-c(rep(0,36),1,rep(0,11),0,1)
-con_u14<-c(rep(0,37),1,rep(0,10),0,1)
-con_u15<-c(rep(0,38),1,rep(0,9),0,1)
-con_u16<-c(rep(0,39),1,rep(0,8),0,1)
-con_u17<-c(rep(0,40),1,rep(0,7),0,1)
-con_u18<-c(rep(0,41),1,rep(0,6),0,1)
-con_u19<-c(rep(0,42),1,rep(0,5),0,1)
-con_u20<-c(rep(0,43),1,rep(0,4),0,1)
-con_u21<-c(rep(0,44),1,rep(0,3),0,1)
-con_u22<-c(rep(0,45),1,rep(0,2),0,1)
-con_u23<-c(rep(0,46),1,0,0,1)
-con_u24<-c(rep(0,47),1,0,1)
-const.mat<-rbind(con_t1,con_t2,con_t3
-                 ,con_o1,con_o2,con_o3,con_o4,con_o5,con_o6,con_o7,con_o8,con_o9,con_o10,con_o11,con_o12
-                 ,con_o13,con_o14,con_o15,con_o16,con_o17,con_o18,con_o19,con_o20,con_o21,con_o22,con_o23,con_o24
-                 ,con_u1,con_u2,con_u3,con_u4,con_u5,con_u6,con_u7,con_u8,con_u9,con_u10,con_u11,con_u12
-                 ,con_u13,con_u14,con_u15,con_u16,con_u17,con_u18,con_u19,con_u20,con_u21,con_u22,con_u23,con_u24)
+
+size<-simulation_size[1]
+objective.in<-c(rep(-(p_1+c2_1)/size,size),rep(-(p_2+c2_2)/size,size),rep(-c3_1/size,size),rep(-c3_2/size,size),p_1-c1_1,p_2-c1_2)
+
+con_t1<-c(rep(0,4*size),unit_1a,unit_2a)
+con_t2<-c(rep(0,4*size),unit_1b,unit_2b)
+con_t3<-c(rep(0,4*size),unit_1c,unit_2c)
+
+mac<-matrix(0L,nrow=4*size,ncol=4*size)
+diag(mac)<-1
+mac<-cbind(mac,matrix(c(rep(-1,size),rep(0,size),rep(1,size),rep(0,size),
+                        rep(0,size),rep(-1,size),rep(0,size),rep(1,size)),ncol=2))
+const.mat<-rbind(con_t1,con_t2,con_t3,mac)
+
+const.dir<-c(rep("<=",3),rep(">=",4*size))
 const.rhs<-c(time_a,time_b,time_c,-demand_1,-demand_2,demand_1,demand_2)
-const.dir<-c(rep("<=",3),rep(">=",48))
 optimum_original<-lp(direction="max", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
 
 ```
 
 ```{r mean}
-epsilon_1<-seq(-10,10,1)
+epsilon<-seq(0,30,0.5)
 op_set<-c()
-for (ep in epsilon_1){
+for (ep in epsilon){
   new_demand_1<-demand_1+ep
   new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
   op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(epsilon_1,op_set,xlab="Delta",ylab="Optimal profit",type="b", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=1 , pch=19)
+plot(epsilon,op_set,xlab="Delta",ylab="Optimal profit",type="l", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=2 , pch=19,lty=2)
 
-epsilon_2<-seq(-10,10,1)
 op_set<-c()
-for (ep in epsilon_2){
+for (ep in epsilon){
   new_demand_2<-demand_2+ep
   new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
   op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-lines(epsilon_2,op_set, col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19 , type="b" )
+lines(epsilon,op_set, col=rgb(0.2,0.6,0.3,0.7) , lwd=2 , pch=19 , type="l" ,lty=3)
+
+
 legend("topleft", 
-  legend = c("Changes on product a mean", "Changes on product b mean"), 
-  col = c(rgb(0.2,0.4,0.1,0.7), 
-  rgb(0.8,0.4,0.1,0.7)), 
-  pch = c(19,19), 
+  legend = c("change of mean demand on product a",
+             "change of mean demand on product b"), 
+  col = c(rgb(0.8,0.4,0.1,0.7), 
+  rgb(0.2,0.6,0.3,0.7)), 
   bty = "n", 
   pt.cex = 1, 
-  cex = 1, 
+  cex = 1,
+  lwd=2.5,
+  lty=2:3,
   text.col = "black", 
   horiz = F , 
   inset = c(0.05, 0.05))
 ```
 
+
+
 ```{r var}
-k_2<-seq(-10,10,1)
+del<-seq(0,20,1)
 op_set<-c()
-for (k in k_2){
+for (k in del){
   new_demand_2<-mean(demand_2)+(demand_2-mean(demand_2))*(100-k)/100
   new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
   op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-plot(k_2,op_set,xlab="delta",ylab="Optimal cost",type="b", bty="l",col=rgb(0.8,0.4,0.1,0.7), lwd=1 , pch=19)
+par(bty="l")
+plot(del,op_set,xlab="Delta",ylab="Optimal profit",type="l", bty="l", col=rgb(0.2,0.6,0.3,0.7)  , lwd=2 , pch=19,lty=2)
 
-k_1<-seq(-10,10,1)
+
 op_set<-c()
-for (k in k_1){
+for (k in del){
   new_demand_1<-mean(demand_1)+(demand_1-mean(demand_1))*(100-k)/100
   new_const.rhs<-c(time_a,time_b,time_c,-new_demand_1,-demand_2,new_demand_1,demand_2)
   op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
   op_set<-c(op_set,op_cost)
 }
-par(bty="l")
-lines(k_1,op_set,col=rgb(0.2,0.4,0.1,0.7), lwd=1 , pch=19, type="b" )
+lines(del,op_set, col=rgb(0.8,0.4,0.1,0.7) , lwd=2 , pch=19 , type="l" ,lty=3)
+
 
 legend("topleft", 
-  legend = c("Changes on product a  standard deviation", "Changes on product b  standard deviation"), 
-  col = c(rgb(0.2,0.4,0.1,0.7), 
-  rgb(0.8,0.4,0.1,0.7)), 
-  pch = c(19,19), 
+  legend = c("change of standard deviation on product a",
+             "change of standard deviation on product b"), 
+  col = c(rgb(0.8,0.4,0.1,0.7), 
+  rgb(0.2,0.6,0.3,0.7)), 
   bty = "n", 
   pt.cex = 1, 
-  cex = 1, 
+  cex = 1,
+  lwd=2.5,
+  lty=2:3,
   text.col = "black", 
   horiz = F , 
   inset = c(0.05, 0.05))
@@ -179,7 +159,7 @@ for (de in delta){
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(delta,op_set,xlab="Delta",ylab="Optimal cost",type="b", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
+plot(delta,op_set,xlab="Delta",ylab="Optimal profit",type="b", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=1 , pch=19)
 
 
 
@@ -210,4 +190,49 @@ legend("topleft",
   inset = c(0.02,0.01))
 ```
 
+```{r mean2}
+epsilon<-seq(0,50,1)
+op_set<-c(optimum_original$objval)
+for (ep in epsilon[-1]){
+  new_mean_2<-mean_2+ep
+  new_demand_2<-rnorm(size,new_mean_2,sd_2)
+  new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
+  op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+par(bty="l")
+plot(epsilon,op_set,xlab="Delta",ylab="Optimal profit",type="l", bty="l", col=rgb(0.2,0.4,0.1,0.7) , lwd=2.5 , pch=19,lty=1)
 
+
+pi_mean_2<-sum(-optimum_original$duals[(4+size):(3+2*size)],optimum_original$duals[(4+3*size):(3+4*size)])
+
+lines(epsilon,optimum_original$objval+epsilon*pi_mean_2, col=rgb(0.8,0.6,0.3,0.7) , lwd=2.5 , pch=19 , type="l" ,lty=2)
+
+op_set<-c()
+for (ep in epsilon){
+  new_demand_2<-demand_2+ep
+  new_const.rhs<-c(time_a,time_b,time_c,-demand_1,-new_demand_2,demand_1,new_demand_2)
+  op_cost<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  op_set<-c(op_set,op_cost)
+}
+lines(epsilon,op_set, col=rgb(0.3,0.5,0.6,0.7) , lwd=2.5 , pch=19 , type="l" ,lty=3)
+
+
+
+legend("bottomright", 
+  legend = c("RA result on product b",
+             "SA result on product b",
+             "SLP result on product b"), 
+  col = c(rgb(0.2,0.4,0.1,0.7), 
+  rgb(0.8,0.6,0.3,0.7),
+  rgb(0.3,0.5,0.6,0.7) ), 
+  bty = "n", 
+  pt.cex = 1, 
+  cex = 1,
+  lwd=2.5,
+  lty=1:3,
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.05, 0.05))
+
+```
