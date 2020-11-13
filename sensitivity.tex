@@ -527,7 +527,7 @@ the valid range of our method.
 
 One can see that our result with sensitivity analysis can remain valid when the increase of mean demand smaller than 14 (approximately) for product $a$ or smaller than 20 (approximately) for product $b$, and can remain valid with all choice of $\delta \%$ smaller than 1. 
 
-Furthermore, to verify the accuracy of our method, refer as ``SA margin",  we perform two other approaches on the given problem. We first select a reasonable length of value changes (increases from 0 to 30 for mean demand and decreases from 0\% to 10\% for standard deviation) and cut it by unit length, then:
+Furthermore, to verify the accuracy of our method, refer as ``SA margin",  we perform two other approaches on the given problem. We first select a reasonable length of value changes (increases from 0 to 20 for mean demand and decreases from 0\% to 20\% for standard deviation) and cut it by unit length, then:
 \begin{itemize}
     \item We
     apply different values of changes on previous generated scenarios, and solve a sequence of SLPs. We use the mean of those margins as ``SLP margin".
@@ -605,14 +605,7 @@ and
 \[
 \Delta \, P_b = 199.61 \, \Delta p_b.
 \]
-One can compare these results with simulation outputs in Figure \ref{fig:price} for verification. In this case, we can see that increasing unit selling price is profitable for the retailer, and the margin is linear when change is small. Moreover, we find the optimal profit is more sensitive to the selling price on product $b$ than to the selling price on product $a$. That is due to the uneven sensitivities of each product. Recalling the results from \ref{sub:app1}, the margin of increasing mean demand of product $a$ is much bigger than that of product $b$. Therefore, on given settings, increasing the selling price on product $b$ (which increases $\hat{\mu}_a$ but decreases $\hat{\mu}_b$) is more profitable than increasing the selling price on product $a$ (which increases $\hat{\mu}_b$ but decreases $\hat{\mu}_a$).
-
-\begin{figure}[htb]
-\centering
-\caption{Optimal cost vs. Change of selling price}
-\includegraphics{Example-figure_files/figure-latex/demandunder-1.pdf}
-\label{fig:price}
-\end{figure}
+In this case, we can see that increasing unit selling price is profitable for the retailer, and the margin is linear when change is small. Moreover, we find the optimal profit is more sensitive to the selling price on product $b$ than to the selling price on product $a$. That is due to the uneven sensitivities of each product. Recalling the results from \ref{sub:app1}, the margin of increasing mean demand of product $a$ is much bigger than that of product $b$. Therefore, on given settings, increasing the selling price on product $b$ (which increases $\hat{\mu}_a$ but decreases $\hat{\mu}_b$) is more profitable than increasing the selling price on product $a$ (which increases $\hat{\mu}_b$ but decreases $\hat{\mu}_a$).
 
 On the other hand, we consider a improvement of forecasting accuracy. Suppose that applying better forecasting technique could reduce $\hat{\sigma}_a^e$ and $\hat{\sigma}_b^e$ by $\delta \%$ at the same time, we have equivalent:
 \[
