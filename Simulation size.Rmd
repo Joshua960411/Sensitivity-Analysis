@@ -1,0 +1,268 @@
+---
+title: "size effect"
+output: 
+  pdf_document:
+    keep_tex: true
+always_allow_html: true
+---
+
+```{r setup}
+library(lpSolve)
+library(plotly)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r solver}
+
+mean_1<-210
+mean_2<-210
+sd_1<-24
+sd_2<-30
+
+p_1<-8
+c1_1<-3
+c2_1<-2
+c3_1<-1
+p_2<-6
+c1_2<-3
+c2_2<-4
+c3_2<-3
+
+unit_1a<-4
+unit_1b<-7
+unit_1c<-8
+unit_2a<-6
+unit_2b<-5
+unit_2c<-8
+
+time_a<-2200
+time_b<-2500
+time_c<-3500
+
+demand_1_12<-c(200,220,180,190,190,210,240,250,200,190,210,240)
+demand_2_12<-c(250,230,200,180,210,210,170,150,180,220,260,260)
+demand_1_48<-rnorm(48,mean_1,sd_1)
+demand_2_48<-rnorm(48,mean_2,sd_2)
+demand_1_120<-rnorm(120,mean_1,sd_1)
+demand_2_120<-rnorm(120,mean_2,sd_2)
+demand_1_240<-rnorm(240,mean_1,sd_1)
+demand_2_240<-rnorm(240,mean_2,sd_2)
+
+
+epsilon<-seq(0,10,0.5)
+del<-seq(0,20,1)
+
+solver<-function(size,demand_1,demand_2){
+  objective.in<-c(rep(-(p_1+c2_1)/size,size),rep(-(p_2+c2_2)/size,size),rep(-c3_1/size,size),rep(-c3_2/size,size),p_1-c1_1,
+                  p_2-c1_2)
+
+  con_t1<-c(rep(0,4*size),unit_1a,unit_2a)
+  con_t2<-c(rep(0,4*size),unit_1b,unit_2b)
+  con_t3<-c(rep(0,4*size),unit_1c,unit_2c)
+
+  mac<-matrix(0L,nrow=4*size,ncol=4*size)
+  diag(mac)<-1
+  mac<-cbind(mac,matrix(c(rep(-1,size),rep(0,size),rep(1,size),rep(0,size),
+                          rep(0,size),rep(-1,size),rep(0,size),rep(1,size)),ncol=2))
+  const.mat<-rbind(con_t1,con_t2,con_t3,mac)
+
+  const.dir<-c(rep("<=",3),rep(">=",4*size))
+  const.rhs<-c(time_a,time_b,time_c,-demand_1,-demand_2,demand_1,demand_2)
+  optimum_original<-lp(direction="max", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
+  return(optimum_original)
+}
+
+```
+
+```{r compute1}
+#12
+##rs
+record.rs_mean_1_12<-c()
+for (i in 1:50) {
+  op_set<-c(solver(12,demand_1_12,demand_2_12)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_1<-mean_1+ep
+    new_demand_1_12<-rnorm(12,new_mean_1,sd_1)
+    op_set<-c(op_set,solver(12,new_demand_1_12,demand_2_12)$objval)
+  }
+  record.rs_mean_1_12<-c(record.rs_mean_1_12,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_1_12<-2*mean(record.rs_mean_1_12)
+
+record.rs_mean_2_12<-c()
+for (i in 1:50) {
+  op_set<-c(solver(12,demand_1_12,demand_2_12)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_2<-mean_2+ep
+    new_demand_2_12<-rnorm(12,new_mean_2,sd_2)
+    op_set<-c(op_set,solver(12,demand_1_12,new_demand_2_12)$objval)
+  }
+  record.rs_mean_2_12<-c(record.rs_mean_2_12,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_2_12<-2*mean(record.rs_mean_2_12)
+
+##slp
+op_set<-c()
+for (ep in epsilon){
+  new_demand_1_12<-demand_1_12+ep
+  op_set<-c(op_set,solver(12,new_demand_1_12,demand_2_12)$objval)
+}
+slp_mean_1_12<-2*mean(op_set[2:21]-op_set[1:20])
+
+op_set<-c()
+for (ep in epsilon){
+  new_demand_2_12<-demand_2_12+ep
+  op_set<-c(op_set,solver(12,demand_1_12,new_demand_2_12)$objval)
+}
+slp_mean_2_12<-2*mean(op_set[2:21]-op_set[1:20])
+
+##sa
+sa_mean_1_12<-sum(-solver(12,demand_1_12,demand_2_12)$duals[4:(3+12)],solver(12,demand_1_12,demand_2_12)$duals[(4+2*12):(3+3*12)])
+sa_mean_2_12<-sum(-solver(12,demand_1_12,demand_2_12)$duals[(4+12):(3+2*12)],solver(12,demand_1_12,demand_2_12)$duals[(4+3*12):(3+4*12)])
+
+#48
+##rs
+record.rs_mean_1_48<-c()
+for (i in 1:50) {
+  op_set<-c(solver(48,demand_1_48,demand_2_48)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_1<-mean_1+ep
+    new_demand_1_48<-rnorm(48,new_mean_1,sd_1)
+    op_set<-c(op_set,solver(48,new_demand_1_48,demand_2_48)$objval)
+  }
+  record.rs_mean_1_48<-c(record.rs_mean_1_48,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_1_48<-2*mean(record.rs_mean_1_48)
+
+record.rs_mean_2_48<-c()
+for (i in 1:50) {
+  op_set<-c(solver(48,demand_1_48,demand_2_48)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_2<-mean_2+ep
+    new_demand_2_48<-rnorm(48,new_mean_2,sd_2)
+    op_set<-c(op_set,solver(48,demand_1_48,new_demand_2_48)$objval)
+  }
+  record.rs_mean_2_48<-c(record.rs_mean_2_48,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_2_48<-2*mean(record.rs_mean_2_48)
+
+##slp
+op_set<-c()
+for (ep in epsilon){
+  new_demand_1_48<-demand_1_48+ep
+  op_set<-c(op_set,solver(48,new_demand_1_48,demand_2_48)$objval)
+}
+slp_mean_1_48<-2*mean(op_set[2:21]-op_set[1:20])
+
+op_set<-c()
+for (ep in epsilon){
+  new_demand_2_48<-demand_2_48+ep
+  op_set<-c(op_set,solver(48,demand_1_48,new_demand_2_48)$objval)
+}
+slp_mean_2_48<-2*mean(op_set[2:21]-op_set[1:20])
+
+##sa
+sa_mean_1_48<-sum(-solver(48,demand_1_48,demand_2_48)$duals[4:(3+48)],solver(48,demand_1_48,demand_2_48)$duals[(4+2*48):(3+3*48)])
+sa_mean_2_48<-sum(-solver(48,demand_1_48,demand_2_48)$duals[(4+48):(3+2*48)],solver(48,demand_1_48,demand_2_48)$duals[(4+3*48):(3+4*48)])
+
+#120
+##rs
+record.rs_mean_1_120<-c()
+for (i in 1:50) {
+  op_set<-c(solver(120,demand_1_120,demand_2_120)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_1<-mean_1+ep
+    new_demand_1_120<-rnorm(120,new_mean_1,sd_1)
+    op_set<-c(op_set,solver(120,new_demand_1_120,demand_2_120)$objval)
+  }
+  record.rs_mean_1_120<-c(record.rs_mean_1_120,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_1_120<-2*mean(record.rs_mean_1_120)
+
+record.rs_mean_2_120<-c()
+for (i in 1:50) {
+  op_set<-c(solver(120,demand_1_120,demand_2_120)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_2<-mean_2+ep
+    new_demand_2_120<-rnorm(120,new_mean_2,sd_2)
+    op_set<-c(op_set,solver(120,demand_1_120,new_demand_2_120)$objval)
+  }
+  record.rs_mean_2_120<-c(record.rs_mean_2_120,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_2_120<-2*mean(record.rs_mean_2_120)
+
+##slp
+op_set<-c()
+for (ep in epsilon){
+  new_demand_1_120<-demand_1_120+ep
+  op_set<-c(op_set,solver(120,new_demand_1_120,demand_2_120)$objval)
+}
+slp_mean_1_120<-2*mean(op_set[2:21]-op_set[1:20])
+
+op_set<-c()
+for (ep in epsilon){
+  new_demand_2_120<-demand_2_120+ep
+  op_set<-c(op_set,solver(120,demand_1_120,new_demand_2_120)$objval)
+}
+slp_mean_2_120<-2*mean(op_set[2:21]-op_set[1:20])
+
+##sa
+sa_mean_1_120<-sum(-solver(120,demand_1_120,demand_2_120)$duals[4:(3+120)],solver(120,demand_1_120,demand_2_120)$duals[(4+2*120):(3+3*120)])
+sa_mean_2_120<-sum(-solver(120,demand_1_120,demand_2_120)$duals[(4+120):(3+2*120)],solver(120,demand_1_120,demand_2_120)$duals[(4+3*120):(3+4*120)])
+
+#240
+##rs
+record.rs_mean_1_240<-c()
+for (i in 1:50) {
+  op_set<-c(solver(240,demand_1_240,demand_2_240)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_1<-mean_1+ep
+    new_demand_1_240<-rnorm(240,new_mean_1,sd_1)
+    op_set<-c(op_set,solver(240,new_demand_1_240,demand_2_240)$objval)
+  }
+  record.rs_mean_1_240<-c(record.rs_mean_1_240,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_1_240<-2*mean(record.rs_mean_1_240)
+
+record.rs_mean_2_240<-c()
+for (i in 1:50) {
+  op_set<-c(solver(240,demand_1_240,demand_2_240)$objval)
+  for (ep in epsilon[-1]){
+    new_mean_2<-mean_2+ep
+    new_demand_2_240<-rnorm(240,new_mean_2,sd_2)
+    op_set<-c(op_set,solver(240,demand_1_240,new_demand_2_240)$objval)
+  }
+  record.rs_mean_2_240<-c(record.rs_mean_2_240,mean(op_set[2:21]-op_set[1:20]))
+}
+rs_mean_2_240<-2*mean(record.rs_mean_2_240)
+
+##slp
+op_set<-c()
+for (ep in epsilon){
+  new_demand_1_240<-demand_1_240+ep
+  op_set<-c(op_set,solver(240,new_demand_1_240,demand_2_240)$objval)
+}
+slp_mean_1_240<-2*mean(op_set[2:21]-op_set[1:20])
+
+op_set<-c()
+for (ep in epsilon){
+  new_demand_2_240<-demand_2_240+ep
+  op_set<-c(op_set,solver(240,demand_1_240,new_demand_2_240)$objval)
+}
+slp_mean_2_240<-2*mean(op_set[2:21]-op_set[1:20])
+
+##sa
+sa_mean_1_240<-sum(-solver(240,demand_1_240,demand_2_240)$duals[4:(3+240)],solver(240,demand_1_240,demand_2_240)$duals[(4+2*240):(3+3*240)])
+sa_mean_2_240<-sum(-solver(240,demand_1_240,demand_2_240)$duals[(4+240):(3+2*240)],solver(240,demand_1_240,demand_2_240)$duals[(4+3*240):(3+4*240)])
+
+
+save(sa_mean_1_12,sa_mean_1_48,sa_mean_1_120,sa_mean_1_240,
+     slp_mean_1_12,slp_mean_1_48,slp_mean_1_120,slp_mean_1_240,
+     rs_mean_1_12,rs_mean_1_48,rs_mean_1_120,rs_mean_1_240,
+     sa_mean_2_12,sa_mean_2_48,sa_mean_2_120,sa_mean_2_240,
+     slp_mean_2_12,slp_mean_2_48,slp_mean_2_120,slp_mean_2_240,
+     rs_mean_2_12,rs_mean_2_48,rs_mean_2_120,rs_mean_2_240,file = "size_effect.Rdata")
+```
+
+
+

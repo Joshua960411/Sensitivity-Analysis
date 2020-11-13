@@ -1,0 +1,32 @@
+---
+title: "size effect table"
+output: 
+  pdf_document:
+    keep_tex: true
+always_allow_html: true
+---
+
+```{r setup}
+library(lpSolve)
+library(plotly)
+library('knitr')
+library('kableExtra')
+knitr::opts_chunk$set(echo = FALSE)
+load("size_effect.Rdata")
+```
+
+
+```{r table}
+size<-c(12,48,120,480)
+mac_mean<-matrix(c(size,sa_mean_1_12,sa_mean_1_48,sa_mean_1_120,sa_mean_1_240,
+                   slp_mean_1_12,slp_mean_1_48,slp_mean_1_120,slp_mean_1_240,
+                   rs_mean_1_12,rs_mean_1_48,rs_mean_1_120,rs_mean_1_240,
+                   sa_mean_2_12,sa_mean_2_48,sa_mean_2_120,sa_mean_2_240,
+                   slp_mean_2_12,slp_mean_2_48,slp_mean_2_120,slp_mean_2_240,
+                   rs_mean_2_12,rs_mean_2_48,rs_mean_2_120,rs_mean_2_240),ncol = 7)
+mac_mean<-round(mac_mean,1)
+df_mean<-data.frame(mac_mean)
+colnames(df_mean)<-c("Simulation size", "SA margin","SLP margin","RS margin","SA margin","SLP margin","RS margin")
+kable(df_mean,format='latex', booktabs = T,align = 'c') %>% 
+        kable_styling(latex_options = "scale_down")
+```
