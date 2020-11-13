@@ -12,6 +12,7 @@
 \usepackage{longtable}
 \setkeys{Gin}{width=.8\textwidth}
 \usepackage{nicefrac}
+\usepackage{subcaption}
 
 \font\Bbb=msbm10 at 11pt
 \def\QQ{\mbox{\Bbb Q}}
@@ -498,15 +499,33 @@ for product $a$ or $b$ by $\delta \%$. Applying the formula in Subsection
     &\Delta \, P_a = \delta_a \% \, \hat{\sigma}_a
     \sum_{s \in S} \epsilon_a^s \big(\pi_{sa}^o - \pi_{sa}^u \big) = 1.01 \, \delta_a,\\
     &\Delta \, P_b = \delta_b \% \, \hat{\sigma}_b
-    \sum_{s \in S} \epsilon_b^s \big(\pi_{sb}^o - \pi_{sb}^u \big) = 1.84 \, \delta_b,
+    \sum_{s \in S} \epsilon_b^s \big(\pi_{sb}^o - \pi_{sb}^u \big) = 1.84 \, \delta_b.
 \end{aligned}
 \]
-for small values of $\delta \%$. The retailer can then compare these
+The retailer can then compare these
 values with the cost of conducting market research and/or investing in
 improved forecasting software.
 
-In Figure \ref{fig:mean} and Figure \ref{fig:var}, we
-apply different values of changes on the twelve  generated scenarios above, and solve a sequence of SLPs to construct the line of changes, so as we can see the valid range of our method graphically. Since these ranges don't change much as simulation size increases, we don't present duplicated figures here. 
+Recall that the SA result is valid only when the change is ``sufficiently small". In Figure \ref{fig:slp}, we
+apply different values of changes on the twelve  generated scenarios above, and solve a sequence of SLPs to construct the line of changes. Therefore, we can see, graphically, at which point the rate of margin changes, and know
+the valid range of our method. 
+\begin{figure}[htb]
+\caption{Line of change constructed by solving SLP}
+\begin{subfigure}{\textwidth}
+\centering
+\includegraphics{Example-figure_files/figure-latex/mean-1.pdf}
+\caption{Optimal profit vs. Change of mean demand}
+\end{subfigure}
+\bigskip
+\begin{subfigure}{\textwidth}
+\centering
+\includegraphics{Example-figure_files/figure-latex/var-1.pdf}
+\caption{Optimal profit vs. Change of standard deviation}
+\end{subfigure}
+\label{fig:slp}
+\end{figure}
+
+One can see that our result with sensitivity analysis can remain valid when the increase of mean demand smaller than 14 (approximately) for product $a$ or smaller than 20 (approximately) for product $b$, and can remain valid with all choice of $\delta \%$ smaller than 1. 
 
 Furthermore, to verify the accuracy of our method, refer as ``SA margin",  we perform two other approaches on the given problem. We first select a reasonable length of value changes (increases from 0 to 30 for mean demand and decreases from 0\% to 10\% for standard deviation) and cut it by unit length, then:
 \begin{itemize}
@@ -516,19 +535,6 @@ Furthermore, to verify the accuracy of our method, refer as ``SA margin",  we pe
 \end{itemize}
 Besides the simulation size we used above, we also select size of 48, 120 and 480 to compare the results on.
 The comparison results can be seen in Table.
-\begin{figure}[htb]
-\centering
-\caption{Optimal cost vs. Change of mean}
-\includegraphics{Example-figure_files/figure-latex/mean-1.pdf}
-\label{fig:mean}
-\end{figure}
-
-\begin{figure}[htb]
-\centering
-\caption{Optimal cost vs. Change of variance}
-\includegraphics{Example-figure_files/figure-latex/var-1.pdf}
-\label{fig:var}
-\end{figure}
 
 \subsection{Cross-price elasticities} \label{sub:app2}
 
