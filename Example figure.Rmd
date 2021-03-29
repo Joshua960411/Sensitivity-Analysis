@@ -72,7 +72,7 @@ for (ep in epsilon){
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(epsilon,op_set,xlab="Delta",ylab="Optimal profit",type="l", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=2 , pch=19,lty=2)
+plot(epsilon,op_set,xlab=expression(Delta),ylab="Optimal profit",type="l", bty="l", col=rgb(0.8,0.4,0.1,0.7) , lwd=2 , pch=19,lty=2)
 
 op_set<-c()
 for (ep in epsilon){
@@ -111,7 +111,7 @@ for (k in del){
   op_set<-c(op_set,op_cost)
 }
 par(bty="l")
-plot(del,op_set,xlab="Delta",ylab="Optimal profit",type="l", bty="l", col=rgb(0.2,0.6,0.3,0.7)  , lwd=2 , pch=19,lty=2)
+plot(del,op_set,xlab=expression(delta),ylab="Optimal profit",type="l", bty="l", col=rgb(0.2,0.6,0.3,0.7)  , lwd=2 , pch=19,lty=2)
 
 
 op_set<-c()

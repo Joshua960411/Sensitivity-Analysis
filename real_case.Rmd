@@ -1,0 +1,263 @@
+---
+title: "R Notebook"
+output: 
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup}
+rm(list = ls())
+library(lpSolve)
+library(plotly)
+library('knitr')
+library('kableExtra')
+library('readxl')
+knitr::opts_chunk$set(echo = FALSE)
+source<-read_excel('Organized.xlsx')
+```
+
+```{r demand}
+mean<-as.numeric(unlist(source[2:16,3]))
+std<-as.numeric(unlist(source[2:16,4]))
+size<-200
+for(i in 1:15){
+  assign(paste("demand_", i, sep = ""), rnorm(size,mean[i],std[i]))
+}
+```
+
+```{r cost}
+p<-as.numeric(unlist(source[2:16,6]))
+c1<-as.numeric(unlist(source[2:16,5]))
+c2<-as.numeric(unlist(source[2:16,8]))
+c3<-as.numeric(unlist(source[2:16,7]))
+for(i in 1:15){
+  assign(paste("p_", i, sep = ""), p[i])
+  assign(paste("c1_", i, sep = ""), c1[i])
+  assign(paste("c2_", i, sep = ""), c2[i])
+  assign(paste("c3_", i, sep = ""), c3[i])
+}
+```
+
+```{r demand_table}
+product_name<-unlist(source[2:16,1])
+df<-data.frame(mean,std,p,c1,c2,c3)
+rownames(df)<-product_name
+kable(df,format='latex', booktabs = T,align = 'c')
+```
+
+```{r elasticity}
+income_ela<-as.numeric(unlist(source[2:16,11]))
+price_ela<-data.matrix(source[2:16,15:29])
+adjusted_ela<-matrix(nrow = 15, ncol = 15)
+for (i in 1:15) {
+  for (j in 1:15) {
+    adjusted_ela[i,j]<-price_ela[i,j]*mean[i]/p[j]
+  }
+}
+```
+
+```{r income_table}
+df<-data.frame(t(income_ela))
+rownames(df)<-"income"
+colnames(df)<-product_name
+kable(df,format='latex', booktabs = T,align = 'c') %>% 
+        add_header_above(c("", "demand" = 15),bold = T) %>%
+        kable_styling(latex_options = "scale_down")
+```
+
+```{r cross_table}
+df<-data.frame(price_ela)
+rownames(df)<-product_name
+colnames(df)<-product_name
+kable(df,format='latex', booktabs = T,align = 'c') %>% 
+        add_header_above(c("", "price" = 15),bold = T) %>%
+        kable_styling(latex_options = "scale_down")
+```
+
+```{r solver}
+objective.in<-c(rep(-(p_1+c2_1)/size,size),rep(-(p_2+c2_2)/size,size),rep(-(p_3+c2_3)/size,size),rep(-(p_4+c2_4)/size,size),
+                rep(-(p_5+c2_5)/size,size),rep(-(p_6+c2_6)/size,size),rep(-(p_7+c2_7)/size,size),rep(-(p_8+c2_8)/size,size),
+                rep(-(p_9+c2_9)/size,size),rep(-(p_10+c2_10)/size,size),rep(-(p_11+c2_11)/size,size),
+                rep(-(p_12+c2_12)/size,size),rep(-(p_13+c2_13)/size,size),rep(-(p_14+c2_14)/size,size),
+                rep(-(p_15+c2_15)/size,size),
+                rep(-c3_1/size,size),rep(-c3_2/size,size),rep(-c3_3/size,size),rep(-c3_4/size,size),rep(-c3_5/size,size),
+                rep(-c3_6/size,size),rep(-c3_7/size,size),rep(-c3_8/size,size),rep(-c3_9/size,size),rep(-c3_10/size,size),
+                rep(-c3_11/size,size),rep(-c3_12/size,size),rep(-c3_13/size,size),rep(-c3_14/size,size),
+                rep(-c3_15/size,size),
+                p_1-c1_1,p_2-c1_2,p_3-c1_3,p_4-c1_4,p_5-c1_5,p_6-c1_6,p_7-c1_7,p_8-c1_8,p_9-c1_9,p_10-c1_10,
+                p_11-c1_11,p_12-c1_12,p_13-c1_13,p_14-c1_14,p_15-c1_15)
+con_1<-c(rep(0,2*15*size),as.numeric(source[20,2:16]))
+con_2<-c(rep(0,2*15*size),as.numeric(source[21,2:16]))
+con_3<-c(rep(0,2*15*size),as.numeric(source[22,2:16]))
+con_4<-c(rep(0,2*15*size),as.numeric(source[23,2:16]))
+con_5<-c(rep(0,2*15*size),as.numeric(source[24,2:16]))
+con_6<-c(rep(0,2*15*size),as.numeric(source[25,2:16]))
+con_7<-c(rep(0,2*15*size),as.numeric(source[26,2:16]))
+con_rhs<-as.numeric(unlist(source[20:26,18]))
+
+mac<-matrix(0L,nrow=2*15*size,ncol=2*15*size)
+diag(mac)<-1
+side<-matrix(c(rep(-1,size),rep(0,14*size),rep(1,size),rep(0,14*size),
+               rep(0,size),rep(-1,size),rep(0,13*size),rep(0,size),rep(1,size),rep(0,13*size),
+               rep(0,2*size),rep(-1,size),rep(0,12*size),rep(0,2*size),rep(1,size),rep(0,12*size),
+               rep(0,3*size),rep(-1,size),rep(0,11*size),rep(0,3*size),rep(1,size),rep(0,11*size),
+               rep(0,4*size),rep(-1,size),rep(0,10*size),rep(0,4*size),rep(1,size),rep(0,10*size),
+               rep(0,5*size),rep(-1,size),rep(0,9*size),rep(0,5*size),rep(1,size),rep(0,9*size),
+               rep(0,6*size),rep(-1,size),rep(0,8*size),rep(0,6*size),rep(1,size),rep(0,8*size),
+               rep(0,7*size),rep(-1,size),rep(0,7*size),rep(0,7*size),rep(1,size),rep(0,7*size),
+               rep(0,8*size),rep(-1,size),rep(0,6*size),rep(0,8*size),rep(1,size),rep(0,6*size),
+               rep(0,9*size),rep(-1,size),rep(0,5*size),rep(0,9*size),rep(1,size),rep(0,5*size),
+               rep(0,10*size),rep(-1,size),rep(0,4*size),rep(0,10*size),rep(1,size),rep(0,4*size),
+               rep(0,11*size),rep(-1,size),rep(0,3*size),rep(0,11*size),rep(1,size),rep(0,3*size),
+               rep(0,12*size),rep(-1,size),rep(0,2*size),rep(0,12*size),rep(1,size),rep(0,2*size),
+               rep(0,13*size),rep(-1,size),rep(0,size),rep(0,13*size),rep(1,size),rep(0,size),
+               rep(0,14*size),rep(-1,size),rep(0,14*size),rep(1,size)
+               ),ncol=15)
+conmac<-cbind(mac,side)
+const.mat<-rbind(con_1,con_2,con_3,con_4,con_5,con_6,con_7,conmac)
+const.dir<-c(rep("<=",3),">=",rep("<=",3),rep(">=",2*15*size))
+const.rhs<-c(con_rhs,-demand_1,-demand_2,-demand_3,-demand_4,-demand_5,-demand_6,-demand_7,-demand_8,-demand_9,-demand_10,
+             -demand_11,-demand_12,-demand_13,-demand_14,-demand_15,
+             demand_1,demand_2,demand_3,demand_4,demand_5,demand_6,demand_7,demand_8,demand_9,demand_10,
+             demand_11,demand_12,demand_13,demand_14,demand_15)
+optimum_original<-lp(direction="max", objective.in, const.mat,const.dir, const.rhs,compute.sens=TRUE)
+```
+
+```{r result}
+optimal_profit<-round(optimum_original$objval,2)
+solution<-round(optimum_original$solution,2)
+solution_first<-solution[6001:6015]
+con_left<-con_rhs-c(sum(con_1*solution),sum(con_2*solution),sum(con_3*solution),sum(con_4*solution)
+                    ,sum(con_5*solution),sum(con_6*solution),sum(con_7*solution))
+sa_mean<-c()
+for(i in 1:15){
+   sa_mean<-c(sa_mean,round(sum(-optimum_original$duals[(8+(i-1)*size):(7+i*size)],optimum_original$duals[(8+(14+i)*size):(7+(15+i)*size)]),2))
+}
+
+sa_std<-c()
+for(i in 1:15){
+  sa_std<-c(sa_std,round(sum(c(-optimum_original$duals[(8+(i-1)*size):(7+i*size)],optimum_original$duals[(8+(14+i)*size):(7+(15+i)*size)])*(mean[i]-eval(parse(text = paste("demand_", i, sep = "")))))*0.01,2))
+}
+
+sa_price<-c()
+for (i in 1:15) {
+  sa_price<-c(sa_price,round((sum(sa_mean*adjusted_ela[,i])+(solution_first[i]-mean(optimum_original$solution[(size*(i-1)+1):(size*i)])))*p[i]/100,2))
+}
+```
+
+```{r solution_table}
+x_var<-c('x_{1}^*','x_{2}^*','x_{3}^*','x_{4}^*','x_{5}^*','x_{6}^*','x_{7}^*','x_{8}^*',
+         'x_{9}^*','x_{10}^*','x_{11}^*','x_{12}^*','x_{13}^*','x_{14}^*','x_{15}^*')
+mac<-matrix(nrow=8,ncol=4)
+mac[1,]<-x_var[1:4]
+mac[2,]<-solution[1:4]
+mac[3,]<-x_var[5:8]
+mac[4,]<-solution[5:8]
+mac[5,]<-x_var[9:12]
+mac[6,]<-solution[9:12]
+mac[7,]<-c(x_var[13:15],'P^*')
+mac[8,]<-c(solution[13:15],optimal_profit)
+df<-data.frame(mac)
+kable(df,format='latex', booktabs = T,align = 'c') %>% 
+        kable_styling(latex_options = "scale_down")
+```
+
+```{r sensitivity_table}
+mac<-matrix(c(sa_std,sa_price),nrow = 2, byrow = T)
+df<-data.frame(mac)
+rownames(df)<-c('per percentage of sigma decrease', 'per percentage of p increase')
+colnames(df)<-product_name
+kable(df,format='latex', booktabs = T,align = 'c') %>% 
+        kable_styling(latex_options = "scale_down")
+```
+
+```{r constraints_table}
+par_mac<-data.matrix(source[20:26,2:16])
+dir_mac<-source[20:26,17]
+rhs_mac<-source[20:26,18]
+con_df<-cbind(par_mac,dir_mac,rhs_mac)
+colnames(con_df)<-c(product_name,'direction','RHS')
+kable(con_df,format='latex', booktabs = T,align = 'c') %>% 
+        kable_styling(latex_options = "scale_down")
+```
+
+```{r range_price}
+delta<-seq(-10,10,1)
+prirange<-matrix(nrow = 15,ncol = length(delta))
+for (i in 1:15) {
+  for (k in 1:length(delta)){
+    new_objective.in<-objective.in
+    new_objective.in[(size*i-199):(size*i)]<-objective.in[(size*i-199):(size*i)]-p[i]*delta[k]/(100*size)
+    new_objective.in[30*size+i]<-objective.in[30*size+i]+p[i]*delta[k]/100
+    new_const.rhs<-const.rhs
+    for (j in 1:15) {
+      assign(paste("new_demand_", j, sep = ""), (eval(parse(text = paste("demand_", j, sep = "")))+p[i]*delta[k]*adjusted_ela[i,j]/100))
+      new_const.rhs[(size*j-192):(size*j+7)]<--eval(parse(text = paste("new_demand_", j, sep = "")))
+      new_const.rhs[(size*j+2808):(size*j+3007)]<-eval(parse(text = paste("new_demand_", j, sep = "")))
+    }
+    prirange[i,k]<-lp(direction="max", new_objective.in, const.mat,const.dir,new_const.rhs)$objval
+  }
+}
+pridiff<-matrix(nrow = 15, ncol = (length(delta)-1))
+for (i in 1:15) {
+  for (k in 1:(length(delta)-1)){
+    pridiff[i,k]<-prirange[i,(k+1)]-prirange[i,k]
+  }
+}
+
+prilower_limit<-0.9*(pridiff[,10]+pridiff[,11])/2
+priupper_limit<-1.1*(pridiff[,10]+pridiff[,11])/2
+prilower_record<-c(1,3,10,5,19,6,7,3,11,2,10,4,6,10,6)
+priupper_record<-c(1,2,15,6,14,5,9,3,9,2,5,3,5,3,5)
+```
+
+```{r range_std}
+del<-seq(0,100,5)
+stdrange<-matrix(nrow = 15,ncol = length(del))
+for (i in 1:15) {
+  for (k in 1:length(del)){
+    assign(paste("new_demand_", i, sep = ""), (mean(eval(parse(text = paste("demand_", i, sep = ""))))+(eval(parse(text = paste("demand_", i, sep = "")))-mean(eval(parse(text = paste("demand_", i, sep = "")))))*(100-del[k])/100))
+    new_const.rhs<-const.rhs
+    new_const.rhs[(size*i-192):(size*i+7)]<--eval(parse(text = paste("new_demand_", i, sep = "")))
+    new_const.rhs[(size*i+2808):(size*i+3007)]<-eval(parse(text = paste("new_demand_", i, sep = "")))
+    stdrange[i,k]<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  }
+}
+stddiff<-matrix(nrow = 15, ncol = (length(del)-1))
+for (i in 1:15) {
+  for (k in 1:(length(del)-1)){
+    stddiff[i,k]<-stdrange[i,(k+1)]-stdrange[i,k]
+  }
+}
+
+detail_num<-c(1,2,7,9)
+detail_del<-seq(0,10,1)
+detail_stdrange<-matrix(nrow = 4,ncol = length(detail_del))
+for (i in 1:4) {
+  for (k in 1:length(detail_del)){
+    assign(paste("new_demand_", detail_num[i], sep = ""), (mean(eval(parse(text = paste("demand_", detail_num[i], sep = ""))))+(eval(parse(text = paste("demand_", detail_num[i], sep = "")))-mean(eval(parse(text = paste("demand_", detail_num[i], sep = "")))))*(100-detail_del[k])/100))
+    new_const.rhs<-const.rhs
+    new_const.rhs[(size*detail_num[i]-192):(size*detail_num[i]+7)]<--eval(parse(text = paste("new_demand_", detail_num[i], sep = "")))
+    new_const.rhs[(size*detail_num[i]+2808):(size*detail_num[i]+3007)]<-eval(parse(text = paste("new_demand_", detail_num[i], sep = "")))
+    detail_stdrange[i,k]<-lp(direction="max", objective.in, const.mat,const.dir,new_const.rhs)$objval
+  }
+}
+detail_stddiff<-matrix(nrow = 4, ncol = (length(detail_del)-1))
+for (i in 1:4) {
+  for (k in 1:(length(detail_del)-1)){
+    detail_stddiff[i,k]<-detail_stdrange[i,(k+1)]-detail_stdrange[i,k]
+  }
+}
+
+
+stdrange_record<-c(7,14,100,100,100,100,7,100,6,100,100,100,100,100,100)
+```
+
+```{r rang_table}
+range_mac<-matrix(c(prilower_record,priupper_record,stdrange_record),nrow = 3, byrow = T)
+df<-data.frame(range_mac)
+rownames(df)<-c('maximum percentage of p decrease', 'maximum percentage of p increase','maximum percentage of std decrease')
+colnames(df)<-product_name
+kable(df,format='latex', booktabs = T,align = 'c') %>% 
+        kable_styling(latex_options = "scale_down")
+```
