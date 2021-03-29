@@ -20,154 +20,66 @@
 
 \graphicspath{ {./images/} }
 
-
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{proposition}{Proposition}
-\newtheorem{remark}{Remark}
-\newtheorem{theorem}{Theorem}
-
-\newenvironment{proof}
-{\begin{trivlist} \item[] {\bf Proof.\ }}{\hfill$\Box$ \end{trivlist}}
-
 \DeclareMathOperator{\E}{\mathbb{E}}
 
-\title{Better Coordination of Marketing and Inventory Decisions via
-Stochastic Programming}
+\title{Newsvendor Problems: Using Stochastic Programming to Inform Marketing Decisions}
 
 \author{Congzheng Liu\thanks{Department of Management Science,
 Lancaster University, Lancaster LA1 4YX, UK.
 Email: {\tt \{c.liu19,a.n.letchford,i.svetunkov\}@lancaster.ac.uk}}
 \and Adam N.\ Letchford$^*$ \and Ivan Svetunkov$^*$} % end author list
 
-\date{11th November 2020}
+\date{Draft, 26th March 2021}
 
 \begin{document}
-
 \maketitle
 
 \begin{abstract}
-Although marketing and inventory control are normally different functions
-in a business, it is obvious that both forecasting errors and marketing
-interventions are relevant to ordering or production decisions. We present
-a tool, based on stochastic programming, that enables one to use
-information gained in the inventory control phase to inform the marketing
-phase. In particular, it enables one to estimate the change in expected
-profit that would arise from specific improvements in forecasting or
-specific marketing interventions. The method is illustrated on a
-multi-item newsvendor problem with correlated products.
+Although the literature on newsvendor problems is vast, not much attention has been paid to the question of how to coordinate the marketing and inventory functions in a business when faced with a complex newsvendor problem. We present an approach, based on stochastic programming, that enables one to estimate the changes in expected profit that would arise from specific marketing interventions. The approach is applicable to a wide range of problems, including problems with multiple item types, side constraints, correlated demands, cross-price elasticities and different noise distributions.
 \\*[2mm]
-{\bf Keywords:} marketing; inventory control; forecasting; newsvendor problems; stochastic programming
+{\bf Keywords:} newsvendor problems; stochastic programming; marketing; inventory control 
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Marketing and inventory control are both crucial functions in the retail
-and manufacturing sectors. It is clear that decisions made by the
-marketing team can have implications for inventory control. For example,
-errors in demand forecasts can lead to sub-optimal ordering and/or
-production quantities. As another example, specific marketing interventions
-(such as product promotions or discounts) can cause demand to change
-abruptly, which should be taken into account when making inventory
-decisions.
+Marketing and inventory control are two crucial functions in retailing sectors. It is clear that decisions made by marketing team can have implications for inventory control. For example, high uncertainty in demand can lead to sub-optimal ordering and/or production decisions. As another example, specific marketing interventions (such as product promotions or discounts) can cause demand to change abruptly, leading to higher sales, which should be taken into account when defining how much to stock.
 
-It therefore seems likely that many companies could benefit by better
-coordination between the marketing and inventory control functions. For
-strategic (long-term) decisions, a promising solution is provided by
-``Sales and Operations Planning" (see, e.g., \cite{KS14,Th12}). In this
-paper, however, we are concerned with operational decisions, with a
-planning horizon of just a few days or weeks.
+Therefore it seems likely that many companies could benefit by improved coordination between marketing and inventory control. For strategic (long-term) decisions, a promising solution is provided by ``Sales and Operations Planning" (see, e.g., \cite{KS14,Th12}). In this paper, however, we are concerned with operational decisions, with a planning horizon of just a few days or weeks.
 
-For simplicity of exposition, we assume from now on that the company is a retailer that orders products from an external supplier. Our approach
-is however applicable also in a manufacturing context, in which products
-are produced in-house.
+For simplicity of exposition, we assume from now on that the company is a retailer that orders products from an external supplier, and that the determination of order quantities can be modelled as a Multi-Item Newsvendor Problem (MNVP). However, we remark that our approach is applicable also in a manufacturing context, where products are produced in-house, with just a minor modification of the model parameters.
 
-We are interested in problems with the following features:
+We are interested in the MNVP with the following features:
 \begin{itemize}
 \item There are several products.
-\item A forecasting technique is available, which not only predicts the
-demand of each product, but also enables one to estimate the
-\emph{distribution} of demand for each product.
-\item If demand is correlated across products, then the forecasting
-technique must enable one to estimate the \emph{joint} demand
-distribution.
-\item Constraints are applied on products.
-\item The problem of determining the order quantities that maximise
-expected profit can be modelled as a \emph{stochastic linear program with
-simple recourse} (see \cite{Da55,We84}). 
-
-\item The marketing team can perform two kinds of actions: (a) attempt to
-\emph{estimate} the demand distribution more accurately (e.g., by improved
-forecasting or market research), and (b) attempt to \emph{change}
-the demand distribution (e.g., by advertising or discounts).
+\item One has a reasonably accurate model of the demand distribution for each product (or the joint distribution if the demands are correlated).
+\item There are some side-constraints (e.g., a limit on storage space, a limited budget, or lower and upper bounds on the order quantities).
+\item The Marketing team can perform two kinds of actions: (a) attempt to increase the \emph{mean} of demand (e.g., by advertising or discounts), and (b) attempt to decrease the \emph{variance} of demand (e.g., by customer targeting or mass customisation).
+\item One can predict the effect of marketing interventions on demand with reasonably good accuracy.
 \end{itemize}
 
-For such problems we present a tool, based on sensitivity analysis, that
-enables one to use information gained in the inventory control phase to
-inform the marketing phase. In particular, it enables one to estimate the
-change in expected profit that would arise from specific marketing actions.
-To demonstrate the potential of the tool, we apply it to a constrained
-multi-product newsvendor problem with correlated products.
+For this class of problems we present a tool, based on stochastic programming \cite{Da55,We84}, that enables one to use information gained in the inventory control phase to inform the marketing phase. In particular, it allows one to estimate the change in expected profit that would arise from specific marketing actions.
 
-The paper is organized as follows. In Section \ref{se:literature}, we review
-the relevant literature. In Section \ref{se:theory}, we present the method
-in its full generality. In Section \ref{se:application}, we apply the method to the above-mentioned newsvendor problem. We finish the paper with some concluding remarks in Section \ref{se:conclusion}.
+The paper is organised as follows. In Section \ref{se:literature}, we review the relevant literature. In Section \ref{se:method}, we present the method and give an example. In Section \ref{se:price}, we consider how to extend our approach to the `price-setting' case, in which one is free to vary the price of one or more products (see \cite{De20}). We finish the paper with some concluding remarks in Section \ref{se:conclusion}.
 
-Throughout the paper, we use lower-case bold letters for vectors and
-upper-case bold letters for matrices. A ``tilde" indicates randomness,
-and a ``hat" indicates that a variable has been estimated. So, for example,
-$\mathbf{\tilde d}$ is a vector of random variables, and
-$\hat{\mathbf{M}}$ is a matrix that has been estimated.
+Throughout the paper, we use lower-case bold letters for vectors and upper-case bold letters for matrices. A ``tilde" indicates randomness, and a ``hat" indicates that a variable has been estimated. So, for example, $\mathbf{\tilde d}$ is a vector of random variables, and $\hat{\mathbf{M}}$ is a matrix that has been estimated.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Literature Review} \label{se:literature}
 
-We now briefly review the relevant literature. We cover newsvendor problems
-in Subsection \ref{sub:lit1}, stochastic programming in Subsection
-\ref{sub:lit2}, and sensitivity analysis in Subsection \ref{sub:lit3}.
+We now briefly review the relevant literature. We cover newsvendor problems in Subsection \ref{sub:lit1} and stochastic programming in Subsection \ref{sub:lit2}. Subsection  \ref{sub:lit3} covers sensitivity analysis and parametric programming.
 
 \subsection{Newsvendor problems} \label{sub:lit1}
 
-\emph{Newsvendor problems} (NVPs) are a classic topic in the literature
-on inventory control (see, e.g., \cite{Ch12,HW63,Po02,SPP98,Zi00}). In the simplest NVP, there is a single product and a single planning period. The
-demand for the product over the period is a random variable $\tilde d$,
-with known distribution. Before the start of the period, the retailer must
-determine the order quantity $x$. If $x$ exceeds the realised demand, an \emph{over-stocking} cost $c^u$ is incurred per unit of excess stock. If
-however $x$ is less than the demand, an \emph{under-stocking} cost is
-incurred per unit of unsatisfied demand. The problem is to minimise the
-sum of the expected over- and under-stocking costs. The solution, found
-in textbooks, is:
-\[
-    x^* = F^{-1}\left( \frac{c^u}{c^o+c^u} \right),
-\]
-where $F$ is the cumulative distribution function for $\tilde d$.
+\emph{Newsvendor problems} (NVPs) are a classic topic in the literature on inventory control (see, e.g., \cite{Ch12,Po02,Zi00}). In the simplest NVP \cite{HW63}, there is a single product and a single planning period. The demand for the product is a random variable $\tilde d$. The retailer must determine the order quantity $x$. If $x$ exceeds the realised demand, an \emph{over-stocking} cost $c^o$ is incurred per unit of excess stock. If however $x$ is less than the demand, an \emph{under-stocking} cost $c^u$ is incurred per unit of unsatisfied demand. The problem is to minimise the sum of the expected over- and under-stocking costs.
 
-Here, we are concerned with \emph{multi-product} (a.k.a.\ multi-item) NVPs
-\cite{HW63}, which we call MNVPs for short. These problems have $n$ products
-instead of one. The demand for product $j$ is $\tilde d_j$, with known
-distribution. The retailer must determine the order quantity $x_j$ for each
-product $j$. There is now an over-stocking cost $c^o_j$ and under-stocking
-cost $c^u_j$ for each product $j$. There are also one or more
-side-constraints, which involve all of the $x_j$ variables. For example,
-each unit of product $j$ may take up $a_j$ units of storage space, and
-there may be only $b$ units of space available. Thus, the constraint
-$\sum_{j=1}^n a_j x_j \le b$ must be satisfied.
+\emph{Multi-item} (a.k.a.\ multi-product) NVPs, which we call MNVPs for short, have $n$ products instead of one (see \cite{Tu12} for a survey). The demand for each product $j$ is $\tilde d_j$, with known distribution. The company needs to determine the order quantity $x_j$ for each product $j$. There are now over-stocking $c^o_j$ and under-stocking $c^u_j$ costs for each product $j$. There are also one or more side-constraints, which involve all of the $x_j$ variables. (For example, each unit of product $j$ may take up $a_j$ units of storage space, and there may be only $b$ units of space available. Thus, the constraint $\sum_{j=1}^n a_j x_j \le b$ must be satisfied.)
 
-The presence of side-constraints prevents one from simply decomposing
-MNVPs into $n$ individual NVPs. When the side-constraints are fairly loose,
-most MNVPs can be solved using the method of Lagrangian multipliers
-\cite{BR93,HW63}. Otherwise, one must use more complicated methods
-\cite{AM05,LL95,ZXH09}. See also \cite{BAA99,Ch12,Tu12,Zh10} for more
-complex MNVPs.
+The presence of side-constraints prevents one from simply decomposing MNVPs into $n$ individual NVPs. When the side-constraints are fairly loose, most MNVPs can be solved using the method of Lagrangian multipliers \cite{BR93,HW63}. Otherwise, one must use more complicated methods \cite{AM05,LL95,ZXH09}. 
 
 \subsection{Stochastic programming} \label{sub:lit2}
 
-\emph{Stochastic programming} is a well-known approach to optimisation
-under uncertainty \cite{BL11,KW94,RS03}. Here, we focus on
-\emph{stochastic linear programmes with simple recourse} \cite{Be55,Da55},
-which we call SLPs for short. A general SLP can be written in the
-form:
+\emph{Stochastic programming} is a well-known approach to optimisation under uncertainty \cite{BL11,KW94,RS03}. Here, we focus on \emph{stochastic linear programmes with simple recourse} \cite{Be55,Da55}, which we call SLPs for short. A general SLP can be written in the form:
 \[
 \max \Big\{ \mathbf{c}^T \mathbf{x} - \mathbb{E}_{\mathbf{\tilde d}}
 \big[ f \big( \mathbf{x}, \mathbf{\tilde d} \big) \big]: \:
@@ -180,25 +92,11 @@ where $f \big( \mathbf{x}, \mathbf{\tilde d} \big)$ is equal to
               = \mathbf{\tilde d}\\
             & \mathbf{y}, \mathbf{z} \ge 0.
 \end{eqnarray*}
-Here, $\mathbf{x}$, $\mathbf{y}$ and $\mathbf{z}$ are vectors of decision
-variables; $\mathbf{c}$, $\mathbf{b}$, $\mathbf{q^+}$ and $\mathbf{q^-}$
-are known vectors; $\mathbf{A}$ and $\mathbf{T}$ are known matrices; and
-$\mathbf{\tilde d}$ is a random vector with known distribution.
+Here, $\mathbf{x}$, $\mathbf{y}$ and $\mathbf{z}$ are vectors of decision variables; $\mathbf{c}$, $\mathbf{b}$, $\mathbf{q^+}$ and $\mathbf{q^-}$ are known parameter vectors; $\mathbf{A}$ and $\mathbf{T}$ are known parameter matrices; and $\mathbf{\tilde d}$ is a vector of random demand with known distribution.
 
-The $\mathbf{x}$ variables are called ``first-stage" and the $\mathbf{y}$ and $\mathbf{z}$ variables
-are called ``second-stage". The idea is that one must choose the value of
-the first-stage variables \emph{before} the realisation of
-$\mathbf{\tilde d}$ is known. After the realisation becomes known, one
-then determines the optimal values of the second-stage variables. The goal
-in the first stage is to maximise the sum of the profit of the first stage
-minus the \emph{expected} cost of the second stage.
+The $\mathbf{x}$ variable is called ``first-stage" and the $\mathbf{y}$ and $\mathbf{z}$ variables are called ``second-stage". The idea is that one must choose the value of the first-stage variables \emph{before} the realisation of $\mathbf{\tilde d}$ is known. After the realisation becomes known, one then determines the optimal values of the second-stage variables. The goal in the first stage is to maximise the sum of the profit of the first stage minus the \emph{expected} cost of the second stage.
 
-In practice, it is common to model the distribution of $\mathbf{\tilde d}$
-with a finite number of \emph{scenarios}. Let $S$ denote the set of
-scenarios, let $p_s$ denote the probability of scenario $s$ occurring,
-and let $\mathbf{d}^s$ be the realisation of $\mathbf{\tilde d}$ in
-scenario $s$. It is shown in \cite{Be55,Da55} that, in this case, the SLP
-is equivalent to the following linear program (LP):
+In practice, it is common to simulate a finite number of \emph{scenarios} from the distribution $\mathbf{\tilde d}$. Let $S$ denote the set of scenarios, let $p_s$ denote the probability of scenario $s$ occurring, and let $\mathbf{d}^s$ be the realisation of $\mathbf{\tilde d}$ in scenario $s$. It is shown in \cite{Be55,Da55} that, in this case, the SLP is equivalent to the following linear program (LP):
 \begin{eqnarray*}
 \max	    & \mathbf{c}^T \mathbf{x} \, - \, \sum_{s \in S} \, p_s
     \big( \mathbf{q^+} \mathbf{y}^s + \mathbf{q^-} \mathbf{z}^s \big)\\
@@ -208,69 +106,60 @@ is equivalent to the following linear program (LP):
 	        & \mathbf{x} \ge 0 \\
 	        & \mathbf{y}^s, \mathbf{z}^s \ge 0 & (s \in S).
 \end{eqnarray*}
-Wetz \cite{We84} gave a specialised solution method for LPs of this
-type.
+Wetz \cite{We84} devised an effective algorithm for LPs of this type.
 
-\subsection{Sensitivity analysis} \label{sub:lit3}
+\subsection{Sensitivity analysis and parametric programming} \label{sub:lit3}
 
-Sensitivity analysis (SA) is concerned with predicting the effect that
-small changes in problem parameters have on the optimal solution.
-SA for LPs is straightforward and appears in all good optimisation
-textbooks (e.g., \cite{Da98,Va20}). SA for stochastic programs, on the
-other hand, is much more difficult (see, e.g., \cite{AW93,Du90,Du95,Ro03}).
+\emph{Sensitivity analysis} is a standard technique in optimisation, which enables one to predict the effect that small changes in problem parameters would have on the optimal solution
+\cite{Da98}.
 
-We will need the following result from \cite{We85}. Consider an LP of
-the form
+In general, sensitivity analysis for stochastic programs is both complicated and time-consuming
+\cite{BL11,KW94,Ro03}. As mentioned above, however, SLPs reduce to LPs when the number of scenarios is finite. For LPs, things are more
+straightforward \cite{Da98,Va20}.
+
+Consider an LP of the form
 \[
 \max \big\{ \mathbf{c}^T \mathbf{x}: \, \mathbf{A} \mathbf{x} \le
 \mathbf{b}, \: \mathbf{x} \in \RR_+^n \big\},
 \]
 where $\mathbf{c} \in \QQ^n$, $\mathbf{b} \in \QQ^m$ and
-$\mathbf{A} \in \QQ^{m \times n}$. Let $\mathbf{x}^* \in \QQ_+^n$ and
-$\mbox{\boldmath$\pi$}^* \in \QQ_+^m$ be an optimal primal and dual solution,
-respectively. Suppose we ``perturb” the LP, by changing $\mathbf{c}$ to
-$\mathbf{c} + \mbox{\boldmath$\delta$}$ and changing $\mathbf{b}$ to
-$\mathbf{b} + \mbox{\boldmath$\gamma$}$. (Here, $\mbox{\boldmath$\delta$} \in \QQ^n$ and
-$\mbox{\boldmath$\gamma$} \in \QQ^m$.)  The increase in the optimal profit will
-be $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$, provided that the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$
-are sufficiently small. (A precise definition of ``sufficiently small" can be found in \cite{We85}.)
+$\mathbf{A} \in \QQ^{m \times n}$. Let $\mathbf{x}^* \in \QQ_+^n$
+and $\mbox{\boldmath$\pi$}^* \in \QQ_+^m$ be optimal primal and dual
+solutions, respectively. Suppose we ``perturb” the LP, by changing
+$\mathbf{c}$ to $\mathbf{c} + \mbox{\boldmath$\delta$}$ and changing
+$\mathbf{b}$ to $\mathbf{b} + \mbox{\boldmath$\gamma$}$. (Here,
+$\mbox{\boldmath$\delta$} \in \QQ^n$ and
+$\mbox{\boldmath$\gamma$} \in \QQ^m$.) The increase in the optimal profit
+will be $\mbox{\boldmath$\delta$}^T \mathbf{x}^* +
+\mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$, provided that
+the components of $\mbox{\boldmath$\delta$}$ and
+$\mbox{\boldmath$\gamma$}$ are sufficiently small. (A precise definition
+of ``sufficiently small" can be found in \cite{We85}.)
 
-Some specialised methods have also been developed for applying SA to MNVPs
-(e.g., \cite{AA07,BR93}). We omit details, for brevity.
+Closely related to sensitivity analysis is
+\emph{parametric programming} \cite{Da98,Va20}.
+Suppose we have selected a specific constraint in the system $Ax \le b$. For any given real $r$, let $\phi(r)$ be the optimal profit when the right-hand side of the given constraint is changed to $r$. Then $\phi$ is a piecewise-linear concave function of $r$, and it can be computed using a modified version of the simplex method \cite{Da98}. (Note that $r$ is not
+restricted to take small values, as in sensitivity analysis.) 
+
+Finally, we remark that some specialised methods have been developed
+for applying SA to MNVPs (e.g., \cite{AA07,BR93}). Those methods assume
+that one has explicit demand distributions, rather than scenarios. We
+omit details, since we will focus on the scenario case.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The Method} \label{se:theory}
+\section{The Method} \label{se:method}
 
-In this section, we present the new method. In Subsection
-\ref{sub:th-model}, we model a broad family of MNVPs as an SLP. Then, in
-the following two subsections, we show how to estimate the effect of
-marketing actions on the expected profit. These subsections deal with
-uncorrelated and correlated demands, respectively.
+This section introduces our approach. In Subsection \ref{sub:method1}, we model a broad family of MNVPs as an SLP. Subsections \ref{sub:method2} and \ref{sub:method3} show how to predict the effect of marketing actions in the cases of uncorrelated and correlated demand, respectively. Subsection \ref{sub:method4} gives a worked example.
 
-\subsection{Stochastic LP formulation} \label{sub:th-model}
+\subsection{Stochastic LP formulation} \label{sub:method1}
 
-We now consider an MNVP in which, in addition to the $n$ products, there are
-$m$ \emph{resources}. Each unit of product $j$ takes up $a_{ij}$ units of
-resource $i$, and there are $b_i$ units of resource $i$ available. Let
-$\mathbf{\tilde d} \in \RR_+^n$ denote the (random) demand vector.
+We now consider an MNVP in which, in addition to the $n$ products, there are $m$ \emph{resources}. Each unit of product $j$ takes up $a_{ij}$ units of resource $i$, and there are $b_i$ units of resource $i$ available. Let $\mathbf{\tilde d} \in \RR_+^n$ denote the (random) demand vector.
 
-For our purposes, it will be more convenient to work with the ``raw" prices
-and costs, rather than $c^o_j$ and $c^u_j$, which are opportunity costs. In
-detail, we suppose that product $j$ is ordered at a cost $c^1_j$ per unit, and
-sold at a price of $p_j$ per unit. At the end of period, excess stock costs $c^2_j$ per unit,
-and unsatisfied demand costs $c^3_j$ per unit.
+For our purposes, it will be more convenient to work with the ``raw" prices and costs, rather than $c^o_j$ and $c^u_j$, which are opportunity costs. In detail, we suppose that product $j$ is ordered at a cost $c^1_j$ per unit, and sold at a price of $p_j$ per unit. At the end of period, excess stock costs $c^2_j$ per unit, and unsatisfied demand costs $c^3_j$ per unit. The relationship between two sets of costs are: $c^o_j = c^1_j + c^2_j$ and $c^u_j = p_j - c^1_j + c^3_j$.
 
-To model this MNVP as an SLP, we need to define our first- and second-stage
-decision variables. For $j = 1, \ldots, n$, we define the first-stage
-variable $x_j$, representing the number of units of product $j$ that are
-ordered, and the second-stage variables $y_j$ and $z_j$, representing the
-amount of over- and under-stocking of product $j$, respectively (for a given
-realisation of $\mathbf{\tilde d}$).
+To model this MNVP as an SLP, we need to define our first- and second-stage decision variables. For $j = 1, \ldots, n$, we define the first-stage variable $x_j$, representing the number of units of product $j$ that are ordered by decision maker, and the second-stage variables $y_j$ and $z_j$, representing the amount of over- and under-stocking of product $j$, respectively (for a given realisation of $\mathbf{\tilde d}$).
 
-One can check that the contribution of product $j$ to the profit in the first
-stage is $\big( p_j - c^1_j \big) x_j$, and its contribution to the expected
-cost in the second stage is $\big( p_j + c^2_j \big) y_j + c^3_j z_j$. Thus,
-the SLP is:
+One can check that the contribution of product $j$ to the profit in the first stage is $\big( p_j - c^1_j \big) x_j$, and its contribution to the cost in the second stage is $\big( p_j + c^2_j \big) y_j + c^3_j z_j$. Thus, the SLP is:
 \begin{eqnarray}
 \nonumber
 \max & \sum_{j=1}^n \big( p_j - c^1_j \big) x_j -
@@ -289,11 +178,9 @@ where $f \big( \mathbf{x}, \mathbf{{\tilde d}} \big)$ is equal to
             & y_j, z_j \ge 0    & (j = 1, \ldots, n).
 \end{eqnarray*}
 
-As usual, we assume that $\mathbf{\tilde d}$ is modelled by a finite set
-$S$ of scenarios. For simplicity (and to avoid using the letter ``$p$" to
-represent both prices and probabilities), we assume that each scenario has
-an equal probability of occurring. The SLP is then equivalent to an LP in
-which we maximise
+For the sake of generality, we do not make any assumptions on the demand distribution (such as independence, normality and so on). We assume, however, that we are able to simulate realisations of $\mathbf{\tilde d}$, in order to obtain a finite set $S$ of scenarios.
+
+For ease of notation, we assume from now on that each scenario has an equal probability of occurrence. The SLP is then equivalent to an LP in which we maximise
 \[
 P \, = \, \sum_{j=1}^n \big( p_j - c^1_j \big) x_j \, - \,
 |S|^{-1} \sum_{s \in S} \left( \sum_{j=1}^n \big( p_j + c^2_j \big) y_j^s
@@ -307,133 +194,71 @@ subject to (\ref{eq:constraints}), (\ref{eq:non-neg}), and
 & y_j^s, z_j^s \ge 0	& (s \in S; \, j = 1, \ldots, n).
 \end{eqnarray}
 
-We assume in what follows that this LP has been solved to proven optimality.
-We let $\mathbf{x}^*$ denote the optimal $x$ vector, and we let
-$\pi_{js}^o$ and $\pi_{js}^u$ denote the dual prices of constraints (\ref{eq:over}) and (\ref{eq:under}), respectively.
+We assume in what follows that this LP has been solved to proven optimality. We let $\mathbf{x}^*$ denote the optimal $x$ vector, and we let $\pi_{sj}^o$ and $\pi_{sj}^u$ denote the dual prices of constraints (\ref{eq:over}) and (\ref{eq:under}), respectively.
 
-\subsection{Uncorrelated demands} \label{sub:th-uncor}
+\subsection{Uncorrelated demands} \label{sub:method2}
 
-First we consider the relatively simple case, in which the demands
-of different products are assumed to be uncorrelated. We make no
-assumption on the underlying forecasting method. We assume only that
-the scenarios are generated from the following formula:
+Now we consider the (relatively) simple case, in which the demands of different products are assumed to be uncorrelated. We assume that the scenarios are generated from the following formula:
 \[
-\tilde{d}_j = \hat{\mu}_j + \hat{\sigma}_j \tilde{\epsilon}_j \qquad
+\tilde{d}_j = \mu_j + \sigma_j \tilde{\epsilon}_j \qquad
 (j = 1, \ldots, n),
 \]
-where $\hat{\mu}_j, \hat{\sigma}_j \in \RR_+$ for all $j$, and the $\tilde{\epsilon}_j$ are random variables with zero mean, unit variance,
-and known distribution.
+where $\mu_j, \sigma_j \in \RR_+$ are known for all $j$, and $\tilde{\epsilon}_j$ is a random variable with zero mean, unit variance, and a known distribution.
 
-The idea here is that $\hat{\mu}_j$ is an estimate of the mean demand for
-product $j$, $\hat{\sigma}_j$ is an estimate of the standard deviation, and
-$\tilde{\epsilon}_j$ represents ``noise", which may be due to intrinsic randomness in the demand, estimation errors, or both.
-
-Now, suppose there is the option of a marketing intervention (such as
-advertising) that could increase the mean demand of product $j$ by
-$\Delta \hat{\mu}_j$, without affecting anything else. The effect of
-this action in scenario $s$ would be to add $\Delta \hat{\mu}_j$ to the
-demand $d_j^s$. In the LP, the right-hand sides of the corresponding
-constraints (\ref{eq:over}) and (\ref{eq:under}) would change simultaneously by the same amount. Assuming that the change is small,
-the margin would be
+Now, suppose there is an option of a marketing intervention (such as advertising or promotion) that could increase the mean demand of product $j$ by $\Delta$, without affecting anything else. This would be equivalent to adding $\Delta$ to $d_j^s$ in scenario $s \in S$. In the LP, the right-hand sides of the corresponding constraints (\ref{eq:over}) and (\ref{eq:under}) would change simultaneously by the same amount. Assuming that the change is small, the marginal increase in profit would be
 \[
-\Delta \, P_j \, = \, \Delta \hat{\mu}_j \,
+\Delta \,
 \sum_{s \in S} \big( \pi_{sj}^u - \pi_{sj}^o \big).
 \]
-Therefore, one can easily determine whether it is helpful to apply a
-promotion, by comparing the gain $\Delta \, P_j$ with the advertising
-expense. The case in which a promotion causes several $\hat{\mu}_j$ values to
-change simultaneously can be handled in an analogous way.
+Therefore, one can easily determine whether it is helpful to apply a promotion, by comparing the expected gain in profit with the change in costs related to advertising expenses.
 
-Now suppose instead that there is the option to improve demand estimation,
-for example by market research or improved forecasting software. In
-particular, suppose that the improved estimation will reduce
-$\hat{\sigma}_j$ by $\delta \%$ (while leaving $\hat{\mu}_j$ unchanged). The
-effect of this action in scenario $s$ would be to decrease $d_j^s$ by
-$\delta \% \, \hat{\sigma}_j \epsilon_j^s$, where $\epsilon_j^s$ is the
-realisation of $\hat{\epsilon}_j$ in scenario $s$. In the LP, the
-right-hand sides of the corresponding constraints (\ref{eq:over}) and
-(\ref{eq:under}) would change by the same amount. The margin is therefore:
+The case in which a single promotion causes several $\mu_j$ values to change simultaneously can be handled in a similar way.
+ 
+For the case in which $\Delta$ itself is not known with certainty, one can use parametric programming. Add the variable $\Delta$ to the LP. For the given $j$, change constraints (\ref{eq:over}) and (\ref{eq:under}) to:
+\begin{eqnarray*}
+& y_j^s \ge x_j - d_j^s - \Delta & (s \in S) \\
+& z_j^s \ge d_j^s + \Delta - x_j & (s \in S).
+\end{eqnarray*}
+Finally, add the constraint $\Delta = 0$ to the
+LP. By doing parametric programming on the right-hand side of this last constraint, one can find out how the optimal profit varies as $\Delta$ changes. This may make it easier to decide whether the given promotion is worthwhile.
+
+Now suppose instead that there is an option of decreasing demand variance, for example by market research or using a more accurate customer targeting technique. This could, for example, reduce $\sigma_j$ by $\delta \%$ (while leaving $\mu_j$ unchanged). This would be equivalent to decreasing $d_j^s$ by $\delta \% \, \sigma_j \epsilon_j^s$ in scenario $s \in S$, where $\epsilon_j^s$ is the realisation of $\tilde{\epsilon}_j$ in scenario $s$. In the LP, the right-hand sides of the corresponding constraints (\ref{eq:over}) and (\ref{eq:under}) would change by the same amount. The marginal increase in profit is therefore:
 \[
-\Delta \, P_j \, = \, \delta \% \, \hat{\sigma}_j
-\sum_{s \in S} \epsilon_j^s \big(\pi_{sj}^o - \pi_{sj}^u \big).
+\delta \% \, \sigma_j \sum_{s \in S} \epsilon_j^s \big(\pi_{sj}^o - \pi_{sj}^u \big).
 \]
-As before, one can determine whether the proposed action is helpful by
-comparing the gain $\Delta \, P_j$ with the cost of the action.
+As before, one can determine whether the proposed action is helpful by comparing the expected gain in profit with the cost of the action. If desired, one can also apply parametric programming to find how the optimal expected profit depends on $\delta\%$.
 
-\subsection{Correlated demands} %\label{sub:th-cor}
+\subsection{Correlated demands} \label{sub:method3}
 
-Now, we consider the harder case, in which the demands are correlated
-across products. As before, we make no assumption on the underlying
-forecasting method. We assume only that the scenarios are generated with
-the following formula:
+Next, we consider the case in which the demands of different products are not statistically independent. We assume that the scenarios are generated with the following formula (see, e.g., \cite{GR12,KR03}):
 \[
-\mathbf{\tilde{d}} =  \mathbf{\hat{M}} \mathbf{w}
-+ \mathbf{\hat{N}} \mbox{\boldmath$\tilde{\epsilon}$},
+\mathbf{\tilde{d}} =  \mathbf{M} \mathbf{w}
++ \mathbf{N} \mbox{\boldmath$\tilde{\epsilon}$},
 \]
-where $\mathbf{\hat{M}} \in \RR^{n \times q}$, $\mathbf{w} \in \RR^q$,
-$\mathbf{\hat{N}} \in \RR^{n \times r}$, and
-$\mbox{\boldmath$\tilde{\epsilon}$} \in \RR^r$ is a vector of independent
-random variables, each with zero mean, unit variance, and known
-distribution.
+where $\mathbf{M} \in \RR^{n \times q}$ and $\mathbf{N} \in \RR^{n \times r}$ are parameter matrices, the vector $\mathbf{w} \in \RR^q$ encodes some explanatory variables, such as marketing decisions, and $\mbox{\boldmath$\tilde{\epsilon}$} \in \RR^r$ is a vector of independent random variables, each with zero mean, unit variance, and known
+distribution. We assume that, when we solve the MNVP, the vector $\mathbf{w}$ is fixed, and only the order quantities may vary.
 
-The idea here is that $\mathbf{\hat{M}}$ and $\mathbf{\hat{N}}$ are
-parameter matrices that have been estimated. The vector $\mathbf{w}$
-encodes some explanatory variables, such as marketing decisions or product
-prices. The term $\mathbf{\hat{N}}\mbox{\boldmath$\tilde{\epsilon}$}$ represents
-noise. We assume that, when we solve the MNVP, the vector
-$\mathbf{w}$ is fixed, and only the order quantities may vary.
-
-Suppose now that a marketing intervention would cause one of the components
-of $\mathbf{w}$, say $w_k$, to increase by $\delta_k$. The effect of this
-action would be to increase the expected demand of product $j$ by
-$\hat{M}_{jk} \delta_k$, where $\hat{M}_{jk}$ is the entry in the $j$th row
-and $k$th column of $\mathbf{\hat{M}}$. In the LP, the right-hand sides of
-the corresponding constraints (\ref{eq:over}) and (\ref{eq:under}) would
-change by the same amount. The margin can therefore be expressed as:
+Suppose now that a marketing intervention would cause one of the components of $\mathbf{w}$, say $w_k$, to increase by $\Delta$. The resulting change in the expected demand of the $j$th product would be $M_{jk} \Delta$, where $M_{jk}$ is the entry in the $j$th row and $k$th column of $\mathbf{M}$. In the LP, the right-hand sides of the corresponding constraints (\ref{eq:over}) and (\ref{eq:under}) would change by the same amount. The margin can therefore be expressed as:
 \[
-\Delta \, P_k \, = \, \delta_k \sum_{j=1}^n \hat{M}_{jk} \sum_{s \in S} 
-\big(\pi_{sj}^u - \pi_{sj}^o \big).
+\Delta \sum_{j=1}^n M_{jk} \sum_{s \in S} \big(\pi_{sj}^u - \pi_{sj}^o \big).
 \]
 
-Now suppose instead that improvements in demand estimation would cause one
-of the components of $\mathbf{\hat{N}}$, say $\hat{N}_{jk}$, to decrease by
-$\delta \%$. The effect of this action in scenario $s$ would be to decrease
-$d_j^s$ by $\delta \% \, \hat{N}_{jk} \, \epsilon_k^s$, where $\epsilon_k^s$
-is the realisation of $\tilde{\epsilon}_k$ in scenario $s$. In the LP, the
-right-hand sides of the corresponding constraints (\ref{eq:over}) and
-(\ref{eq:under}) would change by the same amount. The margin is therefore:
+Now suppose instead that reductions in demand volatility would cause one of the components of $\mathbf{N}$, say $N_{jk}$, to decrease by $\delta \%$. The effect of this action would be equivalent to decreasing $d_j^s$ by $\delta \% \, N_{jk} \, \epsilon_k^s$ in scenario $s \in S$, where $\epsilon_k^s$ is the realisation of $\tilde{\epsilon}_k$ in the scenario. In the LP, the right-hand sides of the corresponding constraints (\ref{eq:over}) and (\ref{eq:under}) would change by the same amount. The margin is therefore:
 \[
-\Delta \, P_{jk} \, = \, \delta \% \, \hat{N}_{jk} \,
-\sum_{s \in S} \epsilon_k^s \big(\pi_{sj}^o - \pi_{sj}^u \big).
+\delta \% \, N_{jk} \, \sum_{s \in S} \epsilon_k^s \big(\pi_{sj}^o - \pi_{sj}^u \big).
 \]
+One can also apply parametric programming as in the previous subsection.
 
-\section{Application to Multi-Product NVPs}
-\label{se:application}
+\subsection{Example} \label{sub:method4}
 
-In this section, we describe two applications of the proposed method in
-detail. Subsection \ref{sub:app1} concerns a simple MNVP with uncorrelated
-demands. Subsection \ref{sub:app2} deals with a more complex and more
-realistic MNVP, in which the demands exhibit significant cross-price
-elasticities.
+We now give a simple worked example, with only two products, three resources, uncorrelated demands, and a small number of scenarios. We will see that, even in this case, our approach can yield insights that are not immediately obvious otherwise.
 
-\subsection{A simple example}
-\label{sub:app1}
+Suppose that the products are called $a$ and $b$, and the resources are called $A$, $B$ and $C$. Stocking one unit of product $a$ requires 4, 7 and 8 units of resource $A$, $B$ and $C$, respectively. Stocking one unit of product $b$ requires 6, 5 and 8 units of resource $A$, $B$ and $C$. The amounts of the available resources are 2200, 2500 and 3500, respectively. The selling prices, order, unsatisfying and excess cost are $(8,3,1,2)$ and $(6,3,3,4)$ for product $a$ and $b$, respectively. We also assume that both demands follow a normal distribution, with fixed parameters $\mu_a = \mu_b =210$, $\sigma_a = 25$ and $\sigma_b = 35$.
 
-We begin with a simple artificial example, with only two products, three
-resources, uncorrelated demands and limited scenarios. We will see that, even in this case, our approach can yield insights that are not immediately obvious.
+Next, we assume that we have generated twelve demand scenarios, as shown in Table \ref{tab:demand}.
 
-Suppose that the products are called $a$ and $b$, and the resources are
-called $A$, $B$ and $C$. Stocking one unit of product $a$ requires 4, 7 and
-8 units of resource $A$, $B$ and $C$, respectively. Stocking one unit of
-product $b$ requires 6, 5 and 8 units of resource $A$, $B$ and $C$. The
-amount of the available resources are 2200, 2500 and 3500, respectively.
-The selling price, order cost, shortage cost and holding cost are
-$(8,3,1,2)$ and $(6,3,3,4)$ for product $a$ and $b$, respectively. We also assume that both demands follow a normal distribution, with $\mu_a = \mu_b =210$, $\sigma_a = 25$ and $\sigma_b = 35$. There
-are twelve demand scenarios, as shown in Table \ref{tab:demand}. Some
-summary statistics are given in Table \ref{tab:summary}.
-
-\begin{table}[ht]
-\caption{Demand Realisations: Example}
+\begin{table}[htb]
+\caption{Twelve possible demand realisations for two products}
 \label{tab:demand}
 \centering
 \resizebox{\linewidth}{!}{
@@ -441,104 +266,108 @@ summary statistics are given in Table \ref{tab:summary}.
 \toprule
 \multicolumn{1}{c}{\textbf{Products}} & \multicolumn{12}{c}{\textbf{Demand Realisations}} \\
 \cmidrule(l{3pt}r{3pt}){1-1} \cmidrule(l{3pt}r{3pt}){2-13}
-& $s_1$ & $s_2$ & $s_3$ & $s_4$ & $s_5$ & $s_6$ & $s_7$ & $s_8$ & $s_9$ & $s_{10}$ & $s_{11}$ & $s_{12}$\\
+& $s_1$ & $s_2$ & $s_3$ & $s_4$ & $s_5$ & $s_6$ & $s_7$ & $s_8$ & $s_9$ & $s_{10}$ & $s_{11}$ & $s_{12}$ \\
 \midrule
-product $a$ & 200 & 220 & 180 & 190 & 190 & 210 & 240 & 250 & 200 & 190 & 210 & 240\\
-product $b$ & 250 & 230 & 200 & 180 & 210 & 210 & 170 & 150 & 180 & 220 & 260 & 260\\
+product $a$ & 200 & 220 & 180 & 190 & 190 & 210 & 240 & 250 & 200 & 190 & 210 & 240 \\
+product $b$ & 250 & 230 & 200 & 180 & 210 & 210 & 170 & 150 & 180 & 220 & 260 & 260 \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\begin{table}[ht]
-\caption{Demand Realisations: Statistical Summary}
-\label{tab:summary}
-\centering
-\resizebox{0.55\linewidth}{!}{
-\begin{tabular}{ccc}
-\toprule
- & product $a$ & product $b$\\
-\midrule
-mean $(\hat{\mu})$ & 210 & 210\\
-standard deviation $(\hat{\sigma})$ & 22.96 & 35.93\\
-1st quartile $(\hat{Q}_1)$ & 190 & 180\\
-median $(\hat{Q}_2)$ & 205 & 210\\
-3rd quartile $(\hat{Q}_3)$ & 225 & 235\\
-\bottomrule
-\end{tabular}}
-\end{table}
+In the LP, there are two first-stage decision variables denoting the order quantities, which we call $x_a$ and $x_b$, and there are 48 second-stage decision variables denoting the over-stocking and under-stocking quantities, which we call $y_a^s$, $y_b^s$, $z_a^s$ and $z_b^s$ (for $s = 1, \ldots, 12$). The optimal first-stage solution in this case is $x_a^*=207.14$, $x_b^*=210$, and our estimate of the optimal expected profit is $P=1393.57$. The second-stage solution, along with detailed sensitivity information, is provided in Appendix \ref{se:report}.
 
-In the LP, there are two first-stage decision variables, which we call $x_a$
-and $x_b$, and there are 48 second-stage decision variables, which we call
-$y_a^s$, $y_b^s$, $z_a^s$ and $z_b^s$ (for $s = 1, \ldots, 12$). The LP can
-be solved in under a second with a modern LP solver. The optimal first-stage
-solution is $x_a^*=207.1$, $x_b^*=210$, which yields a profit $P=1393.57$.
-The second-stage solution, along with detailed sensitivity information,
-can be found in Appendix \ref{se:report}.
-
-Now suppose that a marketing intervention would cause the mean demand of
-product $a$ or $b$ to increase by $\Delta \hat{\mu}_a$ or $\Delta \hat{\mu}_b$, respectively. From the sensitivity reports, we estimate
-the marginal gains to be:
+Now suppose that a marketing intervention would cause the mean demand of either product $a$ or $b$ to increase by $\Delta_a$ or $\Delta_b$, respectively. From the sensitivity reports, we estimate the marginal gains to be:
 \[
 \begin{aligned}
-    &\Delta \, P_a = \Delta \hat{\mu}_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big) = 4.5 \, \Delta \hat{\mu}_a,\\
-    &\Delta \, P_b = \Delta \hat{\mu}_b \, \sum_{s \in S} \big( \pi_{sb}^u - \pi_{sb}^o \big) = 2.64 \, \Delta \hat{\mu}_b,
+    &\Delta_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big) = 4.5 \, \Delta_a,\\
+    &\Delta_b \, \sum_{s \in S} \big( \pi_{sb}^u - \pi_{sb}^o \big) = 2.64 \, \Delta_b,
 \end{aligned}
 \]
-for small values of $\Delta \hat{\mu}_a$ and $\Delta \hat{\mu}_b$.
+for small values of $\Delta_a$ and $\Delta_b$.
 
-Note that the computed margins, $(4.5,2.64)$, are smaller than the given
-unit profits, $(5,3)$. The explanation for this is that the constraint for
-resource $B$ is binding, and both products consume a positive amount of
-resource $B$. Intuitively, increasing one or more mean demands leads to pressure on the supply side, which weakens the profitability a little.
-
-Now suppose instead that we could reduce the standard deviation of demand
-for product $a$ or $b$ by $\delta \%$. Applying the formula in Subsection
-\ref{sub:th-uncor}, we estimate that the marginal gain will be:
+Now suppose instead that we could reduce the standard deviation of demand for product $a$ or $b$ by $\delta_a \%$ or $\delta_b \%$ respectively. Applying the formula in Subsection \ref{sub:method2}, we estimate that the marginal gains will be:
 \[
 \begin{aligned}
-    &\Delta \, P_a = \delta_a \% \, \hat{\sigma}_a
-    \sum_{s \in S} \epsilon_a^s \big(\pi_{sa}^o - \pi_{sa}^u \big) = 1.01 \, \delta_a,\\
-    &\Delta \, P_b = \delta_b \% \, \hat{\sigma}_b
-    \sum_{s \in S} \epsilon_b^s \big(\pi_{sb}^o - \pi_{sb}^u \big) = 1.84 \, \delta_b.
+    &\delta_a \% \, \sigma_a     \sum_{s \in S} \epsilon_a^s \big(\pi_{sa}^o - \pi_{sa}^u \big) = 1.01 \, \delta_a,\\
+    &\delta_b \% \, \sigma_b     \sum_{s \in S} \epsilon_b^s \big(\pi_{sb}^o - \pi_{sb}^u \big) = 1.84 \, \delta_b.
 \end{aligned}
 \]
-The retailer can then compare these
-values with the cost of conducting market research and/or investing in
-improved forecasting software.
 
-Recall that the SA result is valid only when the change is ``sufficiently small". In Figure \ref{fig:slp}, we
-apply different values of changes on the twelve  generated scenarios above, and solve a sequence of SLPs to construct the line of changes. Therefore, we can see, graphically, at which point the rate of margin changes, and know
-the valid range of our method. 
+Finally, we performed parametric programming to explore the effect on the profit of larger changes in mean or variance. The results are shown in Figures \ref{fig:simple1} and 
+\ref{fig:simple2}. Note that the curves in Figure \ref{fig:simple1} are piecewise-linear and concave, as one would expect. Remarkably, the curves in Figure \ref{fig:simple2} are straight lines. This means that, for either product, our estimate of the margin is correct for \emph{any} reduction in the variance of demand (for the given set of scenarios).
+
 \begin{figure}[htb]
-\caption{Line of change constructed by solving SLP}
-\begin{subfigure}{\textwidth}
 \centering
+\caption{Optimal expected profit vs.\ change in mean demand}
 \includegraphics{Example-figure_files/figure-latex/mean-1.pdf}
-\caption{Optimal profit vs. Change of mean demand}
-\end{subfigure}
-\bigskip
-\begin{subfigure}{\textwidth}
-\centering
-\includegraphics{Example-figure_files/figure-latex/var-1.pdf}
-\caption{Optimal profit vs. Change of standard deviation}
-\end{subfigure}
-\label{fig:slp}
+\label{fig:simple1}
 \end{figure}
 
-One can see that our result with sensitivity analysis can remain valid when the increase of mean demand smaller than 15 (approximately) for product $a$ or smaller than 20 (approximately) for product $b$, and can remain valid with all choice of $\delta \%$ smaller than 1. 
+\begin{figure}[htb]
+\centering
+\caption{Optimal expected profit vs.\ change in standard deviation}
+\includegraphics{Example-figure_files/figure-latex/var-1.pdf}
+\label{fig:simple2}
+\end{figure}
 
+\section{Price-Setting}
+\label{se:price}
 
-\subsection{Cross-price elasticities} \label{sub:app2}
+We now move on the (more complex) case in which one is free to vary the prices of individual products (see \cite{De20}). Subsections \ref{sub:price1} and \ref{sub:price2} are concerned with additive and multiplicative price-demand models, respectively.
 
-We now suppose the demand of products are correlated, and the cross-price elasticity is known. According to traditional economics textbook \cite{FC13}, the cross-price elasticity measures the responsiveness in the quantity demanded of one product when the price for another product changes. An elasticity $E_{ij} = -\omega$ means that each percent of selling price increase in product $j$ will causes $\omega$ percents of demand decrease in product $i$. Recall the demand formulation:
+\subsection{Additive price-demand model} \label{sub:price1}
+
+We first consider the case in which an \emph{additive} price-demand model has been used. That is, the mean demand of product $j$ can be written in the form:
 \[
-\mathbf{\tilde{d}} =  \mathbf{\hat{M}} \mathbf{w}
-+ \mathbf{\hat{N}} \mbox{\boldmath$\tilde{\epsilon}$}.
+\mu_j = \alpha_j + \sum_{k=1}^n M_{jk} p_k.
 \]
-We could allow the explanatory variable $\mathbf{w}$ to contain prices of all relevant products, and metrics $\mathbf{\hat{M}}$ to contain adjusted elasticities estimation. With the context of previous example, we let:
+
+Suppose we wish to explore the effect of increasing the price of product $k$ by $\Delta$. The effect on the LP is as follows:
+\begin{itemize}
+\item The objective coefficient of $x_k$ increases by $\Delta$.
+\item For all $j$ and $s$, the right-hand side of (\ref{eq:over}) decreases by $M_{jk} \Delta$, and the right-hand side of (\ref{eq:under}) increases by the same amount.
+\end{itemize}
+From this it follows that the margin is:
+\[
+\Delta \, x^*_k \, + \,
+\Delta \sum_{j=1}^n M_{jk} \, \sum_{s \in S} \big( \pi_{sj}^u - \pi_{sj}^o \big).
+\]
+
+Unfortunately, we can no longer apply parametric programming, since we are changing objective function and constraint coefficients simultaneously. (Of course, one can simply solve the LP for several different values of $\Delta$.)
+
+\subsection{Multiplicative price-demand model} \label{sub:price2}
+
+Finally, we consider the case in which a \emph{multiplicative} price-demand model has been used. That is, for a given product $j$ we have:
+\[
+\mu_j = \alpha_j \, \Pi_{i=1}^n p_j^{\beta_{ij}},
+\]
+or, equivalently,
+\[
+\log \mu_j = \log \alpha_j \, + \sum_{j=1}^n \beta_{ij} \log p_j.
+\]
+Here, the $\beta_{ij}$ are the well-known
+\emph{cross-price elasticities of demand} (see, e.g., \cite{FC13}).
+
+To handle this within our framework, one can use a first-order approximation to the demand functions...
+
+
+can encode the product prices in the vector $\mathbf{w}$, and encode the estimated elasticities in the parameter matrix $\mathbf{M}$. We illustrate this on an example, based on the previous one with $p_a = 8$, $p_b = 6$ and $\mu_a = \mu_b = 210$. Suppose that our elasticity matrix is:
+\[
+\mathbf{E} = 
+\begin{pmatrix} E_{aa} & E_{ab}\\ E_{ba} & E_{bb} \end{pmatrix}
+=
+\begin{pmatrix} -0.6 & 0.2\\ 0.4 & -0.3 \end{pmatrix}.
+\]
+We would then set:
+\[
+\mathbf{w} = 
+\begin{pmatrix} 1\\ p_a\\ p_b \end{pmatrix} =
+\begin{pmatrix} 1\\ 8\\ 6 \end{pmatrix}
+\]
+and
 \[
 \begin{aligned}
-&\mathbf{\hat{M}} = 
+&\mathbf{M} = 
 \begin{pmatrix}
 \alpha_a&\frac{E_{aa}}{p_a}\mu_a&\frac{E_{ab}}{p_b}\mu_a\\
 \alpha_b&\frac{E_{ba}}{p_a}\mu_b&\frac{E_{bb}}{p_b}\mu_b
@@ -546,73 +375,205 @@ We could allow the explanatory variable $\mathbf{w}$ to contain prices of all re
 \begin{pmatrix}
 294&-15.75&7\\
 189&10.5&-10.5
-\end{pmatrix},\\
-&\mathbf{w} = 
-\begin{pmatrix}
-1\\
-p_a\\
-p_b
-\end{pmatrix} =
-\begin{pmatrix}
-1\\
-8\\
-6
-\end{pmatrix}
+\end{pmatrix},
 \end{aligned}
 \]
-where we set $E_{aa} = -0.6$, $E_{ab} = 0.2$, $E_{ba} = 0.4$ and $E_{bb} = -0.3$, while $\alpha_a$, $\alpha_b$ can be calculated by $\mbox{\boldmath$\hat{\mu}$} = \mathbf{\hat{M}}\mathbf{w}$.
+where the intercepts $\alpha_a$, $\alpha_b$ can be calculated by $\mbox{\boldmath$\mu$} = \mathbf{M}\mathbf{w}$.
 
-Moreover, we recall that the elements in \mbox{\boldmath$\tilde{\epsilon}$} are independent, and set
+We also set:
 \[
-\mathbf{\hat{N}} = 
-\begin{pmatrix}
-\hat{\sigma}_a^m&\hat{\sigma}_a^e&0\\
-\hat{\sigma}_b^m&0&\hat{\sigma}_b^e\\
-\end{pmatrix} =
-\begin{pmatrix}
-16.94&15.5&0\\
-32.41&0&15.5\\
+\mathbf{N}=
+\begin{pmatrix} \sigma_{a} & 0\\
+0 & \sigma_{b} \end{pmatrix}=
+\begin{pmatrix} 
+25 & 0\\ 
+0 & 35
 \end{pmatrix}
-,\quad \mbox{\boldmath$\tilde{\epsilon}$} = 
-\begin{pmatrix}
-\tilde{\epsilon}_m\\
-\tilde{\epsilon}_a\\
-\tilde{\epsilon}_b
-\end{pmatrix},
 \]
-where $\hat{\sigma}_a^m \tilde{\epsilon}_m$ and $\hat{\sigma}_b^m \tilde{\epsilon}_m$ represent the uncontrollable error of product $a$ and $b$, while $\hat{\sigma}_a^e \tilde{\epsilon}_a$ and $\hat{\sigma}_b^e \tilde{\epsilon}_b$
-represent the reducible error due to inaccurate forecasts. We let $\hat{\sigma}_a^e = \hat{\sigma}_b^e$ in the setting since we assume there is no significant difference in the forecasting method used on each product. One can check the value with Table \ref{tab:summary} that $\hat{\sigma}_a^2 = \hat{\sigma}_a^{m2} + \hat{\sigma}_a^{e2}$ and $\hat{\sigma}_b^2 = \hat{\sigma}_b^{m2} + \hat{\sigma}_b^{e2}$.
 
-We first consider the effect of marketing intervention on price setting. Suppose that by marketing intervention, the selling price of product $a$ or $b$ could be altered by $\Delta p_a$ and/or $\Delta p_b$. This change will now affect both the parameters of objective function and corresponding constraints (\ref{eq:over}) and (\ref{eq:under}). Recalling the margin can be computed by $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$,
-as long as the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$
-are ``sufficiently small”, we have: 
+We first consider the effect of price change on the expected profit. Suppose that the selling price of product $a$ was increased by $\Delta p_a$. This change would affect the objective in the LP as well as the constraints (\ref{eq:over}) and (\ref{eq:under}). Recalling that the margin will be $\mbox{\boldmath$\delta$}^T \mathbf{x}^* + \mbox{\boldmath$\gamma$}^T \mbox{\boldmath$\pi$}^*$, as long as the components of $\mbox{\boldmath$\delta$}$ and $\mbox{\boldmath$\gamma$}$ are ``sufficiently small”, we have: 
 \[
 \begin{aligned}
-    \Delta \, P_a &= \big( x_a^* - |S|^{-1} \sum_{s \in S} y_a^s \big) \Delta p_a + \Delta \hat{\mu}_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big)\\
-    &= \big( x_a^* - |S|^{-1} \sum_{s \in S} y_a^s \big) \Delta p_a + \frac{E_{aa}}{p_a}\mu_a \Delta p_a \, \sum_{s \in S} \big( \pi_{sa}^u - \pi_{sa}^o \big)\\
-    &= 156.25 \, \Delta p_a,
+\Delta \, P_a & =
+\Big( x_a^* - |S|^{-1} \sum_{s \in S} y_a^s \Big) \Delta p_a +
+\sum_{j = a,b} \Delta \mu_j \, \sum_{s \in S}
+\big( \pi_{sj}^u - \pi_{sj}^o \big)\\
+& = \Big( x_a^* - |S|^{-1} \sum_{s \in S} y_a^s \Big) \Delta p_a +
+\frac{\Delta p_a}{p_a} \sum_{j = a,b} E_{ja} \, \mu_j \, \sum_{s \in S} \big( \pi_{sj}^u - \pi_{sj}^o \big)\\
+    &= 156.25 \, \Delta p_a.
 \end{aligned}
 \]
-and
+Applying the same method to product $b$, we obtain:
 \[
 \Delta \, P_b = 199.61 \, \Delta p_b.
 \]
-In this case, we can see that increasing unit selling price is profitable for the retailer, and the margin is linear when change is small. Moreover, we find the optimal profit is more sensitive to the selling price on product $b$ than to the selling price on product $a$. That is due to the uneven sensitivities of each product. Recalling the results from \ref{sub:app1}, the margin of increasing mean demand of product $a$ is much bigger than that of product $b$. Therefore, on given settings, increasing the selling price on product $b$ (which increases $\hat{\mu}_a$ but decreases $\hat{\mu}_b$) is more profitable than increasing the selling price on product $a$ (which increases $\hat{\mu}_b$ but decreases $\hat{\mu}_a$).
+We conclude that slightly increasing the price on either product would be profitable for the retailer, and that the expected profit is more sensitive to the changes in price of product $b$ than to the changes in price of product $a$.
 
-On the other hand, we consider a improvement of forecasting accuracy. Suppose that applying better forecasting technique could reduce $\hat{\sigma}_a^e$ and $\hat{\sigma}_b^e$ by $\delta \%$ at the same time, we have equivalent:
+As in the previous subsection, we cannot use parametric programming.  Moreover, the ``ranges of validity" from the LP software are no longer reliable, de to the fact that we have used a first-order approximation of the demand curves...
+
+computed the range of validity for our calculated values, by solving a sequence of LPs. The results are shown in Figure \ref{fig:cross}. It is apparent that the range of validity is very large for product b, and large enough to be useful for product a.
+
+\begin{figure}[htb]
+\centering
+\caption{Optimal profit vs. Change of selling price}
+\includegraphics{Example-figure_files/figure-latex/demandunder-1.pdf}
+\label{fig:cross}
+\end{figure}
+
+\subsection{Example using real-life data}
+\label{sub:price3}
+
+We now apply the approach in this section to some real-life data. Our demand data comes from a medium-sized grocery store which sells a wide range of products, many of which are perishable. The store is located in an area where customers are very sensitive to price. Therefore, the retailer wondered whether a better coordination of price-setting across products could increase the total expected profit.
+
+The retailer was able to estimate the costs for any given product, along with the mean and standard deviation of demand. We have collected data for a sample of products. In particular, we selected the most popular product from each of the 15 most common categories (wine, eggs, tea, coffee, and so on). We assume for this specific task that demand on these products is independent. The data, selling prices and costs for these products are provided in Table \ref{tab:real_par}. Note that vegetables and meats are the most profitable products in the store, as one might expect.
+
+\begin{table}[htb]
+\centering
+\caption{Data for a subset of the products}
+\label{tab:real_par}
+\begin{tabular}{lcc cccc}
+\toprule
+& \multicolumn{2}{c}{demands} & \multicolumn{4}{c}{price and costs}\\
+\cmidrule(lr){2-3} \cmidrule(lr){4-7}
+product & $\mu$ & $\sigma$ & $p$ & $c^1$ & $c^2$ & $c^3$\\
+\midrule
+beer & 119.0 & 87.5 & 2.96 & 1.78 & 0.49 & 0.51\\
+wine & 32.5 & 25.7 & 11.98 & 7.13 & 2.49 & 1.33\\
+tea & 27.6 & 16.8 & 5.95 & 3.65 & 0.20 & 0.36\\
+bread & 87.1 & 49.8 & 0.93 & 0.63 & 0.21 & 0.05\\
+eggs & 57.6 & 22.8 & 4.29 & 3.24 & 1.03 & 0.21\\
+\addlinespace
+fish & 44.2 & 14.1 & 2.79 & 1.75 & 1.20 & 0.49\\
+fruit & 124.1 & 42.9 & 4.69 & 3.35 & 0.81 & 0.42\\
+juice & 45.3 & 13.7 & 3.99 & 2.56 & 0.33 & 0.45\\
+vegetables & 1197.5 & 355.09 & 2.86 & 1.96 & 0.78 & 0.56\\
+tobacco & 32.8 & 24.3 & 12.99 & 9.93 & 0.31 & 0.81\\
+\addlinespace
+meat & 126.8 & 10.2 & 20.99 & 16.67 & 3.89 & 2.10\\
+milk & 60.2 & 11.2 & 1.94 & 1.28 & 0.60 & 0.35\\
+coffee & 19.5 & 9.8 & 4.93 & 3.17 & 0.44 & 0.50\\
+dairy & 15.8 & 9.7 & 2.28 & 1.63 & 0.55 & 0.13\\
+oil & 25.0 & 8.7 & 2.42 & 1.74 & 0.72 & 0.08\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+There also existed 7 linear constraints. For instance, there was an upper limit on the total amount of liquid products that the retailer could store, and there were lower limits on the sizes of orders from particular brands. The detailed constraints are summarised in Appendix \ref{se:con}.
+
+The retailer did not have information about elasticities, so we will use price elasticities and cross-price elasticities for grocery items from literature (e.g., \cite{LC03,ZW03,VD99,HPQ99}). Details on the elasticities for our selected products are given in Appendix \ref{se:ela}.
+
+To fit this problem within our framework, we assume that
 \[
-\delta_j \% = \frac{\hat{\sigma}_j - \sqrt{\hat{\sigma}_j^2 - \big( \delta \% \hat{\sigma}_j^e \big)^2}}{\hat{\sigma}_j}.
+\begin{aligned}
+&\mathbf{M} = 
+\begin{pmatrix}
+\alpha_1&\frac{E_{1,1}}{p_1}\mu_1&\cdots&\frac{E_{1,n}}{p_n}\mu_1\\
+\vdots&\vdots&\ddots&\vdots\\
+\alpha_n&\frac{E_{n,1}}{p_1}\mu_n&\cdots&\frac{E_{n,n}}{p_n}\mu_n
+\end{pmatrix}, \quad
+\mathbf{w} = 
+\begin{pmatrix}
+1\\
+p_1\\
+\vdots\\
+p_n
+\end{pmatrix}, \\
+&\mathbf{N} = 
+\begin{pmatrix}
+\sigma_1^e&\cdots&0\\
+\vdots&\ddots&\vdots\\
+0&\cdots&\sigma_n^e\\
+\end{pmatrix}
+\; \mbox{ and } \; 
+\mbox{\boldmath$\tilde{\epsilon}$} = 
+\begin{pmatrix}
+\tilde{\epsilon}_1\\
+\vdots\\
+\tilde{\epsilon}_n
+\end{pmatrix}.
+\end{aligned}
 \]
-We can then compute the margin as in Subsection \ref{sub:app1}.
+Here, $E_{ji}$ denotes cross elasticity of product $j$ on product $i$.
+
+To convert the SLP into an LP, we simulated $200$ scenarios, assuming that the error terms $\tilde{\epsilon}_j$ follow independent standard normal distribution. The resulting LP had 15 $x$ variables, 3000 $y$ variables, 3000 $z$ variables, and 6007 constraints. Fortunately, such a big LP problem can be solved easily and quickly using any of several readily available solvers (e.g. 'lpSolve' package in R).
+
+The optimal first-stage solution and the total expected profit are presented in Table \ref{tab:real_output}. We remark that, for some items, the optimal stock level is below the mean demand (compare Tables \ref{tab:real_par} and \ref{tab:real_output}). This is probably because, for those items, the over-stocking cost is higher than the under-stocking cost. One could obtain a higher service level for those items by adding constraints to the LP and re-solving. This could of course lead to a drop in the total expected profit.
+
+\begin{table}[htb]
+\centering
+\caption{Optimal first-stage solution and expected profit}
+\label{tab:real_output}
+\resizebox{0.45\linewidth}{!}{
+\begin{tabular}{cccc}
+\toprule
+$x_1^*$ & $x_2^*$ & $x_3^*$ & $x_4^*$\\
+96.53 & 26.47 & 22.87 & 57.85\\
+\hline
+$x_5^*$ & $x_6^*$ & $x_7^*$ & $x_8^*$\\
+40.48 & 37.45 & 101.76 & 42.21\\
+\hline
+$x_9^*$ & $x_{10}^*$ & $x_{11}^*$ & $x_{12}^*$\\
+1036.14 & 15.06 & 120.46 & 54.78\\
+\hline
+$x_{13}^*$ & $x_{14}^*$ & $x_{15}^*$ & $P^*$\\
+15.91 & 9.04 & 19.16 & 1224.17\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Next, we explore the sensitivity of the optimal expected profit with respect to percentage changes in (a) the prices of individual products and (b) the standard deviations of the demands for individual products. The results of margins and ranges of validity for these margins, rounded to the nearest percentage point, are shown in Table \ref{tab:real_sum}.
+
+\begin{table}[htb]
+\centering
+\caption{Margins of profit and Bounds for ranges of validity in \%}
+\label{tab:real_sum}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lcc ccc}
+\toprule
+& \multicolumn{2}{c}{Margins of profit} & \multicolumn{3}{c}{Bounds of ranges of validity}\\
+\cmidrule(lr){2-3} \cmidrule(lr){4-6}
+& \% of $p_j$ increase 
+& \% of $\sigma_j$ decrease
+& \% of $p_j$ decrease
+& \% of $p_j$ increase
+& \% of $\sigma_j$ decrease\\
+\midrule
+beer & -0.38 & 1.25 & 1 & 1 & 7\\
+wine & 2.27 & 1.15 & 3 & 2 & 14\\
+tea & 1.58 & 0.45 & 10 & 15 & 100\\
+bread & 0.02 & 0.24 & 5 & 6 & 100\\
+egg & 0.50 & 0.39 & 19 & 14 & 100\\
+fish & 0.57 & 0.24 & 6 & 5 & 100\\
+fruit & 3.59 & 0.93 & 7 & 9 & 7\\
+juice & 0.41 & 0.29 & 3 & 3 & 100\\
+vegetable & 23.85 & 5.09 & 11 & 9 & 6\\
+tobacco & 0.17 & 1.22 & 2 & 2 & 100\\
+meat & 20.35 & 0.96 & 10 & 5 & 100\\
+milk & 3.95 & 0.12 & 4 & 3 & 100\\
+coffee & -0.18 & 0.19 & 6 & 5 & 100\\
+dairy & -2.50 & 0.09 & 10 & 3 & 100\\
+oil & 0.25 & 0.09 & 6 & 5 & 100
+\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Using the output of our procedure, we were able to provide some insights and suggestions for the retailer:
+\begin{itemize}
+\item Increasing the price of vegetables and/or meat is likely to yield a significant increase in the total expected profit. However, to be safe, the increases should not exceed 5\%.
+\item Making other price changes may also increase the expected profit, but only slightly.
+\item Improving the forecasting technique could also improve the expected profit. If the forecasting budget is limited, the retailer should first consider improving the forecasts of demand for tobacco.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%
-\section{Summary}
+\section{Summary and Conclusion}
 \label{se:conclusion}
-This paper provides a framework of applying LP sensitivity analysis on formulated MPNP. Specifically, we use SA technique to estimate the effect of changes in moments of demand distribution on the optimal cost. We first formulate the MPNP into a two-stage stochastic linear programming with recourse, which can be view as large LP model with finite scenarios. Then, we perform the non-standard SA to derive the margin. Therefore, as long as the changes in allowable range, we can inform the market decision directly.
 
-In this paper, we considered two improvements that could alter the demand, each of which was then expressed mathematically. We can, therefore, decide whether to use those effort by comparing the gain and loss.
+This paper provides a new tool for coordinating marketing and inventory decisions in a retail environment. It enables one to estimate the change in expected profit that would arise from specific marketing actions, and thereby decide if those actions are worthwhile. An attractive feature of our method is that the only software tool needed is a standard linear programming solver.
 
-We also perform an example to demonstrate the approach. The result from our approach is in line with the simulation output.
+Our method can be applied to any problem that can be modelled as a stochastic linear program, and therefore it could perhaps be used in contexts other than retail (e.g., manufacturing). It seems especially useful, however, for multi-product newsvendor problems that are too complex to be solved analytically. This includes, for example, problems with many linear constraints and/or correlated demands.
+
+Our work can also be viewed as a contribution to the rapidly growing literature on Sales and Operations Planning.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \printbibliography
@@ -628,8 +589,7 @@ We also perform an example to demonstrate the approach. The result from our appr
 
 \begingroup\fontsize{7}{9}\selectfont
 \begin{longtable}{cccccc}
-\caption{Variable values, reduced costs and objective function ranges}
-\label{tab:sen_var}\\
+\caption{Variable values, reduced costs and objective function ranges}\\
 \toprule
 variable & final value & reduced cost & coefficient & allowable increase & allowable decrease\\
 \midrule
@@ -707,8 +667,7 @@ $x_b$ & 210.00 & 0.000 & 3.000 & 0.607 & 0.226\\*
 
 \begingroup\fontsize{6}{9}\selectfont
 \begin{longtable}{cccccc}
-\caption{Shadow prices and right-hand side ranges}
-\label{tab:sen_con}\\
+\caption{Shadow prices and right-hand side ranges} \\
 \toprule
 row & final value & shadow price & constraint RHS & allowable increase & allowable decrease\\
 \midrule
@@ -786,5 +745,58 @@ under\_b\textasciicircum{}12 & 260.0 & 0.25 & 260 & 10000.0 & 50.0\\*
 \end{longtable}
 \endgroup{}
 
+\section{Constraints for Real-Life Example} \label{se:con}
+
+\begin{table}[H]
+\centering
+\caption{Constraints for real-life case}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{ccccccccccccccccc}
+\toprule
+beer & wine & tea & bread & egg & fish & fruit & juice & vegetable & tobacco & meat & milk & coffee & dairy & oil & direction & RHS\\
+\midrule
+1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & $<=$ & 120\\
+0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & $<=$ & 1200\\
+0 & 0 & 0 & 1 & 0 & 1 & 1 & 0 & 0.1 & 0 & 1 & 1 & 0 & 1 & 0 & $<=$ & 550\\
+0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & $>=$ & 30\\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & $<=$ & 30\\
+1 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & $<=$ & 300\\
+0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & $<=$ & 60\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\section{Elasticities for Real-Life Example} \label{se:ela}
+
+\begin{table}[H]
+\centering
+\caption{Cross-price elasticities for 15 key products}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lccccccccccccccc}
+\toprule
+\multicolumn{1}{c}{\textbf{}} & \multicolumn{15}{c}{\textbf{price}} \\
+\cmidrule(l{3pt}r{3pt}){2-16}
+  & beer & wine & tea & bread & egg & fish & fruit & juice & vegetable & tobacco & meat & milk & coffee & dairy & oil\\
+\midrule
+beer & -1.98 & 0.74 & 0.33 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & -0.02 & 0.19 & 0.00 & 0.00 & 0.00 & 0.00\\
+wine & -0.21 & -0.84 & 0.12 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & -0.02 & 0.19 & 0.00 & 0.00 & 0.00 & 0.00\\
+tea & 0.10 & -0.08 & 0.03 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.03 & 0.00 & 0.00 & 0.00\\
+bread & 0.00 & 0.00 & 0.00 & 0.06 & -0.03 & -0.05 & -0.01 & 0.00 & -0.05 & 0.00 & 0.00 & 0.00 & 0.00 & -0.01 & 0.00\\
+egg & 0.00 & 0.00 & 0.00 & -0.23 & -0.22 & -0.04 & -0.06 & 0.07 & -0.03 & 0.00 & 0.04 & -0.09 & 0.01 & -0.08 & 0.01\\
+\addlinespace
+fish & 0.00 & 0.00 & 0.00 & -0.15 & -0.05 & -0.53 & 0.00 & -0.06 & 0.01 & 0.00 & 0.02 & -0.16 & -0.02 & -0.04 & -0.01\\
+fruit & 0.00 & 0.00 & 0.00 & -0.09 & -0.04 & 0.00 & -0.60 & -0.04 & -0.03 & 0.00 & 0.00 & 0.30 & 0.04 & -0.08 & 0.04\\
+juice & 0.00 & 0.00 & -0.03 & -0.06 & 0.00 & -0.09 & -0.06 & -0.85 & 0.00 & 0.00 & 0.00 & 0.14 & -0.02 & -0.05 & 0.00\\
+vegetable & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.10 & 0.00 & -0.54 & -0.04 & 0.01 & 0.20 & 0.01 & -0.03 & 0.02\\
+tobacco & -0.07 & -0.07 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.03 & 0.07 & 0.05 & 0.00 & 0.00 & 0.00 & 0.00\\
+\addlinespace
+meat & 0.01 & 0.01 & 0.00 & 0.00 & 0.02 & 0.08 & -0.04 & 0.00 & -0.02 & 0.04 & -0.48 & 0.17 & 0.00 & -0.23 & 0.05\\
+milk & 0.00 & 0.00 & 0.01 & 0.00 & -0.12 & -0.01 & 0.07 & 0.08 & 0.08 & 0.00 & 0.02 & -0.96 & 0.01 & 0.00 & -0.01\\
+coffee & 0.00 & 0.00 & 0.00 & 0.00 & 0.01 & 0.00 & 0.03 & 0.00 & -0.04 & 0.00 & 0.00 & 0.03 & 0.60 & 0.00 & 0.00\\
+dairy & 0.00 & 0.00 & 0.00 & -0.04 & -0.01 & -0.01 & -0.01 & 0.00 & -0.01 & 0.00 & -0.07 & 0.00 & 0.00 & -0.55 & 0.00\\
+oil & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & -0.02 & 0.01 & 0.00 & 0.03 & 0.00 & 0.09 & 0.04 & 0.00 & 0.00 & -0.70\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \end{document}
