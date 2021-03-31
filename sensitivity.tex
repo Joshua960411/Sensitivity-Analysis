@@ -29,7 +29,7 @@ Lancaster University, Lancaster LA1 4YX, UK.
 Email: {\tt \{c.liu19,a.n.letchford,i.svetunkov\}@lancaster.ac.uk}}
 \and Adam N.\ Letchford$^*$ \and Ivan Svetunkov$^*$} % end author list
 
-\date{Draft, 30th March 2021}
+\date{Draft, 31st March 2021}
 
 \begin{document}
 \maketitle
@@ -423,16 +423,16 @@ The optimal first-stage solution and the total expected profit are presented in 
 \begin{tabular}{cccc}
 \toprule
 $x_1^*$ & $x_2^*$ & $x_3^*$ & $x_4^*$\\
-96.53 & 26.47 & 22.87 & 57.85\\
+85.93 & 21.48 & 20.93 & 59.58\\
 \hline
 $x_5^*$ & $x_6^*$ & $x_7^*$ & $x_8^*$\\
-40.48 & 37.45 & 101.76 & 42.21\\
+38.57 & 38.26 & 100.18 & 40.10\\
 \hline
 $x_9^*$ & $x_{10}^*$ & $x_{11}^*$ & $x_{12}^*$\\
-1036.14 & 15.06 & 120.46 & 54.78\\
+1061.49 & 18.38 & 119.05 & 55.34\\
 \hline
 $x_{13}^*$ & $x_{14}^*$ & $x_{15}^*$ & $P^*$\\
-15.91 & 9.04 & 19.16 & 1224.17\\
+14.62 & 8.82 & 18.86 & 1436.30\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -454,21 +454,21 @@ Next, we explore the sensitivity of the optimal expected profit with respect to 
 & \% of $p_j$ increase
 & \% of $\sigma_j$ decrease\\
 \midrule
-beer & -0.38 & 1.25 & 1 & 1 & 7\\
-wine & 2.27 & 1.15 & 2 & 2 & 14\\
-tea & 1.58 & 0.45 & 5 & 8 & 100\\
-bread & 0.02 & 0.24 & 4 & 3 & 100\\
-egg & 0.50 & 0.39 & 5 & 9 & 100\\
-fish & 0.57 & 0.24 & 3 & 2 & 100\\
-fruit & 3.59 & 0.93 & 3 & 4 & 7\\
-juice & 0.41 & 0.29 & 2 & 2 & 100\\
-vegetable & 23.85 & 5.09 & 4 & 5 & 6\\
-tobacco & 0.17 & 1.22 & 2 & 2 & 100\\
-meat & 20.35 & 0.96 & 7 & 3 & 100\\
-milk & 3.95 & 0.12 & 2 & 4 & 100\\
-coffee & -0.18 & 0.19 & 3 & 4 & 100\\
-dairy & -2.50 & 0.09 & 9 & 3 & 100\\
-oil & 0.25 & 0.09 & 4 & 5 & 100
+beer & -1.03 & 1.13 & 1 & 1 & 7\\
+wine & 1.89 & 1.15 & 2 & 2 & 14\\
+tea & 1.74 & 0.35 & 5 & 8 & 100\\
+bread & 0.10 & 0.16 & 4 & 3 & 100\\
+egg & 1.57 & 0.28 & 5 & 9 & 100\\
+fish & 1.08 & 0.21 & 3 & 2 & 100\\
+fruit & 4.20 & 0.78 & 3 & 4 & 7\\
+juice & 0.85 & 0.25 & 2 & 2 & 100\\
+vegetable & 22.66 & 4.60 & 4 & 5 & 6\\
+tobacco & 1.95 & 0.79 & 2 & 2 & 100\\
+meat & 22.82 & 0.89 & 7 & 3 & 100\\
+milk & 4.23 & 0.11 & 2 & 4 & 100\\
+coffee & 1.04 & 0.20 & 3 & 4 & 100\\
+dairy & -1.68 & 0.07 & 9 & 3 & 100\\
+oil & 0.86 & 0.08 & 4 & 5 & 100
 \\
 \bottomrule
 \end{tabular}}
@@ -479,7 +479,7 @@ Using the output of our procedure, we were able to provide some insights and sug
 \item Increasing the price of vegetables and/or meat is likely to yield a significant increase in the total expected profit. However, to be safe, the increases should not exceed 5\%.
 \item Making other price changes may also increase the expected profit, but only slightly.
 \item For some products (e.g., beer), decreasing a price may be beneficial.
-\item Improving the forecasting technique could also improve the expected profit. If the forecasting budget is limited, the retailer should first consider improving the forecasts of demand for tobacco.
+\item Decreasing the demand variance could also improve the expected profit. If the marketing budget is limited, the retailer should first consider marketing techniques that could decrease the variance of demand for vegetables.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%
