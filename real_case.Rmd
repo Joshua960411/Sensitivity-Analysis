@@ -141,7 +141,7 @@ for(i in 1:15){
 
 sa_price<-c()
 for (i in 1:15) {
-  sa_price<-c(sa_price,round((sum(sa_mean*adjusted_ela[,i])+(solution_first[i]-mean(optimum_original$solution[(size*(i-1)+1):(size*i)])))*p[i]/100,2))
+  sa_price<-c(sa_price,round((sum(sa_mean*price_ela[,i]*mean)+(solution_first[i]-mean(optimum_original$solution[(size*(i-1)+1):(size*i)]))*p[i])/100,2))
 }
 ```
 
@@ -179,6 +179,37 @@ con_df<-cbind(par_mac,dir_mac,rhs_mac)
 colnames(con_df)<-c(product_name,'direction','RHS')
 kable(con_df,format='latex', booktabs = T,align = 'c') %>% 
         kable_styling(latex_options = "scale_down")
+```
+
+```{r price1_plot}
+delta<-seq(-40,40,1)
+pri<-c()
+for (k in 1:length(delta)){
+  new_objective.in<-objective.in
+  new_objective.in[(size*2-199):(size*2)]<-objective.in[(size*2-199):(size*2)]-p[2]*delta[k]/(100*size)
+  new_objective.in[30*size+2]<-objective.in[30*size+2]+p[2]*delta[k]/100
+  new_const.rhs<-const.rhs
+  for (j in 1:15) {
+    assign(paste("new_demand_", j, sep = ""), (eval(parse(text = paste("demand_", j, sep = "")))+p[2]*delta[k]*adjusted_ela[2,j]/100))
+    new_const.rhs[(size*j-192):(size*j+7)]<--eval(parse(text = paste("new_demand_", j, sep = "")))
+    new_const.rhs[(size*j+2808):(size*j+3007)]<-eval(parse(text = paste("new_demand_", j, sep = "")))
+  }
+  pri<-c(pri,lp(direction="max", new_objective.in, const.mat,const.dir,new_const.rhs)$objval)
+}
+
+par(bty="l")
+plot(delta,pri,xlab=expression(delta),ylab="Optimal profit",type="l", bty="l", col=rgb(0.6,0.2,0.8,0.7) , lwd=2 , pch=19,lty=2)
+legend("bottomright", 
+  legend = c("change of price on wine"), 
+  col = c(rgb(0.6,0.2,0.8,0.7)), 
+  bty = "n", 
+  pt.cex = 1, 
+  cex = 1,
+  lwd=2.5,
+  lty=2:3,
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.05, 0.05))
 ```
 
 ```{r range_price}
