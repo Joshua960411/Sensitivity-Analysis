@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
+\usepackage[flushleft]{threeparttable}
 \usepackage[ignoreunlbld]{refcheck}
 \usepackage{longtable}
 \setkeys{Gin}{width=.8\textwidth}
@@ -77,7 +78,7 @@ We now briefly review the relevant literature. We cover newsvendor problems in S
 
 When the side-constraints are fairly ``loose", most MNVPs can be solved using the method of Lagrangian multipliers \cite{BR93,HW63}. Otherwise, one must use more complicated methods \cite{AM05,LL95,ZXH09}. 
 
-Finally, there is also a substantial literature on ``price-setting" MNVPs, in which one is free to vary product prices and order quantities simultaneously. See \cite{De20} for a comprehensive survey.
+Finally, there is also a substantial literature on ``price-setting" MNVPs, in which one is free to vary product prices and order quantities simultaneously. See \cite{De20,PD99} for surveys.
 
 \subsection{Stochastic programming} \label{sub:lit2}
 
@@ -233,10 +234,10 @@ As before, one can determine whether the proposed action is helpful by comparing
 \subsection{Correlated demands} \label{sub:method3}
 
 Next, we consider the case in which the demands of different products are not statistically independent. We assume that the scenarios are generated with the following formula (see, e.g., \cite{GR12,KR03}):
-\begin{equation} \label{eq:sim}
+\[
 \mathbf{\tilde{d}} =  \mathbf{M} \mathbf{w}
 + \mathbf{N} \mbox{\boldmath$\tilde{\epsilon}$},
-\end{equation}
+\]
 where $\mathbf{M} \in \RR^{n \times q}$ and $\mathbf{N} \in \RR^{n \times r}$ are parameter matrices, the vector $\mathbf{w} \in \RR^q$ encodes some explanatory variables, such as marketing decisions, and $\mbox{\boldmath$\tilde{\epsilon}$} \in \RR^r$ is a vector of independent random variables, each with zero mean, unit variance, and known
 distribution. We assume that, when we solve the MNVP, the vector $\mathbf{w}$ is fixed, and only the order quantities may vary.
 
@@ -315,7 +316,7 @@ Finally, we performed parametric programming to explore the effect on the profit
 \section{Price-Setting}
 \label{se:price}
 
-We now move on to the (more complex) case in which one is free to vary the prices of individual products (see \cite{De20}). Meanwhile, the demand of products will be affected by the discounting. Subsections \ref{sub:price1} and \ref{sub:price2} are concerned with additive and multiplicative price-demand models, respectively. Subsection \ref{sub:price3} gives an real-life example.
+We now move on to the (more complex) case in which one is free to vary the prices of individual products (see \cite{De20,PD99}). Meanwhile, the demand of products will also be affected accordingly. Subsections \ref{sub:price1} and \ref{sub:price2} are concerned with additive and multiplicative price-demand models, respectively. Subsection \ref{sub:price3} gives a real-life example.
 
 \subsection{Additive price-demand model} \label{sub:price1}
 
@@ -348,12 +349,12 @@ As usual, the above margin is valid only within a narrow range. Unfortunately, w
 
 Finally, we consider the case in which a \emph{multiplicative} price-demand model has been used. More precisely, suppose that the demand of product $j$ takes the form
 \[
-\tilde{d}_j = \alpha_j \, \tilde{\epsilon}_j \, \Pi_{k=1}^n p_k^{\beta_{jk}},
+\tilde{d}_j = \tilde{\epsilon}_j \, \Pi_{k=1}^n p_k^{\beta_{jk}},
 \]
 where we now assume that the noise term $\tilde{\epsilon}_j$ comes from a known non-negative distribution (e.g., lognormal). We remark that, here, the $\beta_{jk}$ are the well-known
 \emph{cross-price elasticities of demand} (see, e.g., \cite{FC13}).
 
-This price-demand model cannot be put into the form (\ref{eq:sim}). So we use a more direct approach. Recall that $p_k$ denotes the price of product $k$. Suppose we increase the price of product $k$ by $\delta \%$. Provided that $\delta$ is small, the effect on the LP is that:
+Now, suppose we increase the price of product $k$ by $\delta \%$. Provided that $\delta$ is small, the effect on the LP is that:
 \begin{itemize}
 \item The objective coefficient of $x_k$ increases by $\delta \, p_k / 100$.
 \item For all $s$, the objective coefficient of $y_k^s$ decreases by $\frac{\delta \, p_k}{100 |S|}$.
@@ -374,7 +375,7 @@ As in the previous subsection, we cannot apply parametric programming. Thus, if 
 
 We now apply the approach in this section to some real-life data. Our demand data comes from a medium-sized grocery store which sells a wide range of products, many of which are perishable. The store is located in an area where customers are very sensitive to price. Therefore, the retailer wondered whether a better coordination of price-setting across products could increase the total expected profit.
 
-The retailer was able to estimate the costs for any given product, along with the mean and standard deviation of demand. We have collected data for a sample of products. In particular, we selected the most popular product from each of the 15 most common categories (wine, eggs, tea, coffee, and so on). We assume for this specific task that demand on these products is independent, and can be fitted in the multiplicative price-demand model. The data, selling prices and costs for these products are provided in Table \ref{tab:real_par}. Note that vegetables and meats are the most profitable products in the store, as one might expect.
+The retailer was able to estimate the costs for any given product, along with the mean and standard deviation of demand. We have collected data for a sample of products. In particular, we selected the most popular product from each of the 15 most common categories (wine, eggs, tea, coffee, and so on). We assume for this specific task that the demand for these products follows the multiplicative price-demand model. The data, selling prices and costs for these products are provided in Table \ref{tab:real_par}. Note that vegetables and meats are the most profitable products in the store, as one might expect.
 
 \begin{table}[htb]
 \centering
@@ -409,9 +410,9 @@ oil & 25.0 & 8.7 & 2.42 & 1.74 & 0.72 & 0.08\\
 
 There also existed 7 linear constraints. For instance, there was an upper limit on the total amount of liquid products that the retailer could store, and there were lower limits on the sizes of orders from particular brands. The detailed constraints are summarised in Appendix \ref{se:con}.
 
-The retailer did not have information about elasticities, so we will use price elasticities and cross-price elasticities for grocery items from literature (e.g., \cite{HPQ99,LC03,VD99,ZW03}). Details on the elasticities for our selected products are given in Appendix \ref{se:ela}.
+The retailer did not have information about elasticities, so we will use price elasticities and cross-price elasticities for grocery items from the literature (e.g., \cite{HPQ99,LC03,VD99,ZW03}). Details on the elasticities for our selected products are given in Appendix \ref{se:ela}.
 
-To convert the SLP into an LP, we simulated $200$ scenarios, assuming that the error terms $\tilde{\epsilon}_j$ follow independent lognormal distribution. The resulting LP had 15 $x$ variables, 3000 $y$ variables, 3000 $z$ variables, and 6007 constraints. Fortunately, LPs of this sizecan be solved easily and quickly using any of the many available solvers such as  {\tt CPLEX}, {\tt Gurobi}, or {\tt Xpress}. (For ease of implementation, we used the `lpSolve' package in R).
+To convert the SLP into an LP, we simulated $200$ scenarios, assuming that the error terms $\tilde{\epsilon}_j$ follow independent lognormal distributions. The resulting LP had 15 $x$ variables, 3000 $y$ variables, 3000 $z$ variables, and 6007 constraints. Fortunately, LPs of this size can be solved easily and quickly using any of the many available solvers such as  {\tt CPLEX}, {\tt Gurobi}, or {\tt Xpress}. (For ease of implementation, we used the `lpSolve' package in R).
 
 The optimal first-stage solution and the total expected profit are presented in Table \ref{tab:real_output}. We remark that, for some items, the optimal stock level is below the mean demand (compare Tables \ref{tab:real_par} and \ref{tab:real_output}). This is probably because, for those items, the over-stocking cost is higher than the under-stocking cost. One could force a higher service level for those items by adding constraints to the LP and re-solving. This could of course lead to a drop in the total expected profit.
 
@@ -437,16 +438,17 @@ $x_{13}^*$ & $x_{14}^*$ & $x_{15}^*$ & $P^*$\\
 \end{tabular}}
 \end{table}
 
-Next, we explore the sensitivity of the optimal expected profit with respect to percentage changes in (a) the prices of individual products and (b) the standard deviations of the demands for individual products. The results of margins and ranges of validity for these margins, rounded to the nearest percentage point, are shown in Table \ref{tab:real_sum}.
+Next, we explore the sensitivity of the optimal expected profit with respect to percentage changes in (a) the prices of individual products and (b) the standard deviations of the demands for individual products. The results of margins and ranges of validity for these margins, rounded to the nearest percentage point, are shown in Table \ref{tab:real_sum}. We also provide a simulated result with changes on price of wine in Figure. It can be seen that the optimal profit will begin dropping when the price of wine exceed . Therefore, one should be careful with changes that exceed the bounds, since the inflection point exists for every product.
 
 \begin{table}[htb]
 \centering
 \caption{Margins of profit and Bounds for ranges of validity in \%}
 \label{tab:real_sum}
-\resizebox{\linewidth}{!}{
+\resizebox{\linewidth}{!}
+{
 \begin{tabular}{lcc ccc}
 \toprule
-& \multicolumn{2}{c}{Margins of profit} & \multicolumn{3}{c}{Bounds of ranges of validity}\\
+& \multicolumn{2}{c}{Margins of profit} & \multicolumn{3}{c}{Bounds of ranges of validity\footnotemark[1]}\\
 \cmidrule(lr){2-3} \cmidrule(lr){4-6}
 & \% of $p_j$ increase 
 & \% of $\sigma_j$ decrease
@@ -473,6 +475,7 @@ oil & 0.86 & 0.08 & 4 & 5 & 100
 \bottomrule
 \end{tabular}}
 \end{table}
+\footnotetext[1]{The bounds of $p_j$ is defined as the range in which the margin remains $\pm 5\%$ accuracy.}
 
 Using the output of our procedure, we were able to provide some insights and suggestions for the retailer:
 \begin{itemize}
@@ -483,14 +486,14 @@ Using the output of our procedure, we were able to provide some insights and sug
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%
-\section{Summary and Conclusion}
+\section{Concluding Remarks}
 \label{se:conclusion}
 
 This paper provides a new tool for coordinating marketing and inventory decisions in a retail environment. It enables one to estimate the change in expected profit that would arise from specific marketing actions, and thereby decide if those actions are worthwhile. An attractive feature of our method is that the only software tool needed is a standard linear programming solver.
 
-Our method can be applied to any problem that can be modelled as a stochastic linear program, and therefore it could perhaps be used in contexts other than retail (e.g., manufacturing). It seems especially useful, however, for multi-product newsvendor problems that are too complex to be solved analytically. This includes, for example, problems with many linear constraints and/or correlated demands.
+Our method can be applied to any problem that can be modelled as a stochastic linear program, and therefore it could perhaps be used in contexts other than retail (e.g., manufacturing). In that sense, our work can be viewed as a contribution to the rapidly growing literature on Sales and Operations Planning.
 
-Our work can also be viewed as a contribution to the rapidly growing literature on Sales and Operations Planning.
+An interesting (and challenging) topic for future research would be the extension of our model to problems where, in the event of a stock-out, customers may be willing to buy substitute products (see, e.g., \cite{Sh15,ZXS20}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \printbibliography
